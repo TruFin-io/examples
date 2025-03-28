@@ -1,76 +1,41 @@
 import * as anchor from "@coral-xyz/anchor";
-import { AnchorProvider, BN, Program, Wallet } from "@coral-xyz/anchor";
+import { AnchorProvider, type BN, Program, Wallet } from "@coral-xyz/anchor";
 import {
-  Account,
+  type Account,
   TOKEN_PROGRAM_ID,
   createAssociatedTokenAccountInstruction,
   getAccount,
   getAssociatedTokenAddressSync,
 } from "@solana/spl-token";
-import {
-  Keypair,
-  LAMPORTS_PER_SOL,
-  PublicKey,
-  SystemProgram,
-  Transaction,
-  TransactionInstruction,
-} from "@solana/web3.js";
-import * as fs from "fs";
-import * as os from "os";
+import { type Keypair, PublicKey, SystemProgram, Transaction, TransactionInstruction } from "@solana/web3.js";
 
 import { getStakePoolAccount, getStakePoolProgramId, getStakerProgramId } from "../utils/env";
+import { formatSol } from "../utils/format";
 import { getConnection } from "../utils/getConnection";
 import { getStakePool } from "../utils/stake-pool/getStakePool";
 
-// Get the Solana connection
-const connection = getConnection();
+/**
+ * Deposits SOL into the pool reserve account.
+ * If the user does not have a TruSOL associated token account, it will be created.
+ *
+ * @param userKeypair - The keypair of the user making the deposit
+ * @param amount - The amount of SOL to deposit in lamports (1 SOL = 1e9 lamports)
+ * @returns The transaction hash of the deposit
+ */
+export async function deposit(userKeypair: Keypair, amount: BN): Promise<string> {
+  // Get the Solana connection
+  const connection = getConnection();
 
-// get config variables
-const stakePoolProgramId = new PublicKey(getStakePoolProgramId());
-const stakerProgramId = new PublicKey(getStakerProgramId());
-const stakePoolAccount = new PublicKey(getStakePoolAccount());
+  // get all the program ids and accounts
+  const stakePoolProgramId = new PublicKey(getStakePoolProgramId());
+  const stakerProgramId = new PublicKey(getStakerProgramId());
+  const stakePoolAccount = new PublicKey(getStakePoolAccount());
 
-const owner_keypair = Keypair.fromSecretKey(
-  Uint8Array.from(JSON.parse(fs.readFileSync(`${process.cwd()}/src/accounts/owner.json`, "utf-8"))), // Replace with your keypair file
-);
+  // Configure the Solana connection and Anchor provider
+  const provider = new AnchorProvider(connection, new Wallet(userKeypair), { commitment: "confirmed" });
+  anchor.setProvider(provider);
 
-// Configure the Solana connection and Anchor provider
-const provider = new AnchorProvider(connection, new Wallet(owner_keypair), { commitment: "confirmed" });
-anchor.setProvider(provider);
-
-// A script to deposit SOL into the pool reserve account.
-// If the user does not have a TruSOL associated token account, it will be created.
-//
-// usage: yarn deposit <user_name> <amount>
-//   e.g. yarn deposit carlo 1
-// Args:
-// <user_name> : name of the user json keypair file in the user home dir (e.g. ~/.config/solana/carlo.json)
-// <amount> : the amount of SOL to deposit
-async function main() {
-  // parse arguments
-  const args = process.argv.slice(2);
-
-  const username = args.length === 2 && args[0];
-  if (!username) {
-    console.error("Usage: yarn deposit <user_name> <amount>");
-    process.exit(1);
-  }
-
-  const depositAmount = args.length === 2 && new BN(Number(args[1]) * LAMPORTS_PER_SOL);
-  if (!depositAmount) {
-    console.error("Usage: yarn deposit <user_name>  <amount>");
-    process.exit(1);
-  }
-
-  // get user keypair
-  const user_keypair_file = `${os.homedir()}/.config/solana/${username}.json`;
-  if (!fs.existsSync(user_keypair_file)) {
-    console.error(`Keypair file ${username}.json not found under ${os.homedir()}/.config/solana/`);
-    process.exit(1);
-  }
-  const user = Keypair.fromSecretKey(Uint8Array.from(JSON.parse(fs.readFileSync(user_keypair_file, "utf-8"))));
-
-  console.log(`User ${user.publicKey} depositing ${Number(args[1])} SOL...`);
+  console.log(`User ${userKeypair.publicKey} depositing ${formatSol(amount)} SOL...`);
 
   // Load the program deployed at the specified address
   const program = await Program.at(stakerProgramId, provider);
@@ -82,11 +47,11 @@ async function main() {
     stakePoolProgramId,
   );
   const [userWhitelistPDA] = PublicKey.findProgramAddressSync(
-    [Buffer.from("user"), user.publicKey.toBuffer()],
+    [Buffer.from("user"), userKeypair.publicKey.toBuffer()],
     program.programId,
   );
 
-  let userPoolTokenATA = getAssociatedTokenAddressSync(stakePool.poolMint, user.publicKey);
+  let userPoolTokenATA = getAssociatedTokenAddressSync(stakePool.poolMint, userKeypair.publicKey);
 
   let createAccountIx: TransactionInstruction | undefined;
   let tokenAccount: Account | undefined;
@@ -100,18 +65,18 @@ async function main() {
     console.log("Creating TruSOL associated token account at address", userPoolTokenATA.toBase58());
 
     createAccountIx = createAssociatedTokenAccountInstruction(
-      user.publicKey,
+      userKeypair.publicKey,
       userPoolTokenATA,
-      user.publicKey,
+      userKeypair.publicKey,
       stakePool.poolMint,
     );
   }
 
   // deposit instruction
   const depositIx = await program.methods
-    .deposit(depositAmount)
+    .deposit(amount)
     .accounts({
-      user: user.publicKey,
+      user: userKeypair.publicKey,
       userWhitelistAccount: userWhitelistPDA,
       stakePool: stakePoolAccount,
       depositAuthority: stakePool.stakeDepositAuthority,
@@ -127,20 +92,17 @@ async function main() {
     })
     .instruction();
 
-  // build the transaction with the create account instruction if needed
   const transaction = new Transaction();
+
+  // build the transaction with the create account instruction if needed
   if (!tokenAccount && createAccountIx) {
     console.log("adding instruction to create the associated token account");
     transaction.add(createAccountIx);
   }
+
   transaction.add(depositIx);
 
-  const txHash = await provider.sendAndConfirm(transaction, [user]);
+  const txHash = await provider.sendAndConfirm(transaction, [userKeypair]);
   console.log("Deposit tx hash:", txHash);
+  return txHash;
 }
-
-// Run the main function
-main().catch((error) => {
-  console.error("Unexpected error:", error);
-  process.exit(1);
-});
