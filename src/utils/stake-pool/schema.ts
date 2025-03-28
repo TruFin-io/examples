@@ -1,6 +1,7 @@
 import { Fee, Lockup, StakePool } from "./types";
 
 // StakePool Borsh Schema
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const StakePoolSchema = new Map<Function, any>([
   [
     Fee,

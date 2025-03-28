@@ -51,7 +51,7 @@ export async function deposit(userKeypair: Keypair, amount: BN): Promise<string>
     program.programId,
   );
 
-  let userPoolTokenATA = getAssociatedTokenAddressSync(stakePool.poolMint, userKeypair.publicKey);
+  const userPoolTokenATA = getAssociatedTokenAddressSync(stakePool.poolMint, userKeypair.publicKey);
 
   let createAccountIx: TransactionInstruction | undefined;
   let tokenAccount: Account | undefined;
