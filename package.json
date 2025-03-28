@@ -6,6 +6,16 @@
     "name": "Trufin Labs",
     "url": "https://github.com/Trufin-io"
   },
+  "dependencies": {
+    "@coral-xyz/anchor": "0.30.1",
+    "@metaplex-foundation/mpl-token-metadata": "3.3.0",
+    "@metaplex-foundation/umi": "0.9.2",
+    "@solana/spl-stake-pool": "1.1.8",
+    "@solana/spl-token": "0.4.9",
+    "@solana/web3.js": "1.98.0",
+    "anchor-bankrun": "0.5.0",
+    "dotenv": "16.4.7"
+  },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^3.3.1",
     "@types/node": "^18.15.5",
