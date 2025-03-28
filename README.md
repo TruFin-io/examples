@@ -34,11 +34,9 @@ as reference implementations to help developers integrate and work with Trufin L
 
 The following scripts, that can be run using `bun run <script>`, are available in the `package.json`:
 
-| Script           | Description                                 |
-| ---------------- | ------------------------------------------- |
-| `build`          | Build the project using TypeScript compiler |
-| `clean`          | Remove the build artifacts                  |
-| `lint`           | Run both TypeScript and Prettier checks     |
-| `lint:ts`        | Run ESLint and TypeScript type checking     |
-| `prettier:check` | Check code formatting using Prettier        |
-| `prettier:write` | Format code using Prettier                  |
+| Script           | Description                             |
+| ---------------- | --------------------------------------- |
+| `lint`           | Run both TypeScript and Prettier checks |
+| `lint:ts`        | Run ESLint and TypeScript type checking |
+| `prettier:check` | Check code formatting using Prettier    |
+| `prettier:write` | Format code using Prettier              |
