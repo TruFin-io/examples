@@ -12,20 +12,25 @@ as reference implementations to help developers integrate and work with Trufin L
 
 1. Clone the repository:
 
-   ```bash
-   git clone https://github.com/TruFin-io/examples trufin-examples
-   cd trufin-examples
-   ```
+```bash
+  git clone https://github.com/TruFin-io/examples trufin-examples
+  cd trufin-examples
+```
 
 2. Install dependencies:
 
-   ```bash
-   bun install
-   ```
+```bash
+  bun install
+```
 
-3. Follow the specific instructions in each example's directory
+## Examples
 
-## Available Scripts
+### Solana Staking
+
+- **Deposit SOL**: Learn how to deposit SOL into the TruStake liquid staking vault. See the
+  [Deposit Documentation](docs/DEPOSIT.md)
+
+## Bun Scripts
 
 The following scripts, that can be run using `bun run <script>`, are available in the `package.json`:
 
