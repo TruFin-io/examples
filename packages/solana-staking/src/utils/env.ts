@@ -2,7 +2,7 @@ import { config as dotenvConfig } from "dotenv";
 import { resolve } from "node:path";
 
 // Load environment variables from .env file
-dotenvConfig({ path: resolve(__dirname, "./.env") });
+dotenvConfig({ path: resolve(__dirname, "../../.env") });
 
 // Environment types
 export type Environment = "devnet" | "testnet" | "mainnet";
