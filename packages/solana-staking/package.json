@@ -23,14 +23,6 @@
     "dist/**/*.js",
     "dist/**/*.js.map"
   ],
-  "keywords": [
-    "bun",
-    "eslint",
-    "javascript",
-    "prettier",
-    "template",
-    "typescript"
-  ],
   "main": "./dist/index.js",
   "scripts": {
     "build": "tsc --build \"tsconfig.prod.json\"",

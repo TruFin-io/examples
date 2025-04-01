@@ -6,7 +6,6 @@ as reference implementations to help developers integrate and work with Trufin L
 ## Prerequisites
 
 - [Bun](https://bun.sh) - JavaScript runtime & package manager
-- Node.js (if not using Bun)
 
 ## Getting Started
 
@@ -23,9 +22,5 @@ as reference implementations to help developers integrate and work with Trufin L
   bun install
 ```
 
-3. Follow the specific instructions in each example's directory
-
-
-| Example Name | Description |
-|--------------|-------------|
-| [example-a](./packages/example-a/README.md) | A comprehensive example for interacting with a
+3. Follow the specific instructions in each example's directory explained in the
+   [packages/README.md](./packages/README.md)
