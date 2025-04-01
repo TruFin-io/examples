@@ -2,7 +2,6 @@
 **/build
 **/dist
 **/node_modules
-src/accounts
 
 # files
 *.env

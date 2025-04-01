@@ -1,0 +1,42 @@
+{
+  "name": "@trufin-labs/solana-staking-examples",
+  "description": "A collection of examples for Solana Staking",
+  "version": "1.0.0",
+  "author": {
+    "name": "Trufin Labs",
+    "url": "https://github.com/Trufin-io"
+  },
+  "bin": {
+    "tru-sol": "./src/cli/index.ts"
+  },
+  "dependencies": {
+    "@coral-xyz/anchor": "0.30.1",
+    "@metaplex-foundation/mpl-token-metadata": "3.3.0",
+    "@metaplex-foundation/umi": "0.9.2",
+    "@solana/spl-stake-pool": "1.1.8",
+    "@solana/spl-token": "0.4.9",
+    "@solana/web3.js": "1.98.0",
+    "anchor-bankrun": "0.5.0",
+    "dotenv": "16.4.7",
+    "yargs": "^17.7.2"
+  },
+  "devDependencies": {
+    "@trivago/prettier-plugin-sort-imports": "^3.3.1",
+    "@types/bn.js": "^5.1.0",
+    "@types/node": "^18.15.5",
+    "@types/yargs": "^17.0.33",
+    "@typescript-eslint/eslint-plugin": "^5.56.0",
+    "@typescript-eslint/parser": "^5.56.0",
+    "eslint": "^8.36.0",
+    "eslint-config-prettier": "^8.8.0",
+    "prettier": "^2.8.6",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.8.4"
+  },
+  "scripts": {
+    "lint": "bun run lint:ts && bun run prettier:check",
+    "lint:ts": "eslint --ext .js,.ts . && tsc --noEmit",
+    "prettier:check": "prettier --check \"**/*.{js,json,md,ts,yml}\"",
+    "prettier:write": "prettier --write \"**/*.{js,json,md,ts,yml}\""
+  }
+}

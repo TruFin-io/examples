@@ -9,8 +9,5 @@ src/accounts
 *.tsbuildinfo
 .DS_Store
 .pnp.*
-bun.lockb
-npm-debug.log
-package-lock.json
-pnpm-lock.yaml
+npm-debug.log*
 yarn.lock
