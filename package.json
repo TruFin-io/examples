@@ -1,45 +1,16 @@
 {
   "name": "@trufin-labs/examples",
   "description": "A collection of examples for Trufin Labs products",
-  "version": "1.0.0",
   "author": {
     "name": "Trufin Labs",
     "url": "https://github.com/Trufin-io"
   },
   "devDependencies": {
-    "@trivago/prettier-plugin-sort-imports": "^3.3.1",
-    "@types/node": "^18.15.5",
-    "@typescript-eslint/eslint-plugin": "^5.56.0",
-    "@typescript-eslint/parser": "^5.56.0",
-    "eslint": "^8.36.0",
-    "eslint-config-prettier": "^8.8.0",
-    "prettier": "^2.8.6",
-    "rimraf": "^4.4.1",
-    "ts-node": "^10.9.1",
-    "typescript": "^4.8.4"
+    "@types/bun": "1.2.8"
   },
-  "files": [
-    "dist/**/*.d.ts",
-    "dist/**/*.d.ts.map",
-    "dist/**/*.js",
-    "dist/**/*.js.map"
-  ],
-  "keywords": [
-    "bun",
-    "eslint",
-    "javascript",
-    "prettier",
-    "template",
-    "typescript"
-  ],
-  "main": "./dist/index.js",
-  "scripts": {
-    "build": "tsc --build \"tsconfig.prod.json\"",
-    "clean": "rimraf dist",
-    "lint": "bun run lint:ts && bun run prettier:check",
-    "lint:ts": "eslint --ext .js,.ts . && tsc --noEmit",
-    "prettier:check": "prettier --check \"**/*.{js,json,md,ts,yml}\"",
-    "prettier:write": "prettier --write \"**/*.{js,json,md,ts,yml}\""
-  },
-  "types": "./dist/index.d.ts"
+  "private": true,
+  "packageManager": "bun@1.2.8",
+  "workspaces": [
+    "packages/*"
+  ]
 }
