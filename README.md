@@ -1,7 +1,7 @@
-# Trufin Labs Examples
+# TruFin Labs Examples
 
-This repository contains example implementations and usage demonstrations for Trufin Labs products. These examples serve
-as reference implementations to help developers integrate and work with Trufin Labs' solutions effectively.
+This repository contains example implementations and usage demonstrations for TruFin Labs products. These examples serve
+as reference implementations to help developers integrate and work with TruFin Labs' solutions effectively.
 
 ## Prerequisites
 

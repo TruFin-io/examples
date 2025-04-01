@@ -1,6 +1,6 @@
-# Trufin Labs Solana Staking
+# TruFin Labs Solana Staking
 
-This repository contains example implementations and usage demonstrations for Trufin Solana Staking.
+This repository contains example implementations and usage demonstrations for TruFin Solana Staking.
 
 ## Prerequisites
 
