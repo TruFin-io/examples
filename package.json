@@ -1,0 +1,16 @@
+{
+  "name": "@trufin-labs/examples",
+  "description": "A collection of examples for Trufin Labs products",
+  "author": {
+    "name": "Trufin Labs",
+    "url": "https://github.com/Trufin-io"
+  },
+  "devDependencies": {
+    "@types/bun": "1.2.8"
+  },
+  "private": true,
+  "packageManager": "bun@1.2.8",
+  "workspaces": [
+    "packages/*"
+  ]
+}
