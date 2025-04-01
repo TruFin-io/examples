@@ -10,89 +10,97 @@ By the end, you'll:
 - Construct and send a Solana transaction using Anchor
 - Interact securely with the Stake Pool Program via the Staker Program
 
+## TL;DR
+
+- **Purpose:** Quickly deposit SOL into the TruStake liquid staking vault.
+- **Key Steps:**
+  - Verify whitelist eligibility.
+  - Create or reuse your TruSOL Associated Token Account.
+  - Build and execute a deposit instruction using Anchor.
+  - Use either programmatic integration or CLI commands.
+
 ## Table of Contents
 
 1. [Understanding TruStake Deposits](#understanding-trustake-deposits)
-
    - [System Overview](#system-overview)
-     - [Whitelist](#whitelist)
-     - [Token Flow](#token-flow)
-     - [Associated Token Account](#associated-token-account)
+     - [Whitelist](#1-whitelist)
+     - [Token Flow](#2-token-flow)
+     - [Associated Token Account](#3-associated-token-account)
    - [Account Structure](#account-structure)
-     - [User Accounts](#user-accounts)
-     - [Pool Accounts](#pool-accounts)
-     - [Authority Accounts](#authority-accounts)
-
+     - [User Accounts](#1-user-accounts)
+     - [Pool Accounts](#2-pool-accounts)
+     - [Authority Accounts](#3-authority-accounts)
 2. [Integration Guide](#integration-guide)
-
    - [Prerequisites](#prerequisites)
      - [Environment Setup](#environment-setup)
      - [Required Accounts](#required-accounts)
    - [Implementation Steps](#implementation-steps)
-     - [Create Whitelist PDA](#step-1-create-whitelist-pda)
-     - [Create/Check TruSOL Token Account](#step-2-createcheck-trusol-token-account)
-     - [Build Deposit Instruction](#step-3-building-the-deposit-instruction)
-   - [Code Examples](#code-examples)
-     - [Basic Implementation](#basic-implementation)
+     - [Step 1 Create Whitelist PDA](#step-1-create-whitelist-pda)
+     - [Step 2 Create/Check TruSOL Token Account](#step-2-createcheck-trusol-token-account)
+     - [Step 3 Build Deposit Instruction](#step-3-build-deposit-instruction)
+   - [Code Example](#code-example)
      - [Complete Implementation](#complete-implementation)
-
 3. [CLI Usage](#cli-usage)
    - [Quick Start](#quick-start)
    - [Command Arguments](#command-arguments)
    - [Example Output](#example-output)
-   - [Troubleshooting](#troubleshooting)
-     - [Wallet Issues](#wallet-issues)
-     - [Whitelist Issues](#whitelist-issues)
-     - [Transaction Issues](#transaction-issues)
+   - [Troubleshooting](#cli-troubleshooting)
+     - [Wallet Issues](#1-wallet-issues)
+     - [Whitelist Issues](#2-whitelist-issues)
+     - [Transaction Issues](#3-transaction-issues)
 
 ## Understanding TruStake Deposits
 
 ### System Overview
 
-1. **Whitelist**
+#### 1. Whitelist
 
-   - User must be whitelisted before they can deposit
-   - Whitelist is managed by the Staker Program
-   - Each user has a whitelist PDA (Program Derived Address)
+- User must be whitelisted before they can deposit
+- Whitelist is managed by the Staker Program
+- Each user has a whitelist PDA (Program Derived Address)
 
-2. **Token Flow**
+#### 2. Token Flow
 
-   - Users deposit SOL → Receive TruSOL tokens
-   - TruSOL represents your stake pool share
-   - The amount of TruSOL minted depends on the share price of the pool
-   - Deposits can only be made through the Staker program — no direct pool deposits are allowed
+- Users deposit SOL → Receive TruSOL tokens
+- TruSOL represents your stake pool share
+- The amount of TruSOL minted depends on the share price of the pool
+- Deposits can only be made through the Staker program — no direct pool deposits are allowed
 
-3. **Associated Token Account**
-   - Each user needs a TruSOL Associated Token Account (ATA)
-   - If the ATA doesn't exist, it will be created automatically
-   - This account holds the user's TruSOL tokens
+#### 3. Associated Token Account
+
+- Each user needs a TruSOL Associated Token Account (ATA)
+- If the ATA doesn't exist, it will be created automatically
+- This account holds the user's TruSOL tokens
 
 ### Account Structure
 
 Required accounts for deposits:
 
-1. **User Accounts**
+#### 1. User Accounts
 
-   - Wallet Account (holds SOL)
-   - Whitelist PDA (verifies eligibility)
-   - TruSOL Token Account (receives stake shares)
+- Wallet Account (holds SOL)
+- Whitelist PDA (verifies eligibility)
+- TruSOL Token Account (receives stake shares)
 
-2. **Pool Accounts**
+#### 2. Pool Accounts
 
-   - Stake Pool (main contract)
-   - Pool Reserve (holds staked SOL)
-   - Pool Mint (TruSOL token mint)
+- Stake Pool (main contract)
+- Pool Reserve (holds staked SOL)
+- Pool Mint (TruSOL token mint)
 
-3. **Authority Accounts**
-   - Deposit Authority
-   - Withdraw Authority
-   - Fee Accounts
+#### 3. Authority Accounts
+
+- Deposit Authority
+- Withdraw Authority
+- Fee Accounts
 
 ## Integration Guide
 
 This section explains how to integrate the deposit functionality into your application.
 
-### 1. Prerequisites
+### Prerequisites
+
+#### Environment Setup
 
 First, set up your development environment:
 
@@ -105,13 +113,15 @@ cp .env.example .env
 # Edit .env with your settings
 ```
 
-### 2. Creating Required Accounts
+### Required Accounts
 
 Before depositing, ensure you have:
 
 - A Solana wallet with sufficient SOL
 - Whitelist approval for your wallet address
 - Access to the correct network (devnet/testnet/mainnet)
+
+### Implementation Steps
 
 #### Step 1: Create Whitelist PDA
 
@@ -146,7 +156,7 @@ const createAccountIx = createAssociatedTokenAccountInstruction(
 );
 ```
 
-### Step 3. Building the Deposit Instruction
+#### Step 3 Build Deposit Instruction
 
 The deposit instruction in [deposit.ts](../src/scripts/deposit.ts) requires these accounts:
 
@@ -208,7 +218,7 @@ const depositIx = await program.methods
   .instruction();
 ```
 
-Note: The addresses shown above are for devnet. For other networks, refer to [addresses.md](./addresses.md).
+**Note:** The addresses shown above are for devnet. For other networks, refer to [addresses.md](./addresses.md).
 
 ### Code Example
 
@@ -236,7 +246,7 @@ async function depositSol(userKeypair: Keypair, amountInSol: number) {
 }
 
 // Call the deposit function
-const txHash = depositSol(Keypair.generate(), 1.5);
+const txHash = await depositSol(Keypair.generate(), 1.5);
 console.log("Example deposit completed:", txHash);
 ```
 
@@ -259,7 +269,7 @@ npx tru-sol deposit alice 1.5  # Deposit 1.5 SOL using alice's keypair
 npx tru-sol deposit bob 2     # Deposit 2 SOL using bob's keypair
 ```
 
-### Arguments
+### Command Arguments
 
 - `user`: Name of your keypair file (without the .json extension) located in `~/.config/solana/`
 - `amount`: Amount of SOL to deposit (can be a decimal number e.g., 1.5)
@@ -273,22 +283,23 @@ Found associated token account. Balance: 0.685849831 TruSOL
 Deposit tx hash: 5oanfLzWtV4HfGiBrattYXwR95vQL884jVVmbbZUR9EQTwh2cFTyBrggGnAbhouXoRtFDpoBMcQWzfHb4w7Fp4tQ
 ```
 
-### CLI Error Handling
+### CLI Troubleshooting
 
 Common errors and solutions:
 
-1. **Wallet Issues**
+#### 1. Wallet Issues
 
-   - Missing keypair file → Check file exists in `~/.config/solana/`
-   - Invalid format → Ensure keypair file is valid JSON
-   - Insufficient SOL → Fund wallet with more SOL
+- Missing keypair file → Check file exists in `~/.config/solana/`
+- Invalid format → Ensure keypair file is valid JSON
+- Insufficient SOL → Fund wallet with more SOL
 
-2. **Whitelist Issues**
+#### 2. Whitelist Issues
 
-   - Not whitelisted → Contact support to get whitelisted
-   - PDA not found → Verify wallet address is correct
+- Not whitelisted → Contact support to get whitelisted
+- PDA not found → Verify wallet address is correct
 
-3. **Transaction Issues**
-   - Network errors → Check connection and retry
-   - Timeout → Increase transaction timeout
-   - Signature failure → Verify wallet permissions
+#### 3. Transaction Issues
+
+- Network errors → Check connection and retry
+- Timeout → Increase transaction timeout
+- Signature failure → Verify wallet permissions
