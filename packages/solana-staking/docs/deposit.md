@@ -55,9 +55,7 @@ By the end, you'll:
 
 #### 1. Whitelist
 
-- User must be whitelisted before they can deposit
-- Whitelist is managed by the Staker Program
-- Each user has a whitelist PDA (Program Derived Address)
+⚠️ Only whitelisted Users will be able to deposit
 
 #### 2. Token Flow
 
