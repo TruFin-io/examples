@@ -17,7 +17,6 @@ By the end, you'll:
   - Verify whitelist eligibility.
   - Create or reuse your TruSOL Associated Token Account.
   - Build and execute a deposit instruction using Anchor.
-  - Use either programmatic integration or CLI commands.
 
 ## Table of Contents
 
@@ -40,14 +39,6 @@ By the end, you'll:
      - [Step 3 Build Deposit Instruction](#step-3-build-deposit-instruction)
    - [Code Example](#code-example)
      - [Complete Implementation](#complete-implementation)
-3. [CLI Usage](#cli-usage)
-   - [Quick Start](#quick-start)
-   - [Command Arguments](#command-arguments)
-   - [Example Output](#example-output)
-   - [Troubleshooting](#cli-troubleshooting)
-     - [Wallet Issues](#1-wallet-issues)
-     - [Whitelist Issues](#2-whitelist-issues)
-     - [Transaction Issues](#3-transaction-issues)
 
 ## Understanding TruStake Deposits
 
@@ -252,52 +243,3 @@ console.log("Example deposit completed:", txHash);
 
 For a complete implementation including error handling, ATA creation, and transaction building, see
 [deposit.ts](../src/scripts/deposit.ts).
-
-## CLI Usage
-
-This section explains how to use the CLI tool for depositing SOL.
-
-### Quick Start
-
-```bash
-npx tru-sol deposit <user> <amount>
-
-# Examples
-npx tru-sol deposit alice 1.5  # Deposit 1.5 SOL using alice's keypair
-npx tru-sol deposit bob 2     # Deposit 2 SOL using bob's keypair
-```
-
-### Command Arguments
-
-- `user`: Name of your keypair file (without the .json extension) located in `~/.config/solana/`
-- `amount`: Amount of SOL to deposit (can be a decimal number e.g., 1.5)
-
-### Example Output
-
-```bash
-User G6sfnEjLSD3X8sGzR4LRoEf7VPb9eBCdufWvkGvtik1m depositing 0.1 SOL...
-TruSOL associated token account: 2uazXTrUaHC4DTxBFH5qM2DXgvb45rPGeegJ3yzLjvAZ
-Found associated token account. Balance: 0.685849831 TruSOL
-Deposit tx hash: 5oanfLzWtV4HfGiBrattYXwR95vQL884jVVmbbZUR9EQTwh2cFTyBrggGnAbhouXoRtFDpoBMcQWzfHb4w7Fp4tQ
-```
-
-### CLI Troubleshooting
-
-Common errors and solutions:
-
-#### 1. Wallet Issues
-
-- Missing keypair file → Check file exists in `~/.config/solana/`
-- Invalid format → Ensure keypair file is valid JSON
-- Insufficient SOL → Fund wallet with more SOL
-
-#### 2. Whitelist Issues
-
-- Not whitelisted → Contact support to get whitelisted
-- PDA not found → Verify wallet address is correct
-
-#### 3. Transaction Issues
-
-- Network errors → Check connection and retry
-- Timeout → Increase transaction timeout
-- Signature failure → Verify wallet permissions
