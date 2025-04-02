@@ -1,18 +1,16 @@
 import * as anchor from "@coral-xyz/anchor";
-import { AnchorProvider, type BN, Program, Wallet } from "@coral-xyz/anchor";
+import { AnchorProvider, BN, Program, Wallet } from "@coral-xyz/anchor";
 import {
   type Account,
-  TOKEN_PROGRAM_ID,
   createAssociatedTokenAccountInstruction,
   getAccount,
   getAssociatedTokenAddressSync,
 } from "@solana/spl-token";
-import { type Keypair, PublicKey, SystemProgram, Transaction, TransactionInstruction } from "@solana/web3.js";
+import { Keypair, PublicKey, Transaction, TransactionInstruction } from "@solana/web3.js";
 
-import { getStakePoolAccount, getStakePoolProgramId, getStakerProgramId } from "../utils/env";
+import * as constants from "../utils/constants";
 import { formatSol } from "../utils/format";
 import { getConnection } from "../utils/getConnection";
-import { getStakePool } from "../utils/stake-pool/getStakePool";
 
 /**
  * Deposits SOL into the pool reserve account.
@@ -23,43 +21,47 @@ import { getStakePool } from "../utils/stake-pool/getStakePool";
  * @returns The transaction hash of the deposit
  */
 export async function deposit(userKeypair: Keypair, amount: BN): Promise<string> {
+  console.log(`User ${userKeypair.publicKey} depositing ${formatSol(amount)} SOL`);
+
   // Get the Solana connection
   const connection = getConnection();
 
-  // get all the program ids and accounts
-  const stakePoolProgramId = new PublicKey(getStakePoolProgramId());
-  const stakerProgramId = new PublicKey(getStakerProgramId());
-  const stakePoolAccount = new PublicKey(getStakePoolAccount());
+  // These accounts will stay the same
+  const stakerProgramId = new PublicKey(constants.STAKER_PROGRAM_ID);
+  const stakePoolAccount = new PublicKey(constants.STAKE_POOL_ACCOUNT);
+  const withdrawAuthority = new PublicKey(constants.WITHDRAW_AUTHORITY);
+  const depositAuthority = new PublicKey(constants.DEPOSIT_AUTHORITY);
+  const poolReserve = new PublicKey(constants.POOL_RESERVE);
+  const feeTokenAccount = new PublicKey(constants.FEE_TOKEN_ACCOUNT);
+  const referralFeeTokenAccount = new PublicKey(constants.REFERRAL_FEE_TOKEN_ACCOUNT);
+  const poolMint = new PublicKey(constants.POOL_MINT);
+  const tokenProgramId = new PublicKey(constants.TOKEN_PROGRAM_ID);
+  const systemProgramId = new PublicKey(constants.SYSTEM_PROGRAM_ID);
 
   // Configure the Solana connection and Anchor provider
   const provider = new AnchorProvider(connection, new Wallet(userKeypair), { commitment: "confirmed" });
   anchor.setProvider(provider);
 
-  console.log(`User ${userKeypair.publicKey} depositing ${formatSol(amount)} SOL...`);
-
   // Load the program deployed at the specified address
   const program = await Program.at(stakerProgramId, provider);
-  const stakePool = await getStakePool(connection, stakePoolAccount);
 
-  // derive accounts
-  const [poolWithdrawAuthority] = PublicKey.findProgramAddressSync(
-    [stakePoolAccount.toBuffer(), Buffer.from("withdraw")],
-    stakePoolProgramId,
-  );
+  // Get the user whitelist PDA
   const [userWhitelistPDA] = PublicKey.findProgramAddressSync(
     [Buffer.from("user"), userKeypair.publicKey.toBuffer()],
     program.programId,
   );
 
-  const userPoolTokenATA = getAssociatedTokenAddressSync(stakePool.poolMint, userKeypair.publicKey);
+  // Get the user's TruSOL ATA
+  const userPoolTokenATA = getAssociatedTokenAddressSync(poolMint, userKeypair.publicKey);
 
   let createAccountIx: TransactionInstruction | undefined;
   let tokenAccount: Account | undefined;
 
+  // Check if the user has a TruSOL associated token account, if not, create one
   try {
     console.log("TruSOL associated token account: ", userPoolTokenATA.toBase58());
     tokenAccount = await getAccount(connection, userPoolTokenATA);
-    console.log("Found associated token account. Balance: ", Number(tokenAccount.amount) / 1e9, "TruSOL");
+    console.log("Found associated token account. Balance: ", formatSol(new BN(Number(tokenAccount.amount))), "TruSOL");
   } catch (error) {
     console.log("TruSOL associated token account not found");
     console.log("Creating TruSOL associated token account at address", userPoolTokenATA.toBase58());
@@ -68,33 +70,33 @@ export async function deposit(userKeypair: Keypair, amount: BN): Promise<string>
       userKeypair.publicKey,
       userPoolTokenATA,
       userKeypair.publicKey,
-      stakePool.poolMint,
+      poolMint,
     );
   }
 
-  // deposit instruction
+  // Deposit Instruction
   const depositIx = await program.methods
     .deposit(amount)
     .accounts({
       user: userKeypair.publicKey,
       userWhitelistAccount: userWhitelistPDA,
       stakePool: stakePoolAccount,
-      depositAuthority: stakePool.stakeDepositAuthority,
-      withdrawAuthority: poolWithdrawAuthority,
-      poolReserve: stakePool.reserveStake,
+      depositAuthority: depositAuthority,
+      withdrawAuthority: withdrawAuthority,
+      poolReserve: poolReserve,
       userPoolTokenAccount: userPoolTokenATA,
-      feeTokenAccount: stakePool.managerFeeAccount,
-      poolMint: stakePool.poolMint,
-      referralFeeTokenAccount: stakePool.managerFeeAccount,
-      tokenProgram: TOKEN_PROGRAM_ID,
-      stakerProgram: program.programId,
-      systemProgram: SystemProgram.programId,
+      feeTokenAccount: feeTokenAccount,
+      poolMint: poolMint,
+      referralFeeTokenAccount: referralFeeTokenAccount,
+      tokenProgram: tokenProgramId,
+      stakerProgram: stakerProgramId,
+      systemProgram: systemProgramId,
     })
     .instruction();
 
   const transaction = new Transaction();
 
-  // build the transaction with the create account instruction if needed
+  // Build the transaction with the create account instruction if needed
   if (!tokenAccount && createAccountIx) {
     console.log("adding instruction to create the associated token account");
     transaction.add(createAccountIx);
@@ -103,6 +105,5 @@ export async function deposit(userKeypair: Keypair, amount: BN): Promise<string>
   transaction.add(depositIx);
 
   const txHash = await provider.sendAndConfirm(transaction, [userKeypair]);
-  console.log("Deposit tx hash:", txHash);
   return txHash;
 }
