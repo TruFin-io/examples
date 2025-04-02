@@ -30,9 +30,8 @@ By the end, you'll:
 2. [Integration Guide](#integration-guide)
    - [Prerequisites](#prerequisites)
    - [Implementation Steps](#implementation-steps)
-     - [Step 1: Create Whitelist PDA](#step-1-create-whitelist-pda)
-     - [Step 2: Create/Check TruSOL Token Account](#step-2-createcheck-trusol-token-account)
-     - [Step 3: Build Deposit Instruction](#step-3-build-deposit-instruction)
+     - [Step 1: Create/Check TruSOL Token Account](#step-1-createcheck-trusol-token-account)
+     - [Step 2: Build Deposit Instruction](#step-2-build-deposit-instruction)
    - [Code Example](#code-example)
      - [Complete Implementation](#complete-implementation)
 
@@ -100,31 +99,14 @@ Before depositing, ensure you have:
 
 ### Implementation Steps
 
-#### Step 1: Create Whitelist PDA
-
-To interact with the deposit functionality, first create a user whitelist PDA:
-
-```typescript
-import { Keypair, PublicKey } from "@solana/web3.js";
-
-const stakerProgramId = new PublicKey("6EZAJVrNQdnBJU6ULxXSDaEoK6fN7C3iXTCkZKRWDdGM");
-
-// Create or Load a user keypair from `~/.config/solana/id.json`
-const userKeypair = Keypair.generate();
-
-// Generate the whitelist PDA for the user
-const [userWhitelistPDA] = PublicKey.findProgramAddressSync(
-  [Buffer.from("user"), userKeypair.publicKey.toBuffer()],
-  stakerProgramId,
-);
-```
-
-#### Step 2: Create/Check TruSOL Token Account
+#### Step 1: Create/Check TruSOL Token Account
 
 If the user doesn't have a TruSOL Associated Token Account (ATA), create one using the following instruction. If they
-already have an ATA, you can skip this step and proceed to [Step 3](#step-3-build-deposit-instruction).
+already have an ATA, you can **skip** this step and proceed to [Step 2](#step-2-build-deposit-instruction).
 
 ```typescript
+// Load the keypair for a whitelisted account
+const userKeypair = ...
 const poolMint = new PublicKey("6umRHtiuBd1PC6HQhfH9ioNsqY4ihZncZXNPiGu3d3rN");
 const userPoolTokenATA = getAssociatedTokenAddressSync(poolMint, userKeypair.publicKey);
 
@@ -137,7 +119,7 @@ const createAccountIx = createAssociatedTokenAccountInstruction(
 );
 ```
 
-#### Step 3 Build Deposit Instruction
+#### Step 2: Build Deposit Instruction
 
 The deposit instruction in [deposit.ts](../src/scripts/deposit.ts) requires these accounts:
 
@@ -149,10 +131,6 @@ const depositIx = await program.methods
 
     // The user making the deposit. Must be a signer.
     user: userKeypair.publicKey,
-
-    // User's whitelist account. Must be initialized if it doesn't exist.
-    // Verifies the user is whitelisted before allowing deposit.
-    userWhitelistAccount: userWhitelistPDA,
 
     // User's TruSOL token account where they'll receive their share tokens.
     userPoolTokenAccount: userPoolTokenATA,
@@ -185,21 +163,15 @@ const depositIx = await program.methods
     // Can be the same as the fee token account.
     referralFeeTokenAccount: new PublicKey("5aiXfi3RnfXY3FKEQXPtLXxTC7DA3xn2NZPcQvhRPtod"),
 
-    // === System Accounts ===
-
-    // Required for token operations (minting, transfers).
-    tokenProgram: new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"),
+    // === Program Accounts ===
 
     // The Staker program that's executing this instruction.
-    stakerProgram: new PublicKey("6EZAJVrNQdnBJU6ULxXSDaEoK6fN7C3iXTCkZKRWDdGM"),
-
-    // Required for account creation and rent exemption.
-    systemProgram: new PublicKey("11111111111111111111111111111111"),
+    program: new PublicKey("6EZAJVrNQdnBJU6ULxXSDaEoK6fN7C3iXTCkZKRWDdGM"),
   })
   .instruction();
 ```
 
-**Note:** The addresses shown above are for mainnet, refer to [addresses.md](./addresses.md).
+**Note:** A complete list of addresses for mainnet is available at [addresses.md](./addresses.md).
 
 ### Code Example
 
@@ -227,7 +199,8 @@ async function depositSol(userKeypair: Keypair, amountInSol: number) {
 }
 
 // Call the deposit function
-const txHash = await depositSol(Keypair.generate(), 1.5);
+const keypair = // load your whitelisted keypair here.
+const txHash = await depositSol(keypair, 1.5);
 console.log("Example deposit completed:", txHash);
 ```
 

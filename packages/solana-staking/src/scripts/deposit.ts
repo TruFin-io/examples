@@ -8,6 +8,7 @@ import {
 } from "@solana/spl-token";
 import { Keypair, PublicKey, Transaction, TransactionInstruction } from "@solana/web3.js";
 
+import type { Staker } from "../idl/staker";
 import * as constants from "../utils/constants";
 import { formatSol } from "../utils/format";
 import { getConnection } from "../utils/getConnection";
@@ -35,21 +36,13 @@ export async function deposit(userKeypair: Keypair, amount: BN): Promise<string>
   const feeTokenAccount = new PublicKey(constants.FEE_TOKEN_ACCOUNT);
   const referralFeeTokenAccount = new PublicKey(constants.REFERRAL_FEE_TOKEN_ACCOUNT);
   const poolMint = new PublicKey(constants.POOL_MINT);
-  const tokenProgramId = new PublicKey(constants.TOKEN_PROGRAM_ID);
-  const systemProgramId = new PublicKey(constants.SYSTEM_PROGRAM_ID);
 
   // Configure the Solana connection and Anchor provider
   const provider = new AnchorProvider(connection, new Wallet(userKeypair), { commitment: "confirmed" });
   anchor.setProvider(provider);
 
   // Load the program deployed at the specified address
-  const program = await Program.at(stakerProgramId, provider);
-
-  // Get the user whitelist PDA
-  const [userWhitelistPDA] = PublicKey.findProgramAddressSync(
-    [Buffer.from("user"), userKeypair.publicKey.toBuffer()],
-    program.programId,
-  );
+  const program = await Program.at<Staker>(stakerProgramId, provider);
 
   // Get the user's TruSOL ATA
   const userPoolTokenATA = getAssociatedTokenAddressSync(poolMint, userKeypair.publicKey);
@@ -78,19 +71,25 @@ export async function deposit(userKeypair: Keypair, amount: BN): Promise<string>
   const depositIx = await program.methods
     .deposit(amount)
     .accounts({
+      // === User Accounts ===
       user: userKeypair.publicKey,
-      userWhitelistAccount: userWhitelistPDA,
+      userPoolTokenAccount: userPoolTokenATA,
+
+      // === Pool Accounts ===
       stakePool: stakePoolAccount,
+      poolReserve: poolReserve,
+      poolMint: poolMint,
+
+      // === Authority Accounts ===
       depositAuthority: depositAuthority,
       withdrawAuthority: withdrawAuthority,
-      poolReserve: poolReserve,
-      userPoolTokenAccount: userPoolTokenATA,
+
+      // === Fee Accounts ===
       feeTokenAccount: feeTokenAccount,
-      poolMint: poolMint,
       referralFeeTokenAccount: referralFeeTokenAccount,
-      tokenProgram: tokenProgramId,
-      stakerProgram: stakerProgramId,
-      systemProgram: systemProgramId,
+
+      // === Program Accounts ===
+      program: stakerProgramId,
     })
     .instruction();
 
