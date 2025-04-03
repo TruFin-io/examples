@@ -1,17 +1,12 @@
 import * as anchor from "@coral-xyz/anchor";
 import { AnchorProvider, BN, Program, Wallet } from "@coral-xyz/anchor";
-import {
-  type Account,
-  createAssociatedTokenAccountInstruction,
-  getAccount,
-  getAssociatedTokenAddressSync,
-} from "@solana/spl-token";
-import { Keypair, Transaction, TransactionInstruction } from "@solana/web3.js";
+import { Keypair, Transaction } from "@solana/web3.js";
 
 import type { Staker } from "../../idl/staker";
 import * as constants from "../../utils/constants";
 import { formatSol } from "../../utils/format";
 import { getConnection } from "../../utils/getConnection";
+import { getOrCreateTruSOLAssociatedTokenAccount } from "../shared";
 
 /**
  * Deposits SOL into the pool reserve account.
@@ -34,28 +29,12 @@ export async function deposit(userKeypair: Keypair, amount: BN): Promise<string>
   // Load the program deployed at the specified address
   const program = await Program.at<Staker>(constants.STAKER_PROGRAM_ID, provider);
 
-  // Get the user's TruSOL ATA
-  const userPoolTokenATA = getAssociatedTokenAddressSync(constants.POOL_MINT, userKeypair.publicKey);
-
-  let createAccountIx: TransactionInstruction | undefined;
-  let tokenAccount: Account | undefined;
-
   // Check if the user has a TruSOL associated token account, if not, create one
-  try {
-    console.log("TruSOL associated token account: ", userPoolTokenATA.toBase58());
-    tokenAccount = await getAccount(connection, userPoolTokenATA);
-    console.log("Found associated token account. Balance: ", formatSol(Number(tokenAccount.amount)), "TruSOL");
-  } catch (error) {
-    console.log("TruSOL associated token account not found");
-    console.log("Creating TruSOL associated token account at address", userPoolTokenATA.toBase58());
-
-    createAccountIx = createAssociatedTokenAccountInstruction(
-      userKeypair.publicKey,
-      userPoolTokenATA,
-      userKeypair.publicKey,
-      constants.POOL_MINT,
-    );
-  }
+  const { userPoolTokenATA, tokenAccount, createAccountIx } = await getOrCreateTruSOLAssociatedTokenAccount(
+    connection,
+    userKeypair.publicKey,
+    constants.POOL_MINT,
+  );
 
   // Deposit Instruction
   const depositIx = await program.methods
