@@ -1,3 +1,5 @@
+export const GLOBAL_NAMESPACE = "global" as const;
+
 export const RPC_URI_MAINNET = "https://api.mainnet-beta.solana.com";
 
 /// Note: All the addresses below are for the mainnet. Also listed in `src/docs/addresses.md` ///
@@ -23,6 +25,9 @@ export const DEPOSIT_AUTHORITY = "BLTSuAqaoaUUjLRVdanFXGBi2fef5pwhKN23kCMVgX2T";
 // PDA that has authority to withdraw SOL from the pool.
 export const WITHDRAW_AUTHORITY = "Gq5an4FHyTght92zUF1RjNoZ8Pms7md7hRfGVHeswZku";
 
+// PDA that has authority to emit events.
+export const EVENT_AUTHORITY = "7HUhwJvRThjcbBme9fhdvbqyvfZ5MhZGuxm5hEkZFLhY";
+
 // === Fee Accounts ===
 
 // Account that receives protocol fees from deposits.
@@ -33,6 +38,9 @@ export const FEE_TOKEN_ACCOUNT = "5aiXfi3RnfXY3FKEQXPtLXxTC7DA3xn2NZPcQvhRPtod";
 export const REFERRAL_FEE_TOKEN_ACCOUNT = "5aiXfi3RnfXY3FKEQXPtLXxTC7DA3xn2NZPcQvhRPtod";
 
 // === System Accounts ===
+
+// PDA that has access to the stake pool account.
+export const ACCESS_PDA = "EXcdEB4Sy1ikfsXDdLRK9h8ZjgT6pyhq1o98RM7eeYr";
 
 // Required for token operations (minting, transfers).
 export const TOKEN_PROGRAM_ID = "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA";
