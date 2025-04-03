@@ -3,7 +3,7 @@
   "description": "A collection of examples for Solana Staking",
   "version": "1.0.0",
   "author": {
-    "name": "Trufin Labs",
+    "name": "Trufin",
     "url": "https://github.com/Trufin-io"
   },
   "dependencies": {
