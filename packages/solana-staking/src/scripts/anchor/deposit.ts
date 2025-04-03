@@ -22,7 +22,7 @@ import { getConnection } from "../../utils/getConnection";
  * @returns The transaction hash of the deposit
  */
 export async function deposit(userKeypair: Keypair, amount: BN): Promise<string> {
-  console.log(`User ${userKeypair.publicKey} depositing ${formatSol(amount)} SOL`);
+  console.log(`User ${userKeypair.publicKey} depositing ${formatSol(Number(amount))} SOL`);
 
   // Get the Solana connection
   const connection = getConnection();
@@ -44,7 +44,7 @@ export async function deposit(userKeypair: Keypair, amount: BN): Promise<string>
   try {
     console.log("TruSOL associated token account: ", userPoolTokenATA.toBase58());
     tokenAccount = await getAccount(connection, userPoolTokenATA);
-    console.log("Found associated token account. Balance: ", formatSol(new BN(Number(tokenAccount.amount))), "TruSOL");
+    console.log("Found associated token account. Balance: ", formatSol(Number(tokenAccount.amount)), "TruSOL");
   } catch (error) {
     console.log("TruSOL associated token account not found");
     console.log("Creating TruSOL associated token account at address", userPoolTokenATA.toBase58());

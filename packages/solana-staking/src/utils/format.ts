@@ -1,4 +1,3 @@
-import { BN } from "@coral-xyz/anchor";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 
 /**
@@ -6,8 +5,8 @@ import { LAMPORTS_PER_SOL } from "@solana/web3.js";
  * @param amount - The amount of lamports to format
  * @returns The amount in SOL
  */
-export function formatSol(amount: BN): string {
-  return (amount.toNumber() / LAMPORTS_PER_SOL).toString();
+export function formatSol(amount: number): string {
+  return (amount / LAMPORTS_PER_SOL).toString();
 }
 
 /**
@@ -16,12 +15,12 @@ export function formatSol(amount: BN): string {
  * @returns The amount in lamports
  * @throws If amount is negative or NaN
  */
-export function parseSol(amount: number | string): BN {
+export function parseSol(amount: number | string): number {
   const value = Number(amount);
 
   if (isNaN(value)) throw new Error("Amount must be a valid number");
   if (value < 0) throw new Error("Amount must be non-negative");
-  if (value === 0) return new BN(0);
+  if (value === 0) return 0;
 
-  return new BN(value * LAMPORTS_PER_SOL);
+  return value * LAMPORTS_PER_SOL;
 }

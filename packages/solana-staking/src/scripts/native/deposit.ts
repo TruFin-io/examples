@@ -1,4 +1,3 @@
-import { BN } from "@coral-xyz/anchor";
 import {
   type Account,
   createAssociatedTokenAccountInstruction,
@@ -20,8 +19,8 @@ import { getConnection } from "../../utils/getConnection";
  * @param amount - The amount of SOL to deposit in lamports (1 SOL = 1e9 lamports)
  * @returns The transaction hash of the deposit
  */
-export async function deposit(userKeypair: Keypair, amount: BN): Promise<string> {
-  console.log(`User ${userKeypair.publicKey} depositing ${formatSol(amount)} SOL`);
+export async function deposit(userKeypair: Keypair, amount: bigint): Promise<string> {
+  console.log(`User ${userKeypair.publicKey} depositing ${formatSol(Number(amount))} SOL`);
 
   // Get the Solana connection
   const connection = getConnection();
@@ -43,7 +42,7 @@ export async function deposit(userKeypair: Keypair, amount: BN): Promise<string>
   try {
     console.log("TruSOL associated token account: ", userPoolTokenATA.toBase58());
     tokenAccount = await getAccount(connection, userPoolTokenATA);
-    console.log("Found associated token account. Balance: ", formatSol(new BN(Number(tokenAccount.amount))), "TruSOL");
+    console.log("Found associated token account. Balance: ", formatSol(Number(tokenAccount.amount)), "TruSOL");
   } catch (error) {
     console.log("TruSOL associated token account not found");
     console.log("Creating TruSOL associated token account at address", userPoolTokenATA.toBase58());
@@ -140,7 +139,7 @@ export async function deposit(userKeypair: Keypair, amount: BN): Promise<string>
       },
     ],
     programId: constants.STAKER_PROGRAM_ID,
-    data: new DepositInstruction(BigInt(amount.toString())).toBuffer(),
+    data: new DepositInstruction(amount).toBuffer(),
   });
 
   const transaction = new Transaction();
