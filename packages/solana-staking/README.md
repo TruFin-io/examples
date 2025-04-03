@@ -9,7 +9,7 @@ follow the instructions mentioned at [README.md](../../README.md)
 ## Functionality
 
 - **Deposit SOL**: Learn how to deposit SOL into the TruStake liquid staking vault. See the
-  [Deposit Documentation](./src/docs/DEPOSIT.md)
+  [Deposit Documentation](./src/docs/deposit.md)
 
 ## Available Scripts
 
