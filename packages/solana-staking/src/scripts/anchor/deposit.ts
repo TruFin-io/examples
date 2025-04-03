@@ -6,7 +6,7 @@ import {
   getAccount,
   getAssociatedTokenAddressSync,
 } from "@solana/spl-token";
-import { Keypair, PublicKey, Transaction, TransactionInstruction } from "@solana/web3.js";
+import { Keypair, Transaction, TransactionInstruction } from "@solana/web3.js";
 
 import type { Staker } from "../../idl/staker";
 import * as constants from "../../utils/constants";
@@ -27,25 +27,15 @@ export async function deposit(userKeypair: Keypair, amount: BN): Promise<string>
   // Get the Solana connection
   const connection = getConnection();
 
-  // These accounts will stay the same
-  const stakerProgramId = new PublicKey(constants.STAKER_PROGRAM_ID);
-  const stakePoolAccount = new PublicKey(constants.STAKE_POOL_ACCOUNT);
-  const withdrawAuthority = new PublicKey(constants.WITHDRAW_AUTHORITY);
-  const depositAuthority = new PublicKey(constants.DEPOSIT_AUTHORITY);
-  const poolReserve = new PublicKey(constants.POOL_RESERVE);
-  const feeTokenAccount = new PublicKey(constants.FEE_TOKEN_ACCOUNT);
-  const referralFeeTokenAccount = new PublicKey(constants.REFERRAL_FEE_TOKEN_ACCOUNT);
-  const poolMint = new PublicKey(constants.POOL_MINT);
-
   // Configure the Solana connection and Anchor provider
   const provider = new AnchorProvider(connection, new Wallet(userKeypair), { commitment: "confirmed" });
   anchor.setProvider(provider);
 
   // Load the program deployed at the specified address
-  const program = await Program.at<Staker>(stakerProgramId, provider);
+  const program = await Program.at<Staker>(constants.STAKER_PROGRAM_ID, provider);
 
   // Get the user's TruSOL ATA
-  const userPoolTokenATA = getAssociatedTokenAddressSync(poolMint, userKeypair.publicKey);
+  const userPoolTokenATA = getAssociatedTokenAddressSync(constants.POOL_MINT, userKeypair.publicKey);
 
   let createAccountIx: TransactionInstruction | undefined;
   let tokenAccount: Account | undefined;
@@ -63,7 +53,7 @@ export async function deposit(userKeypair: Keypair, amount: BN): Promise<string>
       userKeypair.publicKey,
       userPoolTokenATA,
       userKeypair.publicKey,
-      poolMint,
+      constants.POOL_MINT,
     );
   }
 
@@ -76,20 +66,20 @@ export async function deposit(userKeypair: Keypair, amount: BN): Promise<string>
       userPoolTokenAccount: userPoolTokenATA,
 
       // === Pool Accounts ===
-      stakePool: stakePoolAccount,
-      poolReserve: poolReserve,
-      poolMint: poolMint,
+      stakePool: constants.STAKE_POOL_ACCOUNT,
+      poolReserve: constants.POOL_RESERVE,
+      poolMint: constants.POOL_MINT,
 
       // === Authority Accounts ===
-      depositAuthority: depositAuthority,
-      withdrawAuthority: withdrawAuthority,
+      depositAuthority: constants.DEPOSIT_AUTHORITY,
+      withdrawAuthority: constants.WITHDRAW_AUTHORITY,
 
       // === Fee Accounts ===
-      feeTokenAccount: feeTokenAccount,
-      referralFeeTokenAccount: referralFeeTokenAccount,
+      feeTokenAccount: constants.FEE_TOKEN_ACCOUNT,
+      referralFeeTokenAccount: constants.REFERRAL_FEE_TOKEN_ACCOUNT,
 
       // === Program Accounts ===
-      program: stakerProgramId,
+      program: constants.STAKER_PROGRAM_ID,
     })
     .instruction();
 

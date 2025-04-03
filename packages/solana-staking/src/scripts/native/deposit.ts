@@ -27,28 +27,13 @@ export async function deposit(userKeypair: Keypair, amount: BN): Promise<string>
   const connection = getConnection();
   const recentBlockhash = await connection.getLatestBlockhash();
 
-  // These accounts will stay the same
-  const stakerProgramId = new PublicKey(constants.STAKER_PROGRAM_ID);
-  const stakePoolAccount = new PublicKey(constants.STAKE_POOL_ACCOUNT);
-  const withdrawAuthority = new PublicKey(constants.WITHDRAW_AUTHORITY);
-  const depositAuthority = new PublicKey(constants.DEPOSIT_AUTHORITY);
-  const poolReserve = new PublicKey(constants.POOL_RESERVE);
-  const feeTokenAccount = new PublicKey(constants.FEE_TOKEN_ACCOUNT);
-  const referralFeeTokenAccount = new PublicKey(constants.REFERRAL_FEE_TOKEN_ACCOUNT);
-  const poolMint = new PublicKey(constants.POOL_MINT);
-  const accessPda = new PublicKey(constants.ACCESS_PDA);
-  const eventAuthority = new PublicKey(constants.EVENT_AUTHORITY);
-  const systemProgramId = new PublicKey(constants.SYSTEM_PROGRAM_ID);
-  const tokenProgramId = new PublicKey(constants.TOKEN_PROGRAM_ID);
-  const stakePoolProgramId = new PublicKey(constants.STAKE_POOL_PROGRAM_ID);
-
   // Get the user's TruSOL ATA
-  const userPoolTokenATA = getAssociatedTokenAddressSync(poolMint, userKeypair.publicKey);
+  const userPoolTokenATA = getAssociatedTokenAddressSync(constants.POOL_MINT, userKeypair.publicKey);
 
   // Get the user's whitelist PDA
   const [userWhitelistPDA] = PublicKey.findProgramAddressSync(
     [Buffer.from("user"), userKeypair.publicKey.toBuffer()],
-    stakerProgramId,
+    constants.STAKER_PROGRAM_ID,
   );
 
   let createAccountIx: TransactionInstruction | undefined;
@@ -67,7 +52,7 @@ export async function deposit(userKeypair: Keypair, amount: BN): Promise<string>
       userKeypair.publicKey,
       userPoolTokenATA,
       userKeypair.publicKey,
-      poolMint,
+      constants.POOL_MINT,
     );
   }
 
@@ -84,27 +69,27 @@ export async function deposit(userKeypair: Keypair, amount: BN): Promise<string>
         isWritable: true,
       },
       {
-        pubkey: accessPda,
+        pubkey: constants.ACCESS_PDA,
         isSigner: false,
         isWritable: true,
       },
       {
-        pubkey: stakePoolAccount,
+        pubkey: constants.STAKE_POOL_ACCOUNT,
         isSigner: false,
         isWritable: true,
       },
       {
-        pubkey: depositAuthority,
+        pubkey: constants.DEPOSIT_AUTHORITY,
         isSigner: false,
         isWritable: true,
       },
       {
-        pubkey: withdrawAuthority,
+        pubkey: constants.WITHDRAW_AUTHORITY,
         isSigner: false,
         isWritable: true,
       },
       {
-        pubkey: poolReserve,
+        pubkey: constants.POOL_RESERVE,
         isSigner: false,
         isWritable: true,
       },
@@ -114,47 +99,47 @@ export async function deposit(userKeypair: Keypair, amount: BN): Promise<string>
         isWritable: true,
       },
       {
-        pubkey: feeTokenAccount,
+        pubkey: constants.FEE_TOKEN_ACCOUNT,
         isSigner: false,
         isWritable: true,
       },
       {
-        pubkey: poolMint,
+        pubkey: constants.POOL_MINT,
         isSigner: false,
         isWritable: true,
       },
       {
-        pubkey: referralFeeTokenAccount,
+        pubkey: constants.REFERRAL_FEE_TOKEN_ACCOUNT,
         isSigner: false,
         isWritable: true,
       },
       {
-        pubkey: tokenProgramId,
+        pubkey: constants.TOKEN_PROGRAM_ID,
         isSigner: false,
         isWritable: false,
       },
       {
-        pubkey: stakePoolProgramId,
+        pubkey: constants.STAKE_POOL_PROGRAM_ID,
         isSigner: false,
         isWritable: false,
       },
       {
-        pubkey: systemProgramId,
+        pubkey: constants.SYSTEM_PROGRAM_ID,
         isSigner: false,
         isWritable: false,
       },
       {
-        pubkey: eventAuthority,
+        pubkey: constants.EVENT_AUTHORITY,
         isSigner: false,
         isWritable: false,
       },
       {
-        pubkey: stakerProgramId,
+        pubkey: constants.STAKER_PROGRAM_ID,
         isSigner: false,
         isWritable: false,
       },
     ],
-    programId: stakerProgramId,
+    programId: constants.STAKER_PROGRAM_ID,
     data: new DepositInstruction(BigInt(amount.toString())).toBuffer(),
   });
 
