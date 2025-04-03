@@ -41,7 +41,7 @@ export const REFERRAL_FEE_TOKEN_ACCOUNT = new PublicKey("5aiXfi3RnfXY3FKEQXPtLXx
 
 // === System Accounts ===
 
-// PDA that has access to the stake pool account.
+// PDA that holds information on whether the Staker program is paused or not and other staker program state.
 export const ACCESS_PDA = new PublicKey("EXcdEB4Sy1ikfsXDdLRK9h8ZjgT6pyhq1o98RM7eeYr");
 
 // Required for token operations (minting, transfers).
