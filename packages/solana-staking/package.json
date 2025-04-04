@@ -33,6 +33,7 @@
     "lint": "bun run lint:ts && bun run prettier:check",
     "lint:ts": "eslint --ext .js,.ts .",
     "prettier:check": "prettier --check \"**/*.{js,json,md,ts,yml}\"",
-    "prettier:write": "prettier --write \"**/*.{js,json,md,ts,yml}\""
+    "prettier:write": "prettier --write \"**/*.{js,json,md,ts,yml}\"",
+    "test": "./test/test.sh"
   }
 }
