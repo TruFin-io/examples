@@ -44,13 +44,12 @@ export async function depositToSpecificValidator(
   );
 
   // Derive the transient stake account PDA
-  const TRANSIENT_STAKE_SEED = 0;
   const [transientStakeAccount] = PublicKey.findProgramAddressSync(
     [
       Buffer.from("transient"),
       validatorVoteAccount.toBuffer(),
       constants.STAKE_POOL_ACCOUNT.toBuffer(),
-      new BN(TRANSIENT_STAKE_SEED).toArrayLike(Buffer, "le", 8),
+      new BN(constants.TRANSIENT_STAKE_SEED).toArrayLike(Buffer, "le", 8),
     ],
     constants.STAKE_POOL_PROGRAM_ID,
   );
@@ -62,7 +61,7 @@ export async function depositToSpecificValidator(
   );
 
   const ix = await program.methods
-    .depositToSpecificValidator(new BN(amount))
+    .depositToSpecificValidator(amount)
     .accounts({
       // === User Accounts ===
       user: userKeypair.publicKey,
