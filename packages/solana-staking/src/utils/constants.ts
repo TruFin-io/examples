@@ -6,7 +6,16 @@ export const RPC_URI_MAINNET = "https://api.mainnet-beta.solana.com";
 
 /// Note: All the addresses below are for the mainnet. Also listed in `src/docs/addresses.md` ///
 
+// The stake pool program ID.
 export const STAKE_POOL_PROGRAM_ID = new PublicKey("SPoo1Ku8WFXoNDMHPsrGSTSG1Y47rzgn41SLUNakuHy");
+
+// PDA that holds the validator list.
+export const STAKE_POOL_VALIDATOR_LIST = new PublicKey("8M7ZbLikHJdeU6iKzZxWJ8zHy1ozX65Zk2GBVcmFVnXe");
+
+// === Stake Accounts ===
+
+// PDA that holds the ephemeral stake account.
+export const EPHEMERAL_STAKE_ACCOUNT = new PublicKey("H9chZiuQ5FjhTg1hUJ2V61VQWqTG5jYHfMcCDJrfRurK");
 
 // === Pool Accounts ===
 
