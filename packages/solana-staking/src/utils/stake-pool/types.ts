@@ -123,6 +123,65 @@ class Lockup {
   }
 }
 
+// Enum for AccountType
+enum AccountType {
+  Uninitialized = 0,
+  StakePool = 1,
+  ValidatorList = 2,
+}
+export class ValidatorListHeader {
+  account_type: AccountType; // Enum value (u8)
+  max_validators: number;
+
+  constructor(fields: { account_type: number; max_validators: number }) {
+    this.account_type = fields.account_type;
+    this.max_validators = fields.max_validators;
+  }
+}
+
+export class ValidatorStakeInfo {
+  active_stake_lamports: bigint;
+  transient_stake_lamports: bigint;
+  last_update_epoch: bigint;
+  transient_seed_suffix: bigint;
+  unused: number;
+  validator_seed_suffix: number;
+  status: number;
+  vote_account_address: PublicKey | null;
+
+  constructor(fields: {
+    active_stake_lamports: bigint;
+    transient_stake_lamports: bigint;
+    last_update_epoch: bigint;
+    transient_seed_suffix: bigint;
+    unused: number;
+    validator_seed_suffix: number;
+    status: number;
+    vote_account_address: Uint8Array | null;
+  }) {
+    this.active_stake_lamports = fields.active_stake_lamports;
+    this.transient_stake_lamports = fields.transient_stake_lamports;
+    this.last_update_epoch = fields.last_update_epoch;
+    this.transient_seed_suffix = fields.transient_seed_suffix;
+    this.unused = fields.unused;
+    this.validator_seed_suffix = fields.validator_seed_suffix;
+    this.status = fields.status;
+    this.vote_account_address = fields.vote_account_address ? new PublicKey(fields.vote_account_address) : null;
+  }
+}
+
+export class ValidatorList {
+  header: ValidatorListHeader;
+  validators: ValidatorStakeInfo[];
+
+  constructor(fields: { header: ValidatorListHeader; validators: ValidatorStakeInfo[] }) {
+    this.header = fields.header;
+    this.validators = fields.validators;
+  }
+}
+
+///  SCHEMAS ///
+
 // StakePool Borsh Schema
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const StakePoolSchema = new Map<Function, any>([
@@ -182,6 +241,39 @@ export const StakePoolSchema = new Map<Function, any>([
         ["nextSolWithdrawalFee", { kind: "option", type: Fee }],
         ["lastEpochPoolTokenSupply", "u64"],
         ["lastEpochTotalLamports", "u64"],
+      ],
+    },
+  ],
+]);
+
+// ValidatorListHeader Borsh Schema
+export const ValidatorListHeaderSchema = new Map([
+  [
+    ValidatorListHeader,
+    {
+      kind: "struct",
+      fields: [
+        ["account_type", "u8"], // AccountType as u8
+        ["max_validators", "u32"], // Maximum validators as u32
+      ],
+    },
+  ],
+]);
+
+export const ValidatorStakeInfoSchema = new Map([
+  [
+    ValidatorStakeInfo,
+    {
+      kind: "struct",
+      fields: [
+        ["active_stake_lamports", "u64"],
+        ["transient_stake_lamports", "u64"],
+        ["last_update_epoch", "u64"],
+        ["transient_seed_suffix", "u64"],
+        ["unused", "u32"],
+        ["validator_seed_suffix", "u32"],
+        ["status", "u8"], // PodStakeStatus is a u8
+        ["vote_account_address", [32]], // PublicKey (32 bytes)
       ],
     },
   ],

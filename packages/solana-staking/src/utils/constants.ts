@@ -4,9 +4,15 @@ export const GLOBAL_NAMESPACE = "global" as const;
 
 export const RPC_URI_MAINNET = "https://api.mainnet-beta.solana.com";
 
+export const TRANSIENT_STAKE_SEED = 0;
+
 /// Note: All the addresses below are for the mainnet. Also listed in `src/docs/addresses.md` ///
 
+// The stake pool program ID.
 export const STAKE_POOL_PROGRAM_ID = new PublicKey("SPoo1Ku8WFXoNDMHPsrGSTSG1Y47rzgn41SLUNakuHy");
+
+// PDA that holds the validator list.
+export const STAKE_POOL_VALIDATOR_LIST = new PublicKey("8M7ZbLikHJdeU6iKzZxWJ8zHy1ozX65Zk2GBVcmFVnXe");
 
 // === Pool Accounts ===
 
@@ -30,6 +36,8 @@ export const WITHDRAW_AUTHORITY = new PublicKey("Gq5an4FHyTght92zUF1RjNoZ8Pms7md
 // PDA that has authority to emit events.
 export const EVENT_AUTHORITY = new PublicKey("7HUhwJvRThjcbBme9fhdvbqyvfZ5MhZGuxm5hEkZFLhY");
 
+export const STAKE_POOL_WITHDRAW_AUTHORITY = new PublicKey("68iLP87i7dh6YmjpJuH7gP5dim8QmYxajCBeA8QTKZdG");
+
 // === Fee Accounts ===
 
 // Account that receives protocol fees from deposits.
@@ -52,3 +60,13 @@ export const STAKER_PROGRAM_ID = new PublicKey("6EZAJVrNQdnBJU6ULxXSDaEoK6fN7C3i
 
 // Required for account creation and rent exemption.
 export const SYSTEM_PROGRAM_ID = new PublicKey("11111111111111111111111111111111");
+
+// === Sysvars ===
+
+export const CLOCK_SYSVAR = new PublicKey("SysvarC1ock11111111111111111111111111111111");
+
+// === Stake Program ===
+
+export const STAKE_PROGRAM_ID = new PublicKey("Stake11111111111111111111111111111111111111");
+
+export const STAKE_PROGRAM_SPACE = 200;
