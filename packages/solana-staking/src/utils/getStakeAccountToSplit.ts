@@ -25,7 +25,7 @@ export async function getStakeAccountToSplit(
   // Derive the validator stake account
   const [validatorStakeAccount] = PublicKey.findProgramAddressSync(
     [validatorVoteAccount.toBuffer(), constants.STAKE_POOL_ACCOUNT.toBuffer()],
-    constants.STAKER_PROGRAM_ID,
+    constants.STAKE_POOL_PROGRAM_ID,
   );
   console.log("Validator stake account:", validatorStakeAccount.toBase58());
 
