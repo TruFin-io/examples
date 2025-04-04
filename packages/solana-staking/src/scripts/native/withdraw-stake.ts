@@ -84,7 +84,7 @@ export async function withdrawStake(
 
   // Find the stake account to withdraw from.
   const stakeAccountToSplit = await getStakeAccountToSplit(stakePool, validatorVoteAccount, expectedSOL, sharePrice);
-
+  console.log("stakeAccountToSplit: ", stakeAccountToSplit);
   if (!stakeAccountToSplit) {
     console.error("No stake account to split found.");
     return;
@@ -142,7 +142,7 @@ export async function withdrawStake(
       { pubkey: userKeypair.publicKey, isSigner: true, isWritable: false },
       { pubkey: userPoolTokenATA, isSigner: false, isWritable: true },
       {
-        pubkey: stakePool.managerFeeAccount,
+        pubkey: constants.STAKE_POOL_MANAGER_FEE_ACCOUNT,
         isSigner: false,
         isWritable: true,
       },
