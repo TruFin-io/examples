@@ -1,8 +1,8 @@
 {
   "name": "@trufin-labs/examples",
-  "description": "A collection of examples for Trufin Labs products",
+  "description": "A collection of examples for Trufin products",
   "author": {
-    "name": "Trufin Labs",
+    "name": "Trufin",
     "url": "https://github.com/Trufin-io"
   },
   "devDependencies": {
