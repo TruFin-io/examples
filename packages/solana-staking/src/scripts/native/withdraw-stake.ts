@@ -79,15 +79,14 @@ export async function withdrawStake(
       minTruSOLBeforeFees,
       `${Math.round(minTruSOLBeforeFees) / LAMPORTS_PER_SOL} TruSOL`,
     );
-    return;
+    throw new Error("Withdraw amount too low");
   }
 
   // Find the stake account to withdraw from.
   const stakeAccountToSplit = await getStakeAccountToSplit(stakePool, validatorVoteAccount, expectedSOL, sharePrice);
-  console.log("stakeAccountToSplit: ", stakeAccountToSplit);
+
   if (!stakeAccountToSplit) {
-    console.error("No stake account to split found.");
-    return;
+    throw new Error("No stake account to split found.");
   }
 
   // Generate a new stake account to receive the withdrawn stake
@@ -111,20 +110,20 @@ export async function withdrawStake(
 
   // Construct the WithdrawSol instruction
   const withdrawStakeIx = new TransactionInstruction({
-    programId: constants.STAKER_PROGRAM_ID,
+    programId: constants.STAKE_POOL_PROGRAM_ID,
     keys: [
       {
-        pubkey: constants.STAKE_POOL_ACCOUNT,
+        pubkey: constants.STAKE_POOL_ACCOUNT, // stake pool account
         isSigner: false,
         isWritable: true,
       },
       {
-        pubkey: constants.STAKE_POOL_VALIDATOR_LIST,
+        pubkey: constants.STAKE_POOL_VALIDATOR_LIST, // validator list
         isSigner: false,
         isWritable: true,
       },
       {
-        pubkey: constants.STAKE_POOL_WITHDRAW_AUTHORITY, // Stake pool withdraw authority
+        pubkey: constants.WITHDRAW_AUTHORITY, // withdraw authority
         isSigner: false,
         isWritable: false,
       },
@@ -175,4 +174,5 @@ export async function withdrawStake(
 
   const tx = await provider.sendAndConfirm(transaction, [userKeypair, newStakeAccount]);
   console.log("Tx hash:", tx);
+  return tx;
 }
