@@ -4,7 +4,7 @@ import { DepositInstruction } from "../../types";
 import * as constants from "../../utils/constants";
 import { formatSol } from "../../utils/format";
 import { getConnection } from "../../utils/getConnection";
-import { getOrCreateTruSOLAssociatedTokenAccount } from "../shared";
+import { getOrCreateTruSOLAssociatedTokenAccountInstruction } from "../shared";
 
 /**
  * Deposits SOL into the pool reserve account.
@@ -27,8 +27,8 @@ export async function deposit(userKeypair: Keypair, amount: bigint): Promise<str
     constants.STAKER_PROGRAM_ID,
   );
 
-  // Check if the user has a TruSOL associated token account, if not, create one
-  const { userPoolTokenATA, tokenAccount, createAccountIx } = await getOrCreateTruSOLAssociatedTokenAccount(
+  // Check if the user has a TruSOL associated token account, if not, return the instruction to create one
+  const { userPoolTokenATA, tokenAccount, createAccountIx } = await getOrCreateTruSOLAssociatedTokenAccountInstruction(
     connection,
     userKeypair.publicKey,
     constants.POOL_MINT,

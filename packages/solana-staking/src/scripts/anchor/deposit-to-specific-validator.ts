@@ -6,7 +6,7 @@ import type { Staker } from "../../idl/staker";
 import * as constants from "../../utils/constants";
 import { formatSol } from "../../utils/format";
 import { getConnection } from "../../utils/getConnection";
-import { getOrCreateTruSOLAssociatedTokenAccount } from "../shared";
+import { getOrCreateTruSOLAssociatedTokenAccountInstruction } from "../shared";
 
 /**
  * Deposits SOL into a stake account of a specific validator.
@@ -37,7 +37,7 @@ export async function depositToSpecificValidator(
   const program = await Program.at<Staker>(constants.STAKER_PROGRAM_ID, provider);
 
   // Check if the user has a TruSOL associated token account, if not, create one
-  const { userPoolTokenATA, tokenAccount, createAccountIx } = await getOrCreateTruSOLAssociatedTokenAccount(
+  const { userPoolTokenATA, tokenAccount, createAccountIx } = await getOrCreateTruSOLAssociatedTokenAccountInstruction(
     connection,
     userKeypair.publicKey,
     constants.POOL_MINT,
