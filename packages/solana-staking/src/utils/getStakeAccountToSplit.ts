@@ -84,7 +84,7 @@ export async function getStakeAccountToSplit(
     console.log(
       `stakeAccountBalance: ${stakeAccountBalance} availableToWithdraw: ${availableToWithdraw} expectedSOL: ${expectedSOL} minLamportsOnStakeAccount: ${minLamportsOnStakeAccount}`,
     );
-    console.log(`Uer max Withdraw: ${maxTruSol} TruSOL (${availableToWithdraw} SOL + ${withdrawFee}% withdraw fee)`);
+    console.log(`User max Withdraw: ${maxTruSol} TruSOL (${availableToWithdraw} SOL + ${withdrawFee}% withdraw fee)`);
     return validatorStakeAccount;
   }
 
