@@ -37,7 +37,7 @@ export async function getStakeAccountToSplit(
       constants.STAKE_POOL_ACCOUNT.toBuffer(),
       new BN(constants.TRANSIENT_STAKE_SEED).toArrayLike(Buffer, "le", 8),
     ],
-    constants.STAKER_PROGRAM_ID,
+    constants.STAKE_POOL_PROGRAM_ID,
   );
   console.log("Transient stake account:", transientStakeAccount.toBase58());
 
