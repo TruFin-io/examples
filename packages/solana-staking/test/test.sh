@@ -13,11 +13,15 @@ bun run test/helpers/modify.ts
 echo "Running deposit tests..."
 bun run test/run-deposit-tests.ts
 
-# Step 3: Run the withdraw stake test
+# Step 3: Run the deposit to specific validator tests
+echo "Running deposit to specific validator tests..."
+bun run test/run-deposit-to-specific-validator-tests.ts
+
+# Step 4: Run the withdraw stake test
 echo "Running withdraw stake test..."
 bun run test/run-withdraw-stake.ts
 
-# Step 4: Restore the constants file
+# Step 5: Restore the constants file
 echo "Restoring constants file..."
 bun run test/helpers/restore.ts
 

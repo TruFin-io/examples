@@ -45,6 +45,21 @@ export class DepositInstruction {
   }
 }
 
+/**
+ * Usage:
+ * const depositToSpecificValidatorIxn = new DepositToSpecificValidatorInstruction(10n, 0, 0);
+ * const depositToSpecificValidatorIxBuffer = depositToSpecificValidatorIxn.toBuffer();
+ */
+export class DepositToSpecificValidatorInstruction {
+  constructor(private amount: bigint) {}
+
+  toBuffer(): Buffer {
+    const discriminator = getIxName("deposit_to_specific_validator");
+    const data = new DepositArgs({ amount: this.amount }).toBuffer();
+    return Buffer.concat([discriminator, data]);
+  }
+}
+
 /// Withdraw Stake ///
 
 export class WithdrawStakeInstruction {
