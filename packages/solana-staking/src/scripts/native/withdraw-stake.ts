@@ -10,6 +10,7 @@ import {
   TransactionInstruction,
 } from "@solana/web3.js";
 
+import { WithdrawStakeInstruction } from "../../types";
 import * as constants from "../../utils/constants";
 import { formatSol } from "../../utils/format";
 import { getConnection } from "../../utils/getConnection";
@@ -158,16 +159,13 @@ export async function withdrawStake(
       { pubkey: constants.TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
       { pubkey: constants.STAKE_PROGRAM_ID, isSigner: false, isWritable: false },
     ],
-    data: Buffer.concat([
-      Buffer.from(Uint8Array.of(10)), // Instruction index for WithdrawStake
-      amount.toArrayLike(Buffer, "le", 8), // Withdraw amount of TruSOL (u64)
-    ]),
+    data: new WithdrawStakeInstruction(amount).toBuffer(),
   });
 
   // send the transaction with the instructions to create the stake account and WithdrawStake
   console.log(
-    `Withdrawing ${Number(
-      amount,
+    `Withdrawing ${formatSol(
+      Number(amount),
     )} TruSOL from ${validatorVoteAccount.toBase58()} to stake account ${newStakeAccount.publicKey.toBase58()}`,
   );
   const transaction = new Transaction().add(createAccountIx).add(withdrawStakeIx);
