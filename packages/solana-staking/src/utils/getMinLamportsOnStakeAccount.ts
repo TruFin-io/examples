@@ -1,5 +1,4 @@
-import { StakeProgram } from "@solana/web3.js";
-
+import * as constants from "./constants";
 import { getConnection } from "./getConnection";
 
 /**
@@ -23,7 +22,7 @@ export async function getMinLamportsOnStakeAccount(): Promise<number> {
 
   // The minimum delegation must be at least the minimum active stake
   const minDelegation = Math.max(stakeMinDelegation.value, MINIMUM_ACTIVE_STAKE);
-  const stakeAccountRent = await connection.getMinimumBalanceForRentExemption(StakeProgram.space);
+  const stakeAccountRent = await connection.getMinimumBalanceForRentExemption(constants.STAKE_PROGRAM_SPACE);
 
   // The minimum balance required in a stake account is the minimum delegation plus rent
   return minDelegation + stakeAccountRent;
