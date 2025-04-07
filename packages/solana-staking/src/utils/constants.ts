@@ -14,6 +14,9 @@ export const STAKE_POOL_PROGRAM_ID = new PublicKey("SPoo1Ku8WFXoNDMHPsrGSTSG1Y47
 // PDA that holds the validator list.
 export const STAKE_POOL_VALIDATOR_LIST = new PublicKey("8M7ZbLikHJdeU6iKzZxWJ8zHy1ozX65Zk2GBVcmFVnXe");
 
+// PDA that holds the stake pool manager fee account.
+export const STAKE_POOL_MANAGER_FEE_ACCOUNT = new PublicKey("5aiXfi3RnfXY3FKEQXPtLXxTC7DA3xn2NZPcQvhRPtod");
+
 // === Pool Accounts ===
 
 // The stake pool account that holds the staked SOL.
@@ -35,8 +38,6 @@ export const WITHDRAW_AUTHORITY = new PublicKey("Gq5an4FHyTght92zUF1RjNoZ8Pms7md
 
 // PDA that has authority to emit events.
 export const EVENT_AUTHORITY = new PublicKey("7HUhwJvRThjcbBme9fhdvbqyvfZ5MhZGuxm5hEkZFLhY");
-
-export const STAKE_POOL_WITHDRAW_AUTHORITY = new PublicKey("68iLP87i7dh6YmjpJuH7gP5dim8QmYxajCBeA8QTKZdG");
 
 // === Fee Accounts ===
 
