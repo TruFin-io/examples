@@ -1,7 +1,10 @@
+import { BN } from "@coral-xyz/anchor";
 import * as borsh from "borsh";
 import { Buffer } from "node:buffer";
 
+import * as constants from "../utils/constants";
 import { getIxName } from "../utils/getIxName";
+import { toU64 } from "../utils/toU64";
 
 /// Deposit ///
 
@@ -39,5 +42,18 @@ export class DepositInstruction {
     const discriminator = getIxName("deposit");
     const data = new DepositArgs({ amount: this.amount }).toBuffer();
     return Buffer.concat([discriminator, data]);
+  }
+}
+
+/// Withdraw Stake ///
+
+export class WithdrawStakeInstruction {
+  constructor(private amount: BN) {}
+
+  toBuffer(): Buffer {
+    return Buffer.concat([
+      Buffer.from(Uint8Array.of(constants.WITHDRAW_STAKE_INSTRUCTION_INDEX)), // Instruction index for WithdrawStake
+      toU64(this.amount), // Withdraw amount of TruSOL (u64)
+    ]);
   }
 }
