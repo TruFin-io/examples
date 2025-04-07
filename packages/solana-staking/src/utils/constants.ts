@@ -4,6 +4,8 @@ export const GLOBAL_NAMESPACE = "global" as const;
 
 export const RPC_URI_MAINNET = "https://api.mainnet-beta.solana.com";
 
+export const WITHDRAW_STAKE_INSTRUCTION_INDEX = 10;
+
 export const TRANSIENT_STAKE_SEED = 0;
 
 /// Note: All the addresses below are for the mainnet. Also listed in `src/docs/addresses.md` ///
