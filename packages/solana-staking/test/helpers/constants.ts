@@ -16,6 +16,9 @@ export const STAKE_POOL_PROGRAM_ID = new PublicKey("5d33x6gSAps926kRDBuM4DwXXZq3
 // PDA that holds the validator list.
 export const STAKE_POOL_VALIDATOR_LIST = new PublicKey("8M7ZbLikHJdeU6iKzZxWJ8zHy1ozX65Zk2GBVcmFVnXe");
 
+// PDA that holds the stake pool manager fee account.
+export const STAKE_POOL_MANAGER_FEE_ACCOUNT = new PublicKey("Cgori6oay5WQauFNkctyRcX5musmVhgu3fwxeGPrGwod");
+
 // === Stake Accounts ===
 
 // PDA that holds the ephemeral stake account.
@@ -72,6 +75,15 @@ export const SYSTEM_PROGRAM_ID = new PublicKey("11111111111111111111111111111111
 // === Sysvars ===
 
 export const CLOCK_SYSVAR = new PublicKey("SysvarC1ock11111111111111111111111111111111");
+
+// === Stake Program ===
+
+export const STAKE_PROGRAM_SPACE = 200;
+
+export const STAKE_PROGRAM_ID = new PublicKey("Stake11111111111111111111111111111111111111");
+
 export const STAKE_HISTORY_SYSVAR = new PublicKey("SysvarStakeHistory1111111111111111111111111");
+
 export const STAKE_CONFIG_SYSVAR = new PublicKey("StakeConfig11111111111111111111111111111111");
+
 export const STAKE_SYSVAR = new PublicKey("Stake11111111111111111111111111111111111111");

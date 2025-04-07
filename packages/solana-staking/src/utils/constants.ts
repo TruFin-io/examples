@@ -4,6 +4,10 @@ export const GLOBAL_NAMESPACE = "global" as const;
 
 export const RPC_URI_MAINNET = "https://api.mainnet-beta.solana.com";
 
+export const FEE_PRECISION = 10000;
+
+export const WITHDRAW_STAKE_INSTRUCTION_INDEX = 10;
+
 export const TRANSIENT_STAKE_SEED = 0;
 
 export const EPHEMERAL_STAKE_SEED = 0;
@@ -15,6 +19,9 @@ export const STAKE_POOL_PROGRAM_ID = new PublicKey("SPoo1Ku8WFXoNDMHPsrGSTSG1Y47
 
 // PDA that holds the validator list.
 export const STAKE_POOL_VALIDATOR_LIST = new PublicKey("8M7ZbLikHJdeU6iKzZxWJ8zHy1ozX65Zk2GBVcmFVnXe");
+
+// PDA that holds the stake pool manager fee account.
+export const STAKE_POOL_MANAGER_FEE_ACCOUNT = new PublicKey("5aiXfi3RnfXY3FKEQXPtLXxTC7DA3xn2NZPcQvhRPtod");
 
 // === Stake Accounts ===
 
@@ -72,6 +79,15 @@ export const SYSTEM_PROGRAM_ID = new PublicKey("11111111111111111111111111111111
 // === Sysvars ===
 
 export const CLOCK_SYSVAR = new PublicKey("SysvarC1ock11111111111111111111111111111111");
+
+// === Stake Program ===
+
+export const STAKE_PROGRAM_SPACE = 200;
+
+export const STAKE_PROGRAM_ID = new PublicKey("Stake11111111111111111111111111111111111111");
+
 export const STAKE_HISTORY_SYSVAR = new PublicKey("SysvarStakeHistory1111111111111111111111111");
+
 export const STAKE_CONFIG_SYSVAR = new PublicKey("StakeConfig11111111111111111111111111111111");
+
 export const STAKE_SYSVAR = new PublicKey("Stake11111111111111111111111111111111111111");
