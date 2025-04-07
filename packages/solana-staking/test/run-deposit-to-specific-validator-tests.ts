@@ -1,15 +1,13 @@
 import { BN } from "@coral-xyz/anchor";
+import { PublicKey } from "@solana/web3.js";
 
-import { deposit as anchorDeposit } from "../src/scripts/anchor/deposit";
-import { deposit as nativeDeposit } from "../src/scripts/native/deposit";
+import { depositToSpecificValidator as anchorDepositToSpecificValidator } from "../src/scripts/anchor/deposit-to-specific-validator";
+import { depositToSpecificValidator as nativeDepositToSpecificValidator } from "../src/scripts/native/deposit-to-specific-validator";
 import { parseSol } from "../src/utils/format";
 import { log, logError } from "./helpers/logger";
 import { checkTransactionStatus, loadKeypairFromFile } from "./helpers/utils";
 
-/**
- * Runs the anchor deposit test
- */
-async function runAnchorDepositTest() {
+async function runAnchorDepositToSpecificValidatorTest() {
   // Load the user keypair
   const userKeypair = await loadKeypairFromFile("test/account.json");
 
@@ -17,8 +15,10 @@ async function runAnchorDepositTest() {
     // Convert SOL amount to lamports
     const depositAmount = parseSol("0.01");
 
+    const validatorVoteAccount = new PublicKey("FwR3PbjS5iyqzLiLugrBqKSa5EKZ4vK9SKs7eQXtT59f");
+
     // Call the anchor deposit function
-    const txHash = await anchorDeposit(userKeypair, new BN(depositAmount));
+    const txHash = await anchorDepositToSpecificValidator(userKeypair, validatorVoteAccount, new BN(depositAmount));
     log(`Transaction hash: ${txHash}`);
 
     // Wait for transaction confirmation
@@ -39,10 +39,7 @@ async function runAnchorDepositTest() {
   }
 }
 
-/**
- * Runs the native deposit test
- */
-async function runNativeDepositTest() {
+async function runNativeDepositToSpecificValidatorTest() {
   // Load the user keypair
   const userKeypair = await loadKeypairFromFile("test/account.json");
 
@@ -51,8 +48,10 @@ async function runNativeDepositTest() {
     const depositAmount = parseSol("0.01");
     log(`Depositing ${depositAmount} lamports...`);
 
-    // Call the native deposit function
-    const txHash = await nativeDeposit(userKeypair, BigInt(depositAmount));
+    const validatorVoteAccount = new PublicKey("FwR3PbjS5iyqzLiLugrBqKSa5EKZ4vK9SKs7eQXtT59f");
+
+    // Call the native depositToSpecificValidator function
+    const txHash = await nativeDepositToSpecificValidator(userKeypair, validatorVoteAccount, BigInt(depositAmount));
     log(`Transaction hash: ${txHash}`);
 
     // Wait for transaction confirmation
@@ -74,27 +73,20 @@ async function runNativeDepositTest() {
   }
 }
 
-/**
- * Main function to run all deposit tests
- */
-async function runAllDepositTests() {
+async function runAllDepositToSpecificValidatorTests() {
   try {
-    // Run the anchor deposit test
-    await runAnchorDepositTest();
-
-    // Run the native deposit test
-    await runNativeDepositTest();
-
-    log("All deposit tests completed successfully!");
+    await runAnchorDepositToSpecificValidatorTest();
+    await runNativeDepositToSpecificValidatorTest();
+    log("All deposit to specific validator tests completed successfully!");
   } catch (error) {
-    logError("Error running deposit tests:", error);
+    logError("Error running deposit to specific validator tests:", error);
     process.exit(1);
   }
 }
 
 // Run the tests if this file is executed directly
 if (require.main === module) {
-  runAllDepositTests()
+  runAllDepositToSpecificValidatorTests()
     .then(() => process.exit(0))
     .catch((error) => {
       logError("Unhandled error:", error);

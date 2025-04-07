@@ -9,9 +9,13 @@ echo "Starting deposit tests..."
 echo "Modifying constants file..."
 bun run test/helpers/modify.ts
 
-# Step 2: Run the deposit tests
+# # Step 2: Run the deposit tests
 echo "Running deposit tests..."
 bun run test/run-deposit-tests.ts
+
+# Step 3: Run the deposit to specific validator tests
+echo "Running deposit to specific validator tests..."
+bun run test/run-deposit-to-specific-validator-tests.ts
 
 # Step 3: Restore the constants file
 echo "Restoring constants file..."

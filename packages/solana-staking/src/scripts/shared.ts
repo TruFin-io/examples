@@ -8,7 +8,7 @@ import { Connection, PublicKey, TransactionInstruction } from "@solana/web3.js";
 
 import { formatSol } from "../utils/format";
 
-export async function getOrCreateTruSOLAssociatedTokenAccount(
+export async function getOrCreateTruSOLAssociatedTokenAccountInstruction(
   connection: Connection,
   userPublicKey: PublicKey,
   poolMint: PublicKey,

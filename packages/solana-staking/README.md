@@ -11,6 +11,9 @@ follow the instructions mentioned at [README.md](../../README.md)
 - **Deposit SOL**: Learn how to deposit SOL into the TruStake liquid staking vault. See the
   [Deposit Documentation](./src/docs/deposit.md)
 
+- **Deposit SOL To Specific Validator**: Learn how to deposit SOL into the TruStake liquid staking vault for a specific
+  validator. See the [Deposit to Specific Validator Documentation](./src/docs/deposit-to-specific-validator.md)
+
 ## Available Scripts
 
 The following scripts, that can be run using `bun run <script>`, are available in the `package.json`:
