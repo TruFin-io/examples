@@ -12,7 +12,7 @@ async function runWithdrawStakeTest() {
 
   try {
     // Convert SOL amount to lamports
-    const withdrawAmount = parseSol("0.001557723");
+    const withdrawAmount = parseSol("0.1");
     log(`Withdrawing ${withdrawAmount} TruSOL...`);
 
     // Use a validator vote account for testing
