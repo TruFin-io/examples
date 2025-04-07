@@ -44,7 +44,7 @@ By the end, you'll:
 
 - The share price determines how much SOL you receive for your TruSOL tokens
 - Share price = Total lamports in pool / Total TruSOL supply
-- Expected SOL = TruSOL amount × Share price
+- Expected SOL = TruSOL amount × Share price - withdrawal fee
 
 #### 2. Stake Account Splitting
 
@@ -64,7 +64,7 @@ Required accounts for withdrawals:
 #### 1. User Accounts
 
 - Wallet Account (pays for transaction and signs the transaction)
-- TruSOL Token Account (tokens to burn)
+- TruSOL Associated Token Account
 - New Stake Account (receives withdrawn stake, created during the transaction)
 
 #### 2. Pool Accounts
