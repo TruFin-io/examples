@@ -158,8 +158,13 @@ The withdrawal process involves several steps:
    ```typescript
    const minLamportsOnStakeAccount = await getMinLamportsOnStakeAccount();
    const stakeWithdrawalFee =
-     (BigInt(100) * stakePool.stakeWithdrawalFee.numerator) / stakePool.stakeWithdrawalFee.denominator;
-   const minSolWithdrawalBeforeFees = Math.round(minLamportsOnStakeAccount / (1 - Number(stakeWithdrawalFee) / 100));
+     Number(
+       (BigInt(constants.FEE_PRECISION) * stakePool.stakeWithdrawalFee.numerator) /
+         stakePool.stakeWithdrawalFee.denominator,
+     ) / constants.FEE_PRECISION;
+   const minSolWithdrawalBeforeFees = Math.round(
+     minLamportsOnStakeAccount + stakeWithdrawalFee * minLamportsOnStakeAccount,
+   );
 
    if (expectedSOL < minSolWithdrawalBeforeFees) {
      throw new Error("Withdraw amount too low");
