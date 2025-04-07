@@ -4,6 +4,8 @@ export const GLOBAL_NAMESPACE = "global" as const;
 
 export const RPC_URI_MAINNET = "https://api.mainnet-beta.solana.com";
 
+export const FEE_PRECISION = 10000;
+
 export const WITHDRAW_STAKE_INSTRUCTION_INDEX = 10;
 
 export const TRANSIENT_STAKE_SEED = 0;
