@@ -283,7 +283,7 @@ const depositIx = new TransactionInstruction({
       isWritable: true,
     },
     {
-      pubkey: new PublicKey("5aiXfi3RnfXY3FKEQXPtLXxTC7DA3xn2NZPcQvhRPtod"), // FEE_TOKEN_ACCOUNT
+      pubkey: new PublicKey("5aiXfi3RnfXY3FKEQXPtLXxTC7DA3xn2NZPcQvhRPtod"), // MANAGER_FEE_ACCOUNT
       isSigner: false,
       isWritable: true,
     },
@@ -293,7 +293,7 @@ const depositIx = new TransactionInstruction({
       isWritable: true,
     },
     {
-      pubkey: new PublicKey("5aiXfi3RnfXY3FKEQXPtLXxTC7DA3xn2NZPcQvhRPtod"), // REFERRAL_FEE_TOKEN_ACCOUNT
+      pubkey: new PublicKey("5aiXfi3RnfXY3FKEQXPtLXxTC7DA3xn2NZPcQvhRPtod"), // MANAGER_FEE_ACCOUNT
       isSigner: false,
       isWritable: true,
     },

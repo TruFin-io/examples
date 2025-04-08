@@ -157,11 +157,11 @@ The withdrawal process involves several steps:
 
    ```typescript
    const minLamportsOnStakeAccount = await getMinLamportsOnStakeAccount();
+   const FEE_PRECISION = 10000;
    const stakeWithdrawalFee =
      Number(
-       (BigInt(constants.FEE_PRECISION) * stakePool.stakeWithdrawalFee.numerator) /
-         stakePool.stakeWithdrawalFee.denominator,
-     ) / constants.FEE_PRECISION;
+       (BigInt(FEE_PRECISION) * stakePool.stakeWithdrawalFee.numerator) / stakePool.stakeWithdrawalFee.denominator,
+     ) / FEE_PRECISION;
    const minSolWithdrawalBeforeFees = Math.round(
      minLamportsOnStakeAccount + stakeWithdrawalFee * minLamportsOnStakeAccount,
    );
@@ -204,21 +204,21 @@ The withdrawal process involves several steps:
 
    ```typescript
    const withdrawStakeIx = new TransactionInstruction({
-     programId: constants.STAKE_POOL_PROGRAM_ID,
+     programId: new PublicKey("SPoo1Ku8WFXoNDMHPsrGSTSG1Y47rzgn41SLUNakuHy"),
      keys: [
-       { pubkey: constants.STAKE_POOL_ACCOUNT, isSigner: false, isWritable: true },
-       { pubkey: constants.STAKE_POOL_VALIDATOR_LIST, isSigner: false, isWritable: true },
-       { pubkey: constants.WITHDRAW_AUTHORITY, isSigner: false, isWritable: false },
+       { pubkey: new PublicKey("EyKyx9LKz7Qbp6PSbBRoMdt8iNYp8PvFVupQTQRMY9AM"), isSigner: false, isWritable: true },
+       { pubkey: new PublicKey("8M7ZbLikHJdeU6iKzZxWJ8zHy1ozX65Zk2GBVcmFVnXe"), isSigner: false, isWritable: true },
+       { pubkey: new PublicKey("Gq5an4FHyTght92zUF1RjNoZ8Pms7md7hRfGVHeswZku"), isSigner: false, isWritable: false },
        { pubkey: stakeAccountToSplit, isSigner: false, isWritable: true },
        { pubkey: newStakeAccount.publicKey, isSigner: false, isWritable: true },
        { pubkey: userKeypair.publicKey, isSigner: false, isWritable: false },
        { pubkey: userKeypair.publicKey, isSigner: true, isWritable: false },
        { pubkey: userPoolTokenATA, isSigner: false, isWritable: true },
-       { pubkey: constants.STAKE_POOL_MANAGER_FEE_ACCOUNT, isSigner: false, isWritable: true },
-       { pubkey: constants.POOL_MINT, isSigner: false, isWritable: true },
-       { pubkey: constants.CLOCK_SYSVAR, isSigner: false, isWritable: false },
-       { pubkey: constants.TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
-       { pubkey: constants.STAKE_PROGRAM_ID, isSigner: false, isWritable: false },
+       { pubkey: new PublicKey("5aiXfi3RnfXY3FKEQXPtLXxTC7DA3xn2NZPcQvhRPtod"), isSigner: false, isWritable: true },
+       { pubkey: new PublicKey("6umRHtiuBd1PC6HQhfH9ioNsqY4ihZncZXNPiGu3d3rN"), isSigner: false, isWritable: true },
+       { pubkey: new PublicKey("SysvarC1ock11111111111111111111111111111111"), isSigner: false, isWritable: false },
+       { pubkey: new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"), isSigner: false, isWritable: false },
+       { pubkey: new PublicKey("Stake11111111111111111111111111111111111111"), isSigner: false, isWritable: false },
      ],
      data: new WithdrawStakeInstruction(amount).toBuffer(),
    });

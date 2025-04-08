@@ -190,10 +190,10 @@ const [transientStakeAccount] = PublicKey.findProgramAddressSync(
   [
     Buffer.from("transient"),
     validatorVoteAccount.toBuffer(),
-    constants.STAKE_POOL_ACCOUNT.toBuffer(),
-    new BN(constants.TRANSIENT_STAKE_SEED).toArrayLike(Buffer, "le", 8),
+    new PublicKey("EyKyx9LKz7Qbp6PSbBRoMdt8iNYp8PvFVupQTQRMY9AM").toBuffer(),
+    new BN(0).toArrayLike(Buffer, "le", 8),
   ],
-  constants.STAKE_POOL_PROGRAM_ID,
+  new PublicKey("SPoo1Ku8WFXoNDMHPsrGSTSG1Y47rzgn41SLUNakuHy"),
 );
 ```
 
@@ -204,8 +204,8 @@ Derive the validator stake account PDA:
 ```typescript
 // Derive the validator stake account PDA
 const [validatorStakeAccount] = PublicKey.findProgramAddressSync(
-  [validatorVoteAccount.toBuffer(), constants.STAKE_POOL_ACCOUNT.toBuffer()],
-  constants.STAKE_POOL_PROGRAM_ID,
+  [validatorVoteAccount.toBuffer(), new PublicKey("EyKyx9LKz7Qbp6PSbBRoMdt8iNYp8PvFVupQTQRMY9AM").toBuffer()],
+  new PublicKey("SPoo1Ku8WFXoNDMHPsrGSTSG1Y47rzgn41SLUNakuHy"),
 );
 ```
 
@@ -222,29 +222,29 @@ const depositIx = await program.methods
     userPoolTokenAccount: userPoolTokenATA,
 
     // === Stake Accounts ===
-    ephemeralStakeAccount: constants.EPHEMERAL_STAKE_ACCOUNT,
+    ephemeralStakeAccount: new PublicKey("H9chZiuQ5FjhTg1hUJ2V61VQWqTG5jYHfMcCDJrfRurK"),
     transientStakeAccount: transientStakeAccount,
     validatorStakeAccount: validatorStakeAccount,
 
     // === Validator Accounts ===
     validatorVoteAccount: validatorVoteAccount,
-    validatorList: constants.STAKE_POOL_VALIDATOR_LIST,
+    validatorList: new PublicKey("8M7ZbLikHJdeU6iKzZxWJ8zHy1ozX65Zk2GBVcmFVnXe"),
 
     // === Pool Accounts ===
-    stakePool: constants.STAKE_POOL_ACCOUNT,
-    poolReserve: constants.POOL_RESERVE,
-    poolMint: constants.POOL_MINT,
+    stakePool: new PublicKey("EyKyx9LKz7Qbp6PSbBRoMdt8iNYp8PvFVupQTQRMY9AM"),
+    poolReserve: new PublicKey("EDKjf7YhYZyZriHrepRZEXNjwAen9aJwqToiWWqKf9yU"),
+    poolMint: new PublicKey("6umRHtiuBd1PC6HQhfH9ioNsqY4ihZncZXNPiGu3d3rN"),
 
     // === Authority Accounts ===
-    depositAuthority: constants.DEPOSIT_AUTHORITY,
-    withdrawAuthority: constants.WITHDRAW_AUTHORITY,
+    depositAuthority: new PublicKey("BLTSuAqaoaUUjLRVdanFXGBi2fef5pwhKN23kCMVgX2T"),
+    withdrawAuthority: new PublicKey("Gq5an4FHyTght92zUF1RjNoZ8Pms7md7hRfGVHeswZku"),
 
     // === Fee Accounts ===
-    feeTokenAccount: constants.FEE_TOKEN_ACCOUNT,
-    referralFeeTokenAccount: constants.REFERRAL_FEE_TOKEN_ACCOUNT,
+    feeTokenAccount: new PublicKey("5aiXfi3RnfXY3FKEQXPtLXxTC7DA3xn2NZPcQvhRPtod"),
+    referralFeeTokenAccount: new PublicKey("5aiXfi3RnfXY3FKEQXPtLXxTC7DA3xn2NZPcQvhRPtod"),
 
     // === Program Accounts ===
-    program: constants.STAKER_PROGRAM_ID,
+    program: new PublicKey("3Gu6VvL43rRGUodheyitHuYGqsT7qLkuYjwjwC9V2mTU"),
   })
   .instruction();
 ```
@@ -281,10 +281,10 @@ const [transientStakeAccount] = PublicKey.findProgramAddressSync(
   [
     Buffer.from("transient"),
     validatorVoteAccount.toBuffer(),
-    constants.STAKE_POOL_ACCOUNT.toBuffer(),
-    new BN(constants.TRANSIENT_STAKE_SEED).toArrayLike(Buffer, "le", 8),
+    new PublicKey("EyKyx9LKz7Qbp6PSbBRoMdt8iNYp8PvFVupQTQRMY9AM").toBuffer(),
+    new BN(0).toArrayLike(Buffer, "le", 8),
   ],
-  constants.STAKE_POOL_PROGRAM_ID,
+  new PublicKey("SPoo1Ku8WFXoNDMHPsrGSTSG1Y47rzgn41SLUNakuHy"),
 );
 ```
 
@@ -295,8 +295,8 @@ Derive the validator stake account PDA:
 ```typescript
 // Derive the validator stake account PDA
 const [validatorStakeAccount] = PublicKey.findProgramAddressSync(
-  [validatorVoteAccount.toBuffer(), constants.STAKE_POOL_ACCOUNT.toBuffer()],
-  constants.STAKE_POOL_PROGRAM_ID,
+  [validatorVoteAccount.toBuffer(), new PublicKey("EyKyx9LKz7Qbp6PSbBRoMdt8iNYp8PvFVupQTQRMY9AM").toBuffer()],
+  new PublicKey("SPoo1Ku8WFXoNDMHPsrGSTSG1Y47rzgn41SLUNakuHy"),
 );
 ```
 
@@ -373,7 +373,7 @@ const depositIx = new TransactionInstruction({
       isSigner: false,
     },
     {
-      pubkey: new PublicKey("5aiXfi3RnfXY3FKEQXPtLXxTC7DA3xn2NZPcQvhRPtod"), // FEE_TOKEN_ACCOUNT
+      pubkey: new PublicKey("5aiXfi3RnfXY3FKEQXPtLXxTC7DA3xn2NZPcQvhRPtod"), // MANAGER_FEE_ACCOUNT
       isWritable: true,
       isSigner: false,
     },
@@ -383,7 +383,7 @@ const depositIx = new TransactionInstruction({
       isSigner: false,
     },
     {
-      pubkey: new PublicKey("5aiXfi3RnfXY3FKEQXPtLXxTC7DA3xn2NZPcQvhRPtod"), // REFERRAL_FEE_TOKEN_ACCOUNT
+      pubkey: new PublicKey("5aiXfi3RnfXY3FKEQXPtLXxTC7DA3xn2NZPcQvhRPtod"), // MANAGER_FEE_ACCOUNT
       isWritable: true,
       isSigner: false,
     },
@@ -433,7 +433,7 @@ const depositIx = new TransactionInstruction({
       isSigner: false,
     },
     {
-      pubkey: new PublicKey("Stake11111111111111111111111111111111111111"), // STAKE_SYSVAR
+      pubkey: new PublicKey("Stake11111111111111111111111111111111111111"), // STAKE_PROGRAM_ID
       isWritable: false,
       isSigner: false,
     },
