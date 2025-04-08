@@ -55,12 +55,8 @@ export const EVENT_AUTHORITY = new PublicKey("7HUhwJvRThjcbBme9fhdvbqyvfZ5MhZGux
 
 // === Fee Accounts ===
 
-// Account that receives protocol fees from deposits.
-export const FEE_TOKEN_ACCOUNT = new PublicKey("5aiXfi3RnfXY3FKEQXPtLXxTC7DA3xn2NZPcQvhRPtod");
-
-// Account that receives referral fees from deposits.
-// Can be the same as the fee token account.
-export const REFERRAL_FEE_TOKEN_ACCOUNT = new PublicKey("5aiXfi3RnfXY3FKEQXPtLXxTC7DA3xn2NZPcQvhRPtod");
+// Account that receives protocol fees and referral fees from deposits.
+export const MANAGER_FEE_ACCOUNT = new PublicKey("5aiXfi3RnfXY3FKEQXPtLXxTC7DA3xn2NZPcQvhRPtod");
 
 // === System Accounts ===
 
@@ -89,5 +85,3 @@ export const STAKE_PROGRAM_ID = new PublicKey("Stake1111111111111111111111111111
 export const STAKE_HISTORY_SYSVAR = new PublicKey("SysvarStakeHistory1111111111111111111111111");
 
 export const STAKE_CONFIG_SYSVAR = new PublicKey("StakeConfig11111111111111111111111111111111");
-
-export const STAKE_SYSVAR = new PublicKey("Stake11111111111111111111111111111111111111");

@@ -34,11 +34,9 @@ This document lists the Solana addresses used in the TruFin staking system.
 
 ## Fee Accounts
 
-| Fee Account                    | Address                                                                                                                 | Description                                      |
-| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
-| Fee Token Account              | [5aiXfi3RnfXY3FKEQXPtLXxTC7DA3xn2NZPcQvhRPtod](https://solscan.io/account/5aiXfi3RnfXY3FKEQXPtLXxTC7DA3xn2NZPcQvhRPtod) | Account that receives protocol fees              |
-| Referral Fee Token Account     | [5aiXfi3RnfXY3FKEQXPtLXxTC7DA3xn2NZPcQvhRPtod](https://solscan.io/account/5aiXfi3RnfXY3FKEQXPtLXxTC7DA3xn2NZPcQvhRPtod) | Account that receives referral fees              |
-| Stake Pool Manager Fee Account | [5aiXfi3RnfXY3FKEQXPtLXxTC7DA3xn2NZPcQvhRPtod](https://solscan.io/account/5aiXfi3RnfXY3FKEQXPtLXxTC7DA3xn2NZPcQvhRPtod) | Account that receives stake pool management fees |
+| Fee Account         | Address                                                                                                                 | Description                                  |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
+| Manager Fee Account | [5aiXfi3RnfXY3FKEQXPtLXxTC7DA3xn2NZPcQvhRPtod](https://solscan.io/account/5aiXfi3RnfXY3FKEQXPtLXxTC7DA3xn2NZPcQvhRPtod) | Account that receives protocol/referral fees |
 
 ## Sysvar Accounts
 
