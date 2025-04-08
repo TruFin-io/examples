@@ -11,7 +11,7 @@ import { formatSol } from "../utils/format";
 export async function getOrCreateTruSOLAssociatedTokenAccountInstruction(
   connection: Connection,
   userPublicKey: PublicKey,
-  poolMint: PublicKey,
+  poolMint: PublicKey
 ): Promise<{ userPoolTokenATA: PublicKey; tokenAccount?: Account; createAccountIx?: TransactionInstruction }> {
   let tokenAccount: Account | undefined;
   let createAccountIx: TransactionInstruction | undefined;

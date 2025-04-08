@@ -28,7 +28,7 @@ export async function decodeValidatorListAccount(): Promise<ValidatorList> {
   const header = borsh.deserialize(
     ValidatorListHeaderSchema,
     ValidatorListHeader,
-    data.subarray(0, 5), // First 5 bytes for ValidatorListHeader
+    data.subarray(0, 5) // First 5 bytes for ValidatorListHeader
   );
 
   // fetch how many validators are in the array

@@ -5,7 +5,7 @@ import { StakePool, StakePoolSchema } from "./types";
 
 export async function getStakePool(
   connection: anchor.web3.Connection,
-  stakePoolPubkey: anchor.web3.PublicKey,
+  stakePoolPubkey: anchor.web3.PublicKey
 ): Promise<StakePool> {
   const stakePoolAccountInfo = await connection.getAccountInfo(stakePoolPubkey);
   if (!stakePoolAccountInfo) {
