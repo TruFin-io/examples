@@ -193,7 +193,7 @@ const [transientStakeAccount] = PublicKey.findProgramAddressSync(
     constants.STAKE_POOL_ACCOUNT.toBuffer(),
     new BN(constants.TRANSIENT_STAKE_SEED).toArrayLike(Buffer, "le", 8),
   ],
-  constants.STAKE_POOL_PROGRAM_ID,
+  constants.STAKE_POOL_PROGRAM_ID
 );
 ```
 
@@ -205,7 +205,7 @@ Derive the validator stake account PDA:
 // Derive the validator stake account PDA
 const [validatorStakeAccount] = PublicKey.findProgramAddressSync(
   [validatorVoteAccount.toBuffer(), constants.STAKE_POOL_ACCOUNT.toBuffer()],
-  constants.STAKE_POOL_PROGRAM_ID,
+  constants.STAKE_POOL_PROGRAM_ID
 );
 ```
 
@@ -284,7 +284,7 @@ const [transientStakeAccount] = PublicKey.findProgramAddressSync(
     constants.STAKE_POOL_ACCOUNT.toBuffer(),
     new BN(constants.TRANSIENT_STAKE_SEED).toArrayLike(Buffer, "le", 8),
   ],
-  constants.STAKE_POOL_PROGRAM_ID,
+  constants.STAKE_POOL_PROGRAM_ID
 );
 ```
 
@@ -296,7 +296,7 @@ Derive the validator stake account PDA:
 // Derive the validator stake account PDA
 const [validatorStakeAccount] = PublicKey.findProgramAddressSync(
   [validatorVoteAccount.toBuffer(), constants.STAKE_POOL_ACCOUNT.toBuffer()],
-  constants.STAKE_POOL_PROGRAM_ID,
+  constants.STAKE_POOL_PROGRAM_ID
 );
 ```
 

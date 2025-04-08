@@ -31,7 +31,7 @@ export async function getStakeAccountToSplit(
   stakePool: StakePool,
   validatorVoteAccount: PublicKey,
   expectedSOL: number,
-  sharePrice: number,
+  sharePrice: number
 ): Promise<PublicKey | undefined> {
   // ===== SETUP AND INITIALIZATION =====
   const connection = getConnection();
@@ -41,7 +41,7 @@ export async function getStakeAccountToSplit(
   // Derive the validator's active stake account PDA
   const [validatorStakeAccount] = PublicKey.findProgramAddressSync(
     [validatorVoteAccount.toBuffer(), constants.STAKE_POOL_ACCOUNT.toBuffer()],
-    constants.STAKE_POOL_PROGRAM_ID,
+    constants.STAKE_POOL_PROGRAM_ID
   );
   console.log("Validator stake account:", validatorStakeAccount.toBase58());
 
@@ -53,7 +53,7 @@ export async function getStakeAccountToSplit(
       constants.STAKE_POOL_ACCOUNT.toBuffer(),
       new BN(constants.TRANSIENT_STAKE_SEED).toArrayLike(Buffer, "le", 8),
     ],
-    constants.STAKE_POOL_PROGRAM_ID,
+    constants.STAKE_POOL_PROGRAM_ID
   );
   console.log("Transient stake account:", transientStakeAccount.toBase58());
 
@@ -67,7 +67,7 @@ export async function getStakeAccountToSplit(
   if (expectedSOL <= stakeAccountBalance - minLamportsOnStakeAccount) {
     console.log("Withdrawing from validator stake account:", validatorStakeAccount.toBase58());
     console.log(
-      `Validator stake account has sufficient balance to withdraw. expectedSOL: ${expectedSOL} stakeAccountBalance: ${stakeAccountBalance} minLamportsOnStakeAccount: ${minLamportsOnStakeAccount}`,
+      `Validator stake account has sufficient balance to withdraw. expectedSOL: ${expectedSOL} stakeAccountBalance: ${stakeAccountBalance} minLamportsOnStakeAccount: ${minLamportsOnStakeAccount}`
     );
     return validatorStakeAccount;
   }
@@ -82,7 +82,7 @@ export async function getStakeAccountToSplit(
     // Log withdrawal information for this validator
     console.log("Selected validator stake account has active balance that needs to be withdrawn first.");
     console.log(
-      `stakeAccountBalance: ${stakeAccountBalance} availableToWithdraw: ${availableToWithdraw} expectedSOL: ${expectedSOL} minLamportsOnStakeAccount: ${minLamportsOnStakeAccount}`,
+      `stakeAccountBalance: ${stakeAccountBalance} availableToWithdraw: ${availableToWithdraw} expectedSOL: ${expectedSOL} minLamportsOnStakeAccount: ${minLamportsOnStakeAccount}`
     );
     console.log(`User max Withdraw: ${maxTruSol} TruSOL (${availableToWithdraw} SOL + ${withdrawFee}% withdraw fee)`);
     return validatorStakeAccount;
@@ -103,7 +103,7 @@ export async function getStakeAccountToSplit(
       console.log(
         `- validator: ${validator.vote_account_address?.toBase58()} stake account: ${
           validator.active_stake_lamports
-        } lamports`,
+        } lamports`
       );
     });
     return undefined;
@@ -134,7 +134,7 @@ export async function getStakeAccountToSplit(
       console.log(
         `- validator: ${validator.vote_account_address?.toBase58()} transient stake account: ${
           validator.transient_stake_lamports
-        } lamports`,
+        } lamports`
       );
     });
     return undefined;

@@ -20,10 +20,10 @@ import { getOrCreateTruSOLAssociatedTokenAccountInstruction } from "../shared";
 export async function depositToSpecificValidator(
   userKeypair: Keypair,
   validatorVoteAccount: PublicKey,
-  amount: BN,
+  amount: BN
 ): Promise<string> {
   console.log(
-    `User ${userKeypair.publicKey} depositing ${formatSol(Number(amount))} SOL to validator ${validatorVoteAccount}`,
+    `User ${userKeypair.publicKey} depositing ${formatSol(Number(amount))} SOL to validator ${validatorVoteAccount}`
   );
 
   // Get the Solana connection
@@ -40,7 +40,7 @@ export async function depositToSpecificValidator(
   const { userPoolTokenATA, tokenAccount, createAccountIx } = await getOrCreateTruSOLAssociatedTokenAccountInstruction(
     connection,
     userKeypair.publicKey,
-    constants.POOL_MINT,
+    constants.POOL_MINT
   );
 
   // Derive the transient stake account PDA
@@ -51,13 +51,13 @@ export async function depositToSpecificValidator(
       constants.STAKE_POOL_ACCOUNT.toBuffer(),
       new BN(constants.TRANSIENT_STAKE_SEED).toArrayLike(Buffer, "le", 8),
     ],
-    constants.STAKE_POOL_PROGRAM_ID,
+    constants.STAKE_POOL_PROGRAM_ID
   );
 
   // Derive the validator stake account PDA
   const [validatorStakeAccount] = PublicKey.findProgramAddressSync(
     [validatorVoteAccount.toBuffer(), constants.STAKE_POOL_ACCOUNT.toBuffer()],
-    constants.STAKE_POOL_PROGRAM_ID,
+    constants.STAKE_POOL_PROGRAM_ID
   );
 
   const ix = await program.methods
