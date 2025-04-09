@@ -193,7 +193,7 @@ const [transientStakeAccount] = PublicKey.findProgramAddressSync(
     new PublicKey("EyKyx9LKz7Qbp6PSbBRoMdt8iNYp8PvFVupQTQRMY9AM").toBuffer(),
     new BN(0).toArrayLike(Buffer, "le", 8),
   ],
-  new PublicKey("SPoo1Ku8WFXoNDMHPsrGSTSG1Y47rzgn41SLUNakuHy"),
+  new PublicKey("SPoo1Ku8WFXoNDMHPsrGSTSG1Y47rzgn41SLUNakuHy")
 );
 ```
 
@@ -205,7 +205,7 @@ Derive the validator stake account PDA:
 // Derive the validator stake account PDA
 const [validatorStakeAccount] = PublicKey.findProgramAddressSync(
   [validatorVoteAccount.toBuffer(), new PublicKey("EyKyx9LKz7Qbp6PSbBRoMdt8iNYp8PvFVupQTQRMY9AM").toBuffer()],
-  new PublicKey("SPoo1Ku8WFXoNDMHPsrGSTSG1Y47rzgn41SLUNakuHy"),
+  new PublicKey("SPoo1Ku8WFXoNDMHPsrGSTSG1Y47rzgn41SLUNakuHy")
 );
 ```
 
@@ -284,7 +284,7 @@ const [transientStakeAccount] = PublicKey.findProgramAddressSync(
     new PublicKey("EyKyx9LKz7Qbp6PSbBRoMdt8iNYp8PvFVupQTQRMY9AM").toBuffer(),
     new BN(0).toArrayLike(Buffer, "le", 8),
   ],
-  new PublicKey("SPoo1Ku8WFXoNDMHPsrGSTSG1Y47rzgn41SLUNakuHy"),
+  new PublicKey("SPoo1Ku8WFXoNDMHPsrGSTSG1Y47rzgn41SLUNakuHy")
 );
 ```
 
@@ -296,7 +296,7 @@ Derive the validator stake account PDA:
 // Derive the validator stake account PDA
 const [validatorStakeAccount] = PublicKey.findProgramAddressSync(
   [validatorVoteAccount.toBuffer(), new PublicKey("EyKyx9LKz7Qbp6PSbBRoMdt8iNYp8PvFVupQTQRMY9AM").toBuffer()],
-  new PublicKey("SPoo1Ku8WFXoNDMHPsrGSTSG1Y47rzgn41SLUNakuHy"),
+  new PublicKey("SPoo1Ku8WFXoNDMHPsrGSTSG1Y47rzgn41SLUNakuHy")
 );
 ```
 

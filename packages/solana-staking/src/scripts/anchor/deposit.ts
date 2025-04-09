@@ -33,7 +33,7 @@ export async function deposit(userKeypair: Keypair, amount: BN): Promise<string>
   const { userPoolTokenATA, tokenAccount, createAccountIx } = await getOrCreateTruSOLAssociatedTokenAccountInstruction(
     connection,
     userKeypair.publicKey,
-    constants.POOL_MINT,
+    constants.POOL_MINT
   );
 
   // Deposit Instruction

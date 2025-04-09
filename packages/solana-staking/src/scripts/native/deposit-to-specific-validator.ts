@@ -19,10 +19,10 @@ import { getOrCreateTruSOLAssociatedTokenAccountInstruction } from "../shared";
 export async function depositToSpecificValidator(
   userKeypair: Keypair,
   validatorVoteAccount: PublicKey,
-  amount: bigint,
+  amount: bigint
 ): Promise<string> {
   console.log(
-    `User ${userKeypair.publicKey} depositing ${formatSol(Number(amount))} SOL to validator ${validatorVoteAccount}`,
+    `User ${userKeypair.publicKey} depositing ${formatSol(Number(amount))} SOL to validator ${validatorVoteAccount}`
   );
 
   // Get the Solana connection
@@ -32,7 +32,7 @@ export async function depositToSpecificValidator(
   // Get the user's whitelist PDA
   const [userWhitelistPDA] = PublicKey.findProgramAddressSync(
     [Buffer.from("user"), userKeypair.publicKey.toBuffer()],
-    constants.STAKER_PROGRAM_ID,
+    constants.STAKER_PROGRAM_ID
   );
 
   // Derive the transient stake account PDA
@@ -43,20 +43,20 @@ export async function depositToSpecificValidator(
       constants.STAKE_POOL_ACCOUNT.toBuffer(),
       new BN(constants.TRANSIENT_STAKE_SEED).toArrayLike(Buffer, "le", 8),
     ],
-    constants.STAKE_POOL_PROGRAM_ID,
+    constants.STAKE_POOL_PROGRAM_ID
   );
 
   // Derive the validator stake account PDA
   const [validatorStakeAccount] = PublicKey.findProgramAddressSync(
     [validatorVoteAccount.toBuffer(), constants.STAKE_POOL_ACCOUNT.toBuffer()],
-    constants.STAKE_POOL_PROGRAM_ID,
+    constants.STAKE_POOL_PROGRAM_ID
   );
 
   // Check if the user has a TruSOL associated token account, if not, return the instruction to create one
   const { userPoolTokenATA, tokenAccount, createAccountIx } = await getOrCreateTruSOLAssociatedTokenAccountInstruction(
     connection,
     userKeypair.publicKey,
-    constants.POOL_MINT,
+    constants.POOL_MINT
   );
 
   const ix = new TransactionInstruction({

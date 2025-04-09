@@ -36,11 +36,11 @@ import { getStakePool } from "../../utils/stake-pool";
 export async function withdrawStake(
   userKeypair: Keypair,
   validatorVoteAccount: PublicKey,
-  amount: BN,
+  amount: BN
 ): Promise<string | undefined> {
   // Log the withdrawal request details
   console.log(
-    `User ${userKeypair.publicKey} withdrawing ${formatSol(Number(amount))} SOL from validator ${validatorVoteAccount}`,
+    `User ${userKeypair.publicKey} withdrawing ${formatSol(Number(amount))} SOL from validator ${validatorVoteAccount}`
   );
 
   // ===== SETUP CONNECTION AND PROVIDER =====
@@ -75,14 +75,14 @@ export async function withdrawStake(
   const stakeWithdrawalFee =
     Number(
       (BigInt(constants.FEE_PRECISION) * stakePool.stakeWithdrawalFee.numerator) /
-        stakePool.stakeWithdrawalFee.denominator,
+        stakePool.stakeWithdrawalFee.denominator
     ) / constants.FEE_PRECISION;
   console.log(`Stake Withdrawal Fee percentage: ${Number(stakeWithdrawalFee * 100)}%`);
 
   // Add the expected fees to the `minLamportsOnStakeAccount` to ensure the min lamports requirement in the stake account is fulfilled
   // after the fees are deducted by the pool from the amount withdrawn.
   const minSolWithdrawalBeforeFees = Math.round(
-    minLamportsOnStakeAccount + stakeWithdrawalFee * minLamportsOnStakeAccount,
+    minLamportsOnStakeAccount + stakeWithdrawalFee * minLamportsOnStakeAccount
   );
   console.log("Expected fee:", Math.round(expectedSOL * stakeWithdrawalFee), "lamports");
   console.log("Min SOL to leave on stake account:", minLamportsOnStakeAccount);
@@ -97,12 +97,12 @@ export async function withdrawStake(
     console.error(
       "Min SOL withdrawal (before fees):",
       minSolWithdrawalBeforeFees,
-      `${minSolWithdrawalBeforeFees / LAMPORTS_PER_SOL} SOL`,
+      `${minSolWithdrawalBeforeFees / LAMPORTS_PER_SOL} SOL`
     );
     console.error(
       "Min TruSOL withdrawal (before fees):",
       minTruSOLBeforeFees,
-      `${Math.round(minTruSOLBeforeFees) / LAMPORTS_PER_SOL} TruSOL`,
+      `${Math.round(minTruSOLBeforeFees) / LAMPORTS_PER_SOL} TruSOL`
     );
     throw new Error("Withdraw amount too low");
   }
@@ -136,7 +136,7 @@ export async function withdrawStake(
   // Derive the user's TruSOL ATA (Associated Token Account)
   const userPoolTokenATA = await getAssociatedTokenAddress(
     constants.POOL_MINT,
-    userKeypair.publicKey, // Owner (user)
+    userKeypair.publicKey // Owner (user)
   );
 
   // Construct the WithdrawStake instruction
@@ -195,8 +195,8 @@ export async function withdrawStake(
   // ===== SEND TRANSACTION =====
   console.log(
     `Withdrawing ${formatSol(
-      Number(amount),
-    )} TruSOL from ${validatorVoteAccount.toBase58()} to stake account ${newStakeAccount.publicKey.toBase58()}`,
+      Number(amount)
+    )} TruSOL from ${validatorVoteAccount.toBase58()} to stake account ${newStakeAccount.publicKey.toBase58()}`
   );
 
   // Create and send the transaction with the instructions to create the stake account and WithdrawStake

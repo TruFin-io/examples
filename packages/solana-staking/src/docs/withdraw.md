@@ -160,10 +160,10 @@ The withdrawal process involves several steps:
    const FEE_PRECISION = 10000;
    const stakeWithdrawalFee =
      Number(
-       (BigInt(FEE_PRECISION) * stakePool.stakeWithdrawalFee.numerator) / stakePool.stakeWithdrawalFee.denominator,
+       (BigInt(FEE_PRECISION) * stakePool.stakeWithdrawalFee.numerator) / stakePool.stakeWithdrawalFee.denominator
      ) / FEE_PRECISION;
    const minSolWithdrawalBeforeFees = Math.round(
-     minLamportsOnStakeAccount + stakeWithdrawalFee * minLamportsOnStakeAccount,
+     minLamportsOnStakeAccount + stakeWithdrawalFee * minLamportsOnStakeAccount
    );
 
    if (expectedSOL < minSolWithdrawalBeforeFees) {

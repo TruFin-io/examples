@@ -11,16 +11,16 @@ as reference implementations to help developers integrate and work with TruFin s
 
 1. Clone the repository:
 
-```bash
-  git clone https://github.com/TruFin-io/examples trufin-examples
-  cd trufin-examples
-```
+   ```bash
+     git clone https://github.com/TruFin-io/examples trufin-examples
+     cd trufin-examples
+   ```
 
 2. Install dependencies:
 
-```bash
-  bun install
-```
+   ```bash
+     bun install
+   ```
 
 3. Follow the specific instructions in each example's directory explained in the
    [packages/README.md](./packages/README.md)

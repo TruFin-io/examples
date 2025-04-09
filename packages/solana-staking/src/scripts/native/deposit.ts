@@ -24,14 +24,14 @@ export async function deposit(userKeypair: Keypair, amount: bigint): Promise<str
   // Get the user's whitelist PDA
   const [userWhitelistPDA] = PublicKey.findProgramAddressSync(
     [Buffer.from("user"), userKeypair.publicKey.toBuffer()],
-    constants.STAKER_PROGRAM_ID,
+    constants.STAKER_PROGRAM_ID
   );
 
   // Check if the user has a TruSOL associated token account, if not, return the instruction to create one
   const { userPoolTokenATA, tokenAccount, createAccountIx } = await getOrCreateTruSOLAssociatedTokenAccountInstruction(
     connection,
     userKeypair.publicKey,
-    constants.POOL_MINT,
+    constants.POOL_MINT
   );
 
   const depositIx = new TransactionInstruction({
