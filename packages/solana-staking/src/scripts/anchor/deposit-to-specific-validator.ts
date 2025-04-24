@@ -86,8 +86,8 @@ export async function depositToSpecificValidator(
       withdrawAuthority: constants.WITHDRAW_AUTHORITY,
 
       // === Fee Accounts ===
-      feeTokenAccount: constants.FEE_TOKEN_ACCOUNT,
-      referralFeeTokenAccount: constants.REFERRAL_FEE_TOKEN_ACCOUNT,
+      feeTokenAccount: constants.MANAGER_FEE_ACCOUNT,
+      referralFeeTokenAccount: constants.MANAGER_FEE_ACCOUNT,
 
       // === Program Accounts ===
       program: constants.STAKER_PROGRAM_ID,

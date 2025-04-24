@@ -172,7 +172,7 @@ export async function withdrawStake(
       { pubkey: userKeypair.publicKey, isSigner: true, isWritable: false }, // User transfer authority, for pool token account
       { pubkey: userPoolTokenATA, isSigner: false, isWritable: true }, // User's TruSOL token account
       {
-        pubkey: constants.STAKE_POOL_MANAGER_FEE_ACCOUNT, // Fee account to receive pool fee tokens
+        pubkey: constants.MANAGER_FEE_ACCOUNT, // Fee account to receive pool fee tokens
         isSigner: false,
         isWritable: true,
       },

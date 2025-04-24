@@ -77,7 +77,7 @@ export async function deposit(userKeypair: Keypair, amount: bigint): Promise<str
         isWritable: true,
       },
       {
-        pubkey: constants.FEE_TOKEN_ACCOUNT,
+        pubkey: constants.MANAGER_FEE_ACCOUNT,
         isSigner: false,
         isWritable: true,
       },
@@ -87,7 +87,7 @@ export async function deposit(userKeypair: Keypair, amount: bigint): Promise<str
         isWritable: true,
       },
       {
-        pubkey: constants.REFERRAL_FEE_TOKEN_ACCOUNT,
+        pubkey: constants.MANAGER_FEE_ACCOUNT,
         isSigner: false,
         isWritable: true,
       },

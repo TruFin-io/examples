@@ -107,7 +107,7 @@ export async function depositToSpecificValidator(
         isSigner: false,
       },
       {
-        pubkey: constants.FEE_TOKEN_ACCOUNT,
+        pubkey: constants.MANAGER_FEE_ACCOUNT,
         isWritable: true,
         isSigner: false,
       },
@@ -117,7 +117,7 @@ export async function depositToSpecificValidator(
         isSigner: false,
       },
       {
-        pubkey: constants.REFERRAL_FEE_TOKEN_ACCOUNT,
+        pubkey: constants.MANAGER_FEE_ACCOUNT,
         isWritable: true,
         isSigner: false,
       },
@@ -167,7 +167,7 @@ export async function depositToSpecificValidator(
         isSigner: false,
       },
       {
-        pubkey: constants.STAKE_SYSVAR,
+        pubkey: constants.STAKE_PROGRAM_ID,
         isWritable: false,
         isSigner: false,
       },
