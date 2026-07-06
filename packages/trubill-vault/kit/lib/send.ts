@@ -10,6 +10,7 @@ import {
   setTransactionMessageLifetimeUsingBlockhash,
   signTransactionMessageWithSigners,
   type TransactionSigner,
+  type TransactionWithBlockhashLifetime,
 } from "@solana/kit";
 import { getRpc } from "./rpc";
 
@@ -36,7 +37,10 @@ export async function sendInstruction(instruction: Instruction, payer: Transacti
   }
 
   const sendAndConfirm = sendAndConfirmTransactionFactory({ rpc, rpcSubscriptions });
-  // ponytail: the signer widens the lifetime to a union; we built with a blockhash so this cast is sound.
-  await sendAndConfirm(signedTransaction as Parameters<typeof sendAndConfirm>[0], { commitment: "confirmed" });
+
+  // Signing widens the lifetime to a blockhash|nonce union; we built with a blockhash, so narrow it back.
+  await sendAndConfirm(signedTransaction as typeof signedTransaction & TransactionWithBlockhashLifetime, {
+    commitment: "confirmed",
+  });
   return getSignatureFromTransaction(signedTransaction);
 }

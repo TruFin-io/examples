@@ -1,5 +1,5 @@
 import { type Address, address, getAddressEncoder, getProgramDerivedAddress } from "@solana/kit";
-import { ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID } from "../../common/addresses";
+import { ASSOCIATED_TOKEN_PROGRAM, TOKEN_PROGRAM } from "../../common/addresses";
 
 const addressEncoder = getAddressEncoder();
 
@@ -7,10 +7,10 @@ const addressEncoder = getAddressEncoder();
 export async function deriveAta(
   owner: Address,
   mint: Address,
-  tokenProgram: Address = address(TOKEN_PROGRAM_ID),
+  tokenProgram: Address = address(TOKEN_PROGRAM),
 ): Promise<Address> {
   const [ata] = await getProgramDerivedAddress({
-    programAddress: address(ASSOCIATED_TOKEN_PROGRAM_ID),
+    programAddress: address(ASSOCIATED_TOKEN_PROGRAM),
     seeds: [addressEncoder.encode(owner), addressEncoder.encode(tokenProgram), addressEncoder.encode(mint)],
   });
   return ata;
