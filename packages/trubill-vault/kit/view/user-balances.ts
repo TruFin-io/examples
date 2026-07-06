@@ -1,5 +1,5 @@
 import { type Address, address } from "@solana/kit";
-import { USDC_MINT } from "../../common/addresses";
+import { TOKEN_2022_PROGRAM_ID, USDC_MINT } from "../../common/addresses";
 import { Decimals, formatUnits } from "../../common/amounts";
 import { findTrubillMintPda } from "../generated/trubill_vault/src/generated";
 import { getWalletSigner } from "../lib/env";
@@ -7,7 +7,7 @@ import { getRpc } from "../lib/rpc";
 import { deriveAta } from "../lib/token";
 
 // Token-2022 program, which owns the TruBILL share mint (its ATAs live under this program).
-const TOKEN_2022_PROGRAM = address("TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb");
+const TOKEN_2022_PROGRAM = address(TOKEN_2022_PROGRAM_ID);
 
 /** Raw token amount in the account, or 0 when the account does not exist. */
 async function getTokenBalance(rpc: ReturnType<typeof getRpc>["rpc"], ata: Address): Promise<bigint> {

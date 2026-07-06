@@ -1,12 +1,17 @@
-import { type Address } from "@solana/kit";
-import { findAssociatedTokenPda, TOKEN_PROGRAM_ADDRESS } from "@solana-program/token";
+import { type Address, address, getAddressEncoder, getProgramDerivedAddress } from "@solana/kit";
+import { ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID } from "../../common/addresses";
+
+const addressEncoder = getAddressEncoder();
 
 /** Derive the associated token account address for (owner, mint) under a token program. */
 export async function deriveAta(
   owner: Address,
   mint: Address,
-  tokenProgram: Address = TOKEN_PROGRAM_ADDRESS,
+  tokenProgram: Address = address(TOKEN_PROGRAM_ID),
 ): Promise<Address> {
-  const [ata] = await findAssociatedTokenPda({ owner, mint, tokenProgram });
+  const [ata] = await getProgramDerivedAddress({
+    programAddress: address(ASSOCIATED_TOKEN_PROGRAM_ID),
+    seeds: [addressEncoder.encode(owner), addressEncoder.encode(tokenProgram), addressEncoder.encode(mint)],
+  });
   return ata;
 }
