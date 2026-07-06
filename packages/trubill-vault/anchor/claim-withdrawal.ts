@@ -17,25 +17,25 @@ export async function claimWithdrawalIx(params: {
   redeemRequestId: BN;
 }) {
   const { program, user, redeemRequestId } = params;
-  const vaultAuthority = pda.getPdaVaultAuthority();
+  const vaultAuthority = pda.getPdaVaultAuthorityAddress();
   const usdcMint = new PublicKey(USDC_MINT);
 
   return program.methods
     .claimWithdrawal(redeemRequestId)
     .accountsStrict({
       user,
-      userWhitelist: pda.getPdaStakerUserStatus(user),
-      vaultConfig: pda.getPdaVaultConfig(),
-      usdcAccounting: pda.getPdaUsdcAccounting(),
+      userWhitelist: pda.getPdaStakerUserStatusAddress(user),
+      vaultConfig: pda.getPdaVaultConfigAddress(),
+      usdcAccounting: pda.getPdaUsdcAccountingAddress(),
       vaultAuthority,
       usdcMint,
       vaultUsdcAta: deriveATAAddress(usdcMint, vaultAuthority),
       userUsdcAta: deriveATAAddress(usdcMint, user),
-      redeemRequest: pda.getPdaRedeemRequest(user, BigInt(redeemRequestId.toString())),
+      redeemRequest: pda.getPdaRedeemRequestAddress(user, redeemRequestId),
       tokenProgram: TOKEN_PROGRAM_ID,
       associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
       systemProgram: SystemProgram.programId,
-      eventAuthority: pda.getPdaEventAuthority(),
+      eventAuthority: pda.getPdaEventAuthorityAddress(),
       program: program.programId,
     })
     .instruction();

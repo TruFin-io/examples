@@ -6,10 +6,10 @@ import { getReadOnlyProvider, getTrubillVaultProgram } from "../program";
 /** Print the vault's config, USDC/ULTRA accounting, roles and current share price. */
 async function main() {
   const program = getTrubillVaultProgram(getReadOnlyProvider());
-  const config = await program.account.vaultConfig.fetch(pda.getPdaVaultConfig());
-  const usdc = await program.account.usdcAccounting.fetch(pda.getPdaUsdcAccounting());
-  const ultra = await program.account.ultraAccounting.fetch(pda.getPdaUltraAccounting());
-  const access = await program.account.vaultAccess.fetch(pda.getPdaVaultAccess());
+  const config = await program.account.vaultConfig.fetch(pda.getPdaVaultConfigAddress());
+  const usdc = await program.account.usdcAccounting.fetch(pda.getPdaUsdcAccountingAddress());
+  const ultra = await program.account.ultraAccounting.fetch(pda.getPdaUltraAccountingAddress());
+  const access = await program.account.vaultAccess.fetch(pda.getPdaVaultAccessAddress());
 
   console.log("Config:");
   console.log("  paused:", config.isPaused);
@@ -36,7 +36,7 @@ async function main() {
 
   try {
     const snapshot = await program.account.epochSnapshot.fetch(
-      pda.getPdaEpochSnapshot(BigInt(config.lastSnapshotEpoch.toString())),
+      pda.getPdaEpochSnapshotAddress(config.lastSnapshotEpoch),
     );
     const price = calcSharePrice(BigInt(snapshot.totalAssets.toString()), BigInt(snapshot.totalShares.toString()));
     console.log("Share price:", formatUnits(price), "USDC per TruBILL");

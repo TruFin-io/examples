@@ -16,7 +16,7 @@ async function main() {
   const usdcBalance = await getTokenBalance(connection, deriveATAAddress(new PublicKey(USDC_MINT), owner));
   const trubillBalance = await getTokenBalance(
     connection,
-    deriveATAAddress(pda.getPdaTrubillMint(), owner, TOKEN_2022_PROGRAM_ID),
+    deriveATAAddress(pda.getPdaTrubillMintAddress(), owner, TOKEN_2022_PROGRAM_ID),
     TOKEN_2022_PROGRAM_ID,
   );
 

@@ -19,25 +19,25 @@ export async function requestRedeemIx(params: {
   trubillAmount: BN;
 }) {
   const { program, user, epoch, redeemRequestId, trubillAmount } = params;
-  const trubillMint = pda.getPdaTrubillMint();
+  const trubillMint = pda.getPdaTrubillMintAddress();
 
   return program.methods
     .requestRedeem(epoch, trubillAmount)
     .accountsStrict({
       user,
-      vaultConfig: pda.getPdaVaultConfig(),
-      usdcAccounting: pda.getPdaUsdcAccounting(),
-      ultraAccounting: pda.getPdaUltraAccounting(),
-      userWhitelist: pda.getPdaStakerUserStatus(user),
-      vaultAuthority: pda.getPdaVaultAuthority(),
+      vaultConfig: pda.getPdaVaultConfigAddress(),
+      usdcAccounting: pda.getPdaUsdcAccountingAddress(),
+      ultraAccounting: pda.getPdaUltraAccountingAddress(),
+      userWhitelist: pda.getPdaStakerUserStatusAddress(user),
+      vaultAuthority: pda.getPdaVaultAuthorityAddress(),
       trubillMint,
       userTrubillAta: getAssociatedTokenAddressSync(trubillMint, user, true, TOKEN_2022_PROGRAM_ID),
-      userRedeemState: pda.getPdaUserRedeemState(user),
-      redeemRequest: pda.getPdaRedeemRequest(user, BigInt(redeemRequestId.toString())),
-      epochSnapshot: pda.getPdaEpochSnapshot(BigInt(epoch.toString())),
+      userRedeemState: pda.getPdaUserRedeemStateAddress(user),
+      redeemRequest: pda.getPdaRedeemRequestAddress(user, redeemRequestId),
+      epochSnapshot: pda.getPdaEpochSnapshotAddress(epoch),
       tokenProgram2022: TOKEN_2022_PROGRAM_ID,
       systemProgram: SystemProgram.programId,
-      eventAuthority: pda.getPdaEventAuthority(),
+      eventAuthority: pda.getPdaEventAuthorityAddress(),
       program: program.programId,
     })
     .instruction();
@@ -56,7 +56,7 @@ async function main() {
   const epoch = await getLatestCompletedEpoch(provider);
 
   // The next redeem-request id comes from the user's counter (defaults to 0 before the first redeem).
-  const state = await program.account.userRedeemState.fetchNullable(pda.getPdaUserRedeemState(user.publicKey));
+  const state = await program.account.userRedeemState.fetchNullable(pda.getPdaUserRedeemStateAddress(user.publicKey));
   const redeemRequestId = state ? state.nextRedeemRequestId : new BN(0);
 
   const trubillAmount = new BN(trubill(amountStr).toString());

@@ -20,29 +20,29 @@ import { getProvider, getTrubillVaultProgram } from "./program";
 /** Build a deposit instruction: transfer `amount` USDC and mint TruBILL shares priced at `epoch`'s snapshot. */
 export async function depositIx(params: { program: Program<TrubillVault>; user: PublicKey; epoch: BN; amount: BN }) {
   const { program, user, epoch, amount } = params;
-  const vaultAuthority = pda.getPdaVaultAuthority();
-  const trubillMint = pda.getPdaTrubillMint();
+  const vaultAuthority = pda.getPdaVaultAuthorityAddress();
+  const trubillMint = pda.getPdaTrubillMintAddress();
   const usdcMint = new PublicKey(USDC_MINT);
 
   return program.methods
     .deposit(epoch, amount)
     .accountsStrict({
       payer: user,
-      vaultConfig: pda.getPdaVaultConfig(),
-      usdcAccounting: pda.getPdaUsdcAccounting(),
-      userWhitelist: pda.getPdaStakerUserStatus(user),
+      vaultConfig: pda.getPdaVaultConfigAddress(),
+      usdcAccounting: pda.getPdaUsdcAccountingAddress(),
+      userWhitelist: pda.getPdaStakerUserStatusAddress(user),
       vaultAuthority,
       userVaultTokenAccount: getAssociatedTokenAddressSync(trubillMint, user, true, TOKEN_2022_PROGRAM_ID),
       userUsdcAta: deriveATAAddress(usdcMint, user),
       vaultCollateralAta: deriveATAAddress(usdcMint, vaultAuthority),
       usdcMint,
       trubillMint,
-      epochSnapshot: pda.getPdaEpochSnapshot(BigInt(epoch.toString())),
+      epochSnapshot: pda.getPdaEpochSnapshotAddress(epoch),
       tokenProgram: TOKEN_PROGRAM_ID,
       tokenProgram2022: TOKEN_2022_PROGRAM_ID,
       associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
       systemProgram: SystemProgram.programId,
-      eventAuthority: pda.getPdaEventAuthority(),
+      eventAuthority: pda.getPdaEventAuthorityAddress(),
       program: program.programId,
     })
     .instruction();

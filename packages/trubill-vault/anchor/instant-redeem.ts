@@ -26,18 +26,18 @@ export async function instantRedeemIx(params: {
   treasury: PublicKey;
 }) {
   const { program, user, epoch, redeemAmount, treasury } = params;
-  const vaultAuthority = pda.getPdaVaultAuthority();
-  const trubillMint = pda.getPdaTrubillMint();
+  const vaultAuthority = pda.getPdaVaultAuthorityAddress();
+  const trubillMint = pda.getPdaTrubillMintAddress();
   const usdcMint = new PublicKey(USDC_MINT);
 
   return program.methods
     .instantRedeem(epoch, redeemAmount)
     .accountsStrict({
       payer: user,
-      vaultConfig: pda.getPdaVaultConfig(),
-      usdcAccounting: pda.getPdaUsdcAccounting(),
-      ultraAccounting: pda.getPdaUltraAccounting(),
-      userWhitelist: pda.getPdaStakerUserStatus(user),
+      vaultConfig: pda.getPdaVaultConfigAddress(),
+      usdcAccounting: pda.getPdaUsdcAccountingAddress(),
+      ultraAccounting: pda.getPdaUltraAccountingAddress(),
+      userWhitelist: pda.getPdaStakerUserStatusAddress(user),
       vaultAuthority,
       userVaultTokenAccount: getAssociatedTokenAddressSync(trubillMint, user, true, TOKEN_2022_PROGRAM_ID),
       userUsdcAta: deriveATAAddress(usdcMint, user),
@@ -46,12 +46,12 @@ export async function instantRedeemIx(params: {
       treasury,
       usdcMint,
       trubillMint,
-      epochSnapshot: pda.getPdaEpochSnapshot(BigInt(epoch.toString())),
+      epochSnapshot: pda.getPdaEpochSnapshotAddress(epoch),
       tokenProgram: TOKEN_PROGRAM_ID,
       tokenProgram2022: TOKEN_2022_PROGRAM_ID,
       associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
       systemProgram: SystemProgram.programId,
-      eventAuthority: pda.getPdaEventAuthority(),
+      eventAuthority: pda.getPdaEventAuthorityAddress(),
       program: program.programId,
     })
     .instruction();
@@ -68,7 +68,7 @@ async function main() {
   const provider = getProvider(user);
   const program = getTrubillVaultProgram(provider);
   const epoch = epochStr ? new BN(epochStr) : await getLatestCompletedEpoch(provider);
-  const config = await program.account.vaultConfig.fetch(pda.getPdaVaultConfig());
+  const config = await program.account.vaultConfig.fetch(pda.getPdaVaultConfigAddress());
 
   const redeemAmount = new BN(usdc(amountStr).toString());
   const ix = await instantRedeemIx({ program, user: user.publicKey, epoch, redeemAmount, treasury: config.treasury });
