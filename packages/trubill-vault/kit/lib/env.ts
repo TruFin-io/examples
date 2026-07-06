@@ -1,17 +1,7 @@
 import { readFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { createKeyPairSignerFromBytes, type KeyPairSigner } from "@solana/kit";
-import * as dotenv from "dotenv";
-
-// Load environment variables from .env file.
-dotenv.config();
-
-/** Require an environment variable or throw. */
-export function requireEnv(name: string): string {
-  const value = process.env[name];
-  if (!value) throw new Error(`Missing env ${name}`);
-  return value;
-}
+import { requireEnv } from "../../common/web3/env";
 
 /**
  * Load a signer from a JSON secret-key file. Supports:
