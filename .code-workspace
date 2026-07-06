@@ -1,0 +1,12 @@
+{
+  "folders": [
+    { "path": "packages/solana-staking" },
+    { "path": "packages/trubill-vault" }
+  ],
+  "settings": {
+    "editor.formatOnSave": true,
+    "[markdown]": {
+      "editor.defaultFormatter": "DavidAnson.vscode-markdownlint"
+    },
+  }
+}
