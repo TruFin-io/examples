@@ -1,11 +1,12 @@
 import { fileURLToPath } from "node:url";
 import { BN, type Program } from "@coral-xyz/anchor";
-import { getAssociatedTokenAddressSync, TOKEN_2022_PROGRAM_ID } from "@solana/spl-token";
+import { TOKEN_2022_PROGRAM_ID } from "@solana/spl-token";
 import { type PublicKey, SystemProgram } from "@solana/web3.js";
 import { trubill } from "../../common/amounts";
 import { type TrubillVault } from "../../common/idls/trubill_vault";
 import { getWalletKeypair } from "../../common/web3/env";
 import * as pda from "../../common/web3/pda";
+import { deriveATAAddress } from "../../common/web3/token";
 import { buildSignAndProcessTxV0 } from "../../common/web3/tx";
 import { getLatestCompletedEpoch } from "../epoch";
 import { getProvider, getTrubillVaultProgram } from "../program";
@@ -31,7 +32,7 @@ export async function requestRedeemIx(params: {
       userWhitelist: pda.getPdaStakerUserStatusAddress(user),
       vaultAuthority: pda.getPdaVaultAuthorityAddress(),
       trubillMint,
-      userTrubillAta: getAssociatedTokenAddressSync(trubillMint, user, true, TOKEN_2022_PROGRAM_ID),
+      userTrubillAta: deriveATAAddress(trubillMint, user, TOKEN_2022_PROGRAM_ID),
       userRedeemState: pda.getPdaUserRedeemStateAddress(user),
       redeemRequest: pda.getPdaRedeemRequestAddress(user, redeemRequestId),
       epochSnapshot: pda.getPdaEpochSnapshotAddress(epoch),

@@ -1,11 +1,6 @@
 import { fileURLToPath } from "node:url";
 import { BN, type Program } from "@coral-xyz/anchor";
-import {
-  ASSOCIATED_TOKEN_PROGRAM_ID,
-  getAssociatedTokenAddressSync,
-  TOKEN_2022_PROGRAM_ID,
-  TOKEN_PROGRAM_ID,
-} from "@solana/spl-token";
+import { ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_2022_PROGRAM_ID, TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import { PublicKey, SystemProgram } from "@solana/web3.js";
 import { USDC_MINT } from "../../common/addresses";
 import { usdc } from "../../common/amounts";
@@ -32,7 +27,7 @@ export async function depositIx(params: { program: Program<TrubillVault>; user: 
       usdcAccounting: pda.getPdaUsdcAccountingAddress(),
       userWhitelist: pda.getPdaStakerUserStatusAddress(user),
       vaultAuthority,
-      userVaultTokenAccount: getAssociatedTokenAddressSync(trubillMint, user, true, TOKEN_2022_PROGRAM_ID),
+      userVaultTokenAccount: deriveATAAddress(trubillMint, user, TOKEN_2022_PROGRAM_ID),
       userUsdcAta: deriveATAAddress(usdcMint, user),
       vaultCollateralAta: deriveATAAddress(usdcMint, vaultAuthority),
       usdcMint,
