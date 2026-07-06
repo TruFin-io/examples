@@ -25,6 +25,7 @@
   "scripts": {
     "lint:check": "tsc --noEmit && biome check .",
     "lint:write": "biome check --write .",
-    "generate": "node kit/codama.mjs"
+    "generate": "node kit/codama.mjs",
+    "postinstall": "bun run generate"
   }
 }

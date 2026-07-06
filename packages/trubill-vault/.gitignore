@@ -2,6 +2,9 @@
 dist
 node_modules
 
+# codama-generated kit client (run `bun run generate`)
+kit/generated
+
 # files
 *.env
 *.log
