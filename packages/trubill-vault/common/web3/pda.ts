@@ -13,6 +13,8 @@ function pda(
 
 const u64 = (value: BN): Buffer => value.toArrayLike(Buffer, "le", 8);
 
+// TruBILL vault
+
 export const getPdaVaultConfigAddress = (): PublicKey => pda([Buffer.from(Seed.VAULT_CONFIG)]);
 export const getPdaUsdcAccountingAddress = (): PublicKey => pda([Buffer.from(Seed.USDC_ACCOUNTING)]);
 export const getPdaUltraAccountingAddress = (): PublicKey => pda([Buffer.from(Seed.ULTRA_ACCOUNTING)]);
@@ -27,6 +29,8 @@ export const getPdaUserRedeemStateAddress = (user: PublicKey): PublicKey =>
   pda([Buffer.from(Seed.USER_REDEEM_STATE), user.toBuffer()]);
 export const getPdaRedeemRequestAddress = (user: PublicKey, redeemRequestId: BN): PublicKey =>
   pda([Buffer.from(Seed.REDEEM_REQUEST), user.toBuffer(), u64(redeemRequestId)]);
+
+// Staker
 
 export const getPdaStakerUserStatusAddress = (user: PublicKey): PublicKey =>
   pda([Buffer.from(Seed.USER), user.toBuffer()], new PublicKey(Address.STAKER));

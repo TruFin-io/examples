@@ -1,3 +1,5 @@
+import { BN } from "@coral-xyz/anchor";
+
 /** Token decimal places */
 export namespace Decimals {
   export const SOL = 9;
@@ -5,6 +7,8 @@ export namespace Decimals {
   export const ULTRA = 6;
   export const TRUBILL = 6;
 }
+
+export const toBN = (value: string | number | bigint) => new BN(value.toString());
 
 /**
  * Multiplies a string representation of a number by a given exponent of base 10 (10exponent).

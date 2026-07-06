@@ -1,4 +1,4 @@
-import type { Connection } from "@solana/web3.js";
+import { type Connection } from "@solana/web3.js";
 
 /** Fixed-point scale for share price and Delta Manager exchange rates (1e6). */
 export const PRICE_SCALE = 1_000_000n;
