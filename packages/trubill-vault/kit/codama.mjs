@@ -8,6 +8,7 @@ import { createFromRoot } from "codama";
 const KEEP_TRUBILL_INSTRUCTIONS = new Set(["deposit", "request_redeem", "instant_redeem", "claim_withdrawal"]);
 
 // Generate @solana/kit clients from the committed IDLs (addresses are already mainnet).
+// The Delta Manager IDL is already pared down to the AssetController it reads.
 for (const name of ["trubill_vault", "delta_manager"]) {
   const idl = JSON.parse(readFileSync(`common/idls/${name}.json`, "utf-8"));
   idl.instructions =
