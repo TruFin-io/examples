@@ -4,6 +4,7 @@ import { TOKEN_2022_PROGRAM_ID } from "@solana/spl-token";
 import { PublicKey, SystemProgram, TransactionInstruction } from "@solana/web3.js";
 import { TRUBILL_VAULT_PROGRAM_ID } from "../../common/addresses";
 import { trubill } from "../../common/amounts";
+import { toBN } from "../../common/web3/bn";
 import { getConnection, getWalletKeypair } from "../../common/web3/env";
 import * as pda from "../../common/web3/pda";
 import { deriveATAAddress } from "../../common/web3/token";
@@ -70,7 +71,7 @@ async function main() {
   const stateInfo = await connection.getAccountInfo(pda.getPdaUserRedeemStateAddress(user.publicKey));
   const redeemRequestId = stateInfo ? new BN(stateInfo.data.subarray(8, 16), "le") : new BN(0);
 
-  const trubillAmount = new BN(trubill(amountStr).toString());
+  const trubillAmount = toBN(trubill(amountStr));
   const ix = buildRequestRedeemIx({ user: user.publicKey, epoch: new BN(epochStr), redeemRequestId, trubillAmount });
   const signature = await buildSignAndProcessTxV0(connection, [ix], user);
   console.log(`Request-redeem tx: ${signature} (redeem request id ${redeemRequestId.toString()})`);

@@ -4,6 +4,7 @@ import { ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_2022_PROGRAM_ID, TOKEN_PROGRAM_ID } 
 import { PublicKey, SystemProgram, TransactionInstruction } from "@solana/web3.js";
 import { TRUBILL_VAULT_PROGRAM_ID, USDC_MINT } from "../../common/addresses";
 import { usdc } from "../../common/amounts";
+import { toBN } from "../../common/web3/bn";
 import { getConnection, getWalletKeypair } from "../../common/web3/env";
 import * as pda from "../../common/web3/pda";
 import { deriveATAAddress } from "../../common/web3/token";
@@ -74,7 +75,7 @@ async function main() {
   }
 
   const user = getWalletKeypair(keypairPath);
-  const redeemAmount = new BN(usdc(amountStr).toString());
+  const redeemAmount = toBN(usdc(amountStr));
   const ix = buildInstantRedeemIx({
     user: user.publicKey,
     epoch: new BN(epochStr),

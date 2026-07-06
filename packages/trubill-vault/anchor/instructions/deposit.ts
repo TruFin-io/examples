@@ -5,6 +5,7 @@ import { PublicKey, SystemProgram } from "@solana/web3.js";
 import { USDC_MINT } from "../../common/addresses";
 import { usdc } from "../../common/amounts";
 import { type TrubillVault } from "../../common/idls/trubill_vault";
+import { toBN } from "../../common/web3/bn";
 import { getWalletKeypair } from "../../common/web3/env";
 import * as pda from "../../common/web3/pda";
 import { deriveATAAddress } from "../../common/web3/token";
@@ -55,7 +56,7 @@ async function main() {
   const program = getTrubillVaultProgram(provider);
   const epoch = epochStr ? new BN(epochStr) : await getLatestCompletedEpoch(provider);
 
-  const ix = await depositIx({ program, user: user.publicKey, epoch, amount: new BN(usdc(amountStr).toString()) });
+  const ix = await depositIx({ program, user: user.publicKey, epoch, amount: toBN(usdc(amountStr)) });
   const signature = await buildSignAndProcessTxV0(provider.connection, [ix], user);
   console.log(`Deposit tx: ${signature}`);
 }
