@@ -14,14 +14,19 @@ export function requireEnv(name: string): string {
 }
 
 /**
- * Read the wallet keypair from a JSON secret-key file. Supports:
+ * Read raw secret-key bytes from a JSON keypair file. Supports:
  * - "~/path/to/file.json" - home directory path (~ expanded)
  * - "path/to/file.json"   - relative (from cwd) or absolute path
  * Defaults to the WALLET_KEYPAIR env var.
  */
-export function getWalletKeypair(walletPath = requireEnv("WALLET_KEYPAIR")): Keypair {
+export function readSecretKeyBytes(walletPath = requireEnv("WALLET_KEYPAIR")): Uint8Array {
   const resolved = walletPath.startsWith("~") ? homedir() + walletPath.slice(1) : walletPath;
-  return Keypair.fromSecretKey(Uint8Array.from(JSON.parse(readFileSync(resolved, "utf8"))));
+  return Uint8Array.from(JSON.parse(readFileSync(resolved, "utf8")));
+}
+
+/** Read the wallet keypair from a JSON secret-key file (see readSecretKeyBytes for path rules). */
+export function getWalletKeypair(walletPath?: string): Keypair {
+  return Keypair.fromSecretKey(readSecretKeyBytes(walletPath));
 }
 
 /** Connect to the RPC_URL endpoint at confirmed commitment. */
