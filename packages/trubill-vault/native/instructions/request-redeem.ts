@@ -6,7 +6,7 @@ import { TRUBILL_VAULT_PROGRAM_ID } from "../../common/addresses";
 import { trubill } from "../../common/amounts";
 import { toBN } from "../../common/web3/bn";
 import { getConnection, getWalletKeypair } from "../../common/web3/env";
-import * as pda from "../../common/web3/pda";
+import * as Pda from "../../common/web3/pda";
 import { deriveATAAddress } from "../../common/web3/token";
 import { buildSignAndProcessTxV0 } from "../../common/web3/tx";
 
@@ -31,25 +31,25 @@ export function buildRequestRedeemIx(params: {
 }): TransactionInstruction {
   const { user, epoch, redeemRequestId, trubillAmount } = params;
   const programId = new PublicKey(TRUBILL_VAULT_PROGRAM_ID);
-  const trubillMint = pda.getPdaTrubillMintAddress();
+  const trubillMint = Pda.getPdaTrubillMintAddress();
   const userTrubillAta = deriveATAAddress(trubillMint, user, TOKEN_2022_PROGRAM_ID);
 
   // Order is fixed by the program. Each row: isSigner, isWritable, and the account's role.
   const keys = [
     { pubkey: user, isSigner: true, isWritable: true }, // user: signs, TruBILL burned from their ATA
-    { pubkey: pda.getPdaVaultConfigAddress(), isSigner: false, isWritable: true }, // vault_config: params and epoch state
-    { pubkey: pda.getPdaUsdcAccountingAddress(), isSigner: false, isWritable: true }, // usdc_accounting: records USDC owed
-    { pubkey: pda.getPdaUltraAccountingAddress(), isSigner: false, isWritable: true }, // ultra_accounting: reserves ULTRA to redeem
-    { pubkey: pda.getPdaStakerUserStatusAddress(user), isSigner: false, isWritable: false }, // user_whitelist: must be Whitelisted
-    { pubkey: pda.getPdaVaultAuthorityAddress(), isSigner: false, isWritable: false }, // vault_authority: burn signer PDA
+    { pubkey: Pda.getPdaVaultConfigAddress(), isSigner: false, isWritable: true }, // vault_config: params and epoch state
+    { pubkey: Pda.getPdaUsdcAccountingAddress(), isSigner: false, isWritable: true }, // usdc_accounting: records USDC owed
+    { pubkey: Pda.getPdaUltraAccountingAddress(), isSigner: false, isWritable: true }, // ultra_accounting: reserves ULTRA to redeem
+    { pubkey: Pda.getPdaStakerUserStatusAddress(user), isSigner: false, isWritable: false }, // user_whitelist: must be Whitelisted
+    { pubkey: Pda.getPdaVaultAuthorityAddress(), isSigner: false, isWritable: false }, // vault_authority: burn signer PDA
     { pubkey: trubillMint, isSigner: false, isWritable: true }, // trubill_mint: shares burned here
     { pubkey: userTrubillAta, isSigner: false, isWritable: true }, // user_trubill_ata: user's share source
-    { pubkey: pda.getPdaUserRedeemStateAddress(user), isSigner: false, isWritable: true }, // user_redeem_state: id counter
-    { pubkey: pda.getPdaRedeemRequestAddress(user, redeemRequestId), isSigner: false, isWritable: true }, // redeem_request: claim record
-    { pubkey: pda.getPdaEpochSnapshotAddress(epoch), isSigner: false, isWritable: false }, // epoch_snapshot: NAV for pricing
+    { pubkey: Pda.getPdaUserRedeemStateAddress(user), isSigner: false, isWritable: true }, // user_redeem_state: id counter
+    { pubkey: Pda.getPdaRedeemRequestAddress(user, redeemRequestId), isSigner: false, isWritable: true }, // redeem_request: claim record
+    { pubkey: Pda.getPdaEpochSnapshotAddress(epoch), isSigner: false, isWritable: false }, // epoch_snapshot: NAV for pricing
     { pubkey: TOKEN_2022_PROGRAM_ID, isSigner: false, isWritable: false }, // token_program_2022: for the burn
     { pubkey: SystemProgram.programId, isSigner: false, isWritable: false }, // system_program
-    { pubkey: pda.getPdaEventAuthorityAddress(), isSigner: false, isWritable: false }, // event_authority: Anchor event CPI
+    { pubkey: Pda.getPdaEventAuthorityAddress(), isSigner: false, isWritable: false }, // event_authority: Anchor event CPI
     { pubkey: programId, isSigner: false, isWritable: false }, // program: self, for the event CPI
   ];
 
@@ -68,7 +68,7 @@ async function main() {
   const connection = getConnection();
 
   // UserRedeemState is an 8-byte discriminator followed by a little-endian u64 next_redeem_request_id.
-  const stateInfo = await connection.getAccountInfo(pda.getPdaUserRedeemStateAddress(user.publicKey));
+  const stateInfo = await connection.getAccountInfo(Pda.getPdaUserRedeemStateAddress(user.publicKey));
   const redeemRequestId = stateInfo ? new BN(stateInfo.data.subarray(8, 16), "le") : new BN(0);
 
   const trubillAmount = toBN(trubill(amountStr));

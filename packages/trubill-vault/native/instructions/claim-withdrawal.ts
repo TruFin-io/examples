@@ -4,7 +4,7 @@ import { ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID } from "@solana/spl-token
 import { PublicKey, SystemProgram, TransactionInstruction } from "@solana/web3.js";
 import { TRUBILL_VAULT_PROGRAM_ID, USDC_MINT } from "../../common/addresses";
 import { getConnection, getWalletKeypair } from "../../common/web3/env";
-import * as pda from "../../common/web3/pda";
+import * as Pda from "../../common/web3/pda";
 import { deriveATAAddress } from "../../common/web3/token";
 import { buildSignAndProcessTxV0 } from "../../common/web3/tx";
 
@@ -21,25 +21,25 @@ export function buildClaimWithdrawalIx(params: { user: PublicKey; redeemRequestI
   const { user, redeemRequestId } = params;
   const programId = new PublicKey(TRUBILL_VAULT_PROGRAM_ID);
   const usdcMint = new PublicKey(USDC_MINT);
-  const vaultAuthority = pda.getPdaVaultAuthorityAddress();
+  const vaultAuthority = Pda.getPdaVaultAuthorityAddress();
   const vaultUsdcAta = deriveATAAddress(usdcMint, vaultAuthority);
   const userUsdcAta = deriveATAAddress(usdcMint, user);
 
   // Order is fixed by the program. Each row: isSigner, isWritable, and the account's role.
   const keys = [
     { pubkey: user, isSigner: true, isWritable: true }, // user: signs and receives the USDC
-    { pubkey: pda.getPdaStakerUserStatusAddress(user), isSigner: false, isWritable: false }, // user_whitelist: must be Whitelisted
-    { pubkey: pda.getPdaVaultConfigAddress(), isSigner: false, isWritable: false }, // vault_config: params and epoch state
-    { pubkey: pda.getPdaUsdcAccountingAddress(), isSigner: false, isWritable: true }, // usdc_accounting: owed-to-users ledger
+    { pubkey: Pda.getPdaStakerUserStatusAddress(user), isSigner: false, isWritable: false }, // user_whitelist: must be Whitelisted
+    { pubkey: Pda.getPdaVaultConfigAddress(), isSigner: false, isWritable: false }, // vault_config: params and epoch state
+    { pubkey: Pda.getPdaUsdcAccountingAddress(), isSigner: false, isWritable: true }, // usdc_accounting: owed-to-users ledger
     { pubkey: vaultAuthority, isSigner: false, isWritable: false }, // vault_authority: transfer signer PDA
     { pubkey: usdcMint, isSigner: false, isWritable: false }, // usdc_mint: payout asset
     { pubkey: vaultUsdcAta, isSigner: false, isWritable: true }, // vault_usdc_ata: vault USDC source
     { pubkey: userUsdcAta, isSigner: false, isWritable: true }, // user_usdc_ata: USDC paid out here
-    { pubkey: pda.getPdaRedeemRequestAddress(user, redeemRequestId), isSigner: false, isWritable: true }, // redeem_request: closed
+    { pubkey: Pda.getPdaRedeemRequestAddress(user, redeemRequestId), isSigner: false, isWritable: true }, // redeem_request: closed
     { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false }, // token_program: SPL Token, for USDC
     { pubkey: ASSOCIATED_TOKEN_PROGRAM_ID, isSigner: false, isWritable: false }, // associated_token_program: ATA creation
     { pubkey: SystemProgram.programId, isSigner: false, isWritable: false }, // system_program
-    { pubkey: pda.getPdaEventAuthorityAddress(), isSigner: false, isWritable: false }, // event_authority: Anchor event CPI
+    { pubkey: Pda.getPdaEventAuthorityAddress(), isSigner: false, isWritable: false }, // event_authority: Anchor event CPI
     { pubkey: programId, isSigner: false, isWritable: false }, // program: self, for the event CPI
   ];
 

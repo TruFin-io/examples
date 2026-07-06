@@ -1,15 +1,15 @@
 import { Decimals, formatUnits } from "../../common/amounts";
 import { calcSharePrice } from "../../common/web3/helpers";
-import * as pda from "../../common/web3/pda";
+import * as Pda from "../../common/web3/pda";
 import { getProvider, getTrubillVaultProgram } from "../program";
 
 /** Print the vault's config, USDC/ULTRA accounting, roles and current share price. */
 async function main() {
   const program = getTrubillVaultProgram(getProvider(undefined, true));
-  const config = await program.account.vaultConfig.fetch(pda.getPdaVaultConfigAddress());
-  const usdc = await program.account.usdcAccounting.fetch(pda.getPdaUsdcAccountingAddress());
-  const ultra = await program.account.ultraAccounting.fetch(pda.getPdaUltraAccountingAddress());
-  const access = await program.account.vaultAccess.fetch(pda.getPdaVaultAccessAddress());
+  const config = await program.account.vaultConfig.fetch(Pda.getPdaVaultConfigAddress());
+  const usdc = await program.account.usdcAccounting.fetch(Pda.getPdaUsdcAccountingAddress());
+  const ultra = await program.account.ultraAccounting.fetch(Pda.getPdaUltraAccountingAddress());
+  const access = await program.account.vaultAccess.fetch(Pda.getPdaVaultAccessAddress());
 
   console.log("Config:");
   console.log("  paused:", config.isPaused);
@@ -36,7 +36,7 @@ async function main() {
 
   try {
     const snapshot = await program.account.epochSnapshot.fetch(
-      pda.getPdaEpochSnapshotAddress(config.lastSnapshotEpoch),
+      Pda.getPdaEpochSnapshotAddress(config.lastSnapshotEpoch),
     );
     const price = calcSharePrice(BigInt(snapshot.totalAssets.toString()), BigInt(snapshot.totalShares.toString()));
     console.log("Share price:", formatUnits(price, Decimals.USDC), "USDC per TruBILL");

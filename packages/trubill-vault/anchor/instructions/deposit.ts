@@ -7,7 +7,7 @@ import { usdc } from "../../common/amounts";
 import { type TrubillVault } from "../../common/idls/trubill_vault";
 import { toBN } from "../../common/web3/bn";
 import { getWalletKeypair } from "../../common/web3/env";
-import * as pda from "../../common/web3/pda";
+import * as Pda from "../../common/web3/pda";
 import { deriveATAAddress } from "../../common/web3/token";
 import { buildSignAndProcessTxV0 } from "../../common/web3/tx";
 import { getLatestCompletedEpoch } from "../epoch";
@@ -16,29 +16,29 @@ import { getProvider, getTrubillVaultProgram } from "../program";
 /** Build a deposit instruction: transfer `amount` USDC and mint TruBILL shares priced at `epoch`'s snapshot. */
 export async function depositIx(params: { program: Program<TrubillVault>; user: PublicKey; epoch: BN; amount: BN }) {
   const { program, user, epoch, amount } = params;
-  const vaultAuthority = pda.getPdaVaultAuthorityAddress();
-  const trubillMint = pda.getPdaTrubillMintAddress();
+  const vaultAuthority = Pda.getPdaVaultAuthorityAddress();
+  const trubillMint = Pda.getPdaTrubillMintAddress();
   const usdcMint = new PublicKey(USDC_MINT);
 
   return program.methods
     .deposit(epoch, amount)
     .accountsStrict({
       payer: user,
-      vaultConfig: pda.getPdaVaultConfigAddress(),
-      usdcAccounting: pda.getPdaUsdcAccountingAddress(),
-      userWhitelist: pda.getPdaStakerUserStatusAddress(user),
+      vaultConfig: Pda.getPdaVaultConfigAddress(),
+      usdcAccounting: Pda.getPdaUsdcAccountingAddress(),
+      userWhitelist: Pda.getPdaStakerUserStatusAddress(user),
       vaultAuthority,
       userVaultTokenAccount: deriveATAAddress(trubillMint, user, TOKEN_2022_PROGRAM_ID),
       userUsdcAta: deriveATAAddress(usdcMint, user),
       vaultCollateralAta: deriveATAAddress(usdcMint, vaultAuthority),
       usdcMint,
       trubillMint,
-      epochSnapshot: pda.getPdaEpochSnapshotAddress(epoch),
+      epochSnapshot: Pda.getPdaEpochSnapshotAddress(epoch),
       tokenProgram: TOKEN_PROGRAM_ID,
       tokenProgram2022: TOKEN_2022_PROGRAM_ID,
       associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
       systemProgram: SystemProgram.programId,
-      eventAuthority: pda.getPdaEventAuthorityAddress(),
+      eventAuthority: Pda.getPdaEventAuthorityAddress(),
       program: program.programId,
     })
     .instruction();

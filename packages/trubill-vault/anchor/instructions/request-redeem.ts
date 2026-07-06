@@ -6,7 +6,7 @@ import { trubill } from "../../common/amounts";
 import { type TrubillVault } from "../../common/idls/trubill_vault";
 import { toBN } from "../../common/web3/bn";
 import { getWalletKeypair } from "../../common/web3/env";
-import * as pda from "../../common/web3/pda";
+import * as Pda from "../../common/web3/pda";
 import { deriveATAAddress } from "../../common/web3/token";
 import { buildSignAndProcessTxV0 } from "../../common/web3/tx";
 import { getLatestCompletedEpoch } from "../epoch";
@@ -21,25 +21,25 @@ export async function requestRedeemIx(params: {
   trubillAmount: BN;
 }) {
   const { program, user, epoch, redeemRequestId, trubillAmount } = params;
-  const trubillMint = pda.getPdaTrubillMintAddress();
+  const trubillMint = Pda.getPdaTrubillMintAddress();
 
   return program.methods
     .requestRedeem(epoch, trubillAmount)
     .accountsStrict({
       user,
-      vaultConfig: pda.getPdaVaultConfigAddress(),
-      usdcAccounting: pda.getPdaUsdcAccountingAddress(),
-      ultraAccounting: pda.getPdaUltraAccountingAddress(),
-      userWhitelist: pda.getPdaStakerUserStatusAddress(user),
-      vaultAuthority: pda.getPdaVaultAuthorityAddress(),
+      vaultConfig: Pda.getPdaVaultConfigAddress(),
+      usdcAccounting: Pda.getPdaUsdcAccountingAddress(),
+      ultraAccounting: Pda.getPdaUltraAccountingAddress(),
+      userWhitelist: Pda.getPdaStakerUserStatusAddress(user),
+      vaultAuthority: Pda.getPdaVaultAuthorityAddress(),
       trubillMint,
       userTrubillAta: deriveATAAddress(trubillMint, user, TOKEN_2022_PROGRAM_ID),
-      userRedeemState: pda.getPdaUserRedeemStateAddress(user),
-      redeemRequest: pda.getPdaRedeemRequestAddress(user, redeemRequestId),
-      epochSnapshot: pda.getPdaEpochSnapshotAddress(epoch),
+      userRedeemState: Pda.getPdaUserRedeemStateAddress(user),
+      redeemRequest: Pda.getPdaRedeemRequestAddress(user, redeemRequestId),
+      epochSnapshot: Pda.getPdaEpochSnapshotAddress(epoch),
       tokenProgram2022: TOKEN_2022_PROGRAM_ID,
       systemProgram: SystemProgram.programId,
-      eventAuthority: pda.getPdaEventAuthorityAddress(),
+      eventAuthority: Pda.getPdaEventAuthorityAddress(),
       program: program.programId,
     })
     .instruction();
@@ -58,7 +58,7 @@ async function main() {
   const epoch = await getLatestCompletedEpoch(provider);
 
   // The next redeem-request id comes from the user's counter (defaults to 0 before the first redeem).
-  const state = await program.account.userRedeemState.fetchNullable(pda.getPdaUserRedeemStateAddress(user.publicKey));
+  const state = await program.account.userRedeemState.fetchNullable(Pda.getPdaUserRedeemStateAddress(user.publicKey));
   const redeemRequestId = state ? state.nextRedeemRequestId : new BN(0);
 
   const trubillAmount = toBN(trubill(amountStr));

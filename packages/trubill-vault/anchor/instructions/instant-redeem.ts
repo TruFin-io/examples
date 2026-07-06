@@ -7,7 +7,7 @@ import { usdc } from "../../common/amounts";
 import { type TrubillVault } from "../../common/idls/trubill_vault";
 import { toBN } from "../../common/web3/bn";
 import { getWalletKeypair } from "../../common/web3/env";
-import * as pda from "../../common/web3/pda";
+import * as Pda from "../../common/web3/pda";
 import { deriveATAAddress } from "../../common/web3/token";
 import { buildSignAndProcessTxV0 } from "../../common/web3/tx";
 import { getLatestCompletedEpoch } from "../epoch";
@@ -22,18 +22,18 @@ export async function instantRedeemIx(params: {
   treasury: PublicKey;
 }) {
   const { program, user, epoch, redeemAmount, treasury } = params;
-  const vaultAuthority = pda.getPdaVaultAuthorityAddress();
-  const trubillMint = pda.getPdaTrubillMintAddress();
+  const vaultAuthority = Pda.getPdaVaultAuthorityAddress();
+  const trubillMint = Pda.getPdaTrubillMintAddress();
   const usdcMint = new PublicKey(USDC_MINT);
 
   return program.methods
     .instantRedeem(epoch, redeemAmount)
     .accountsStrict({
       payer: user,
-      vaultConfig: pda.getPdaVaultConfigAddress(),
-      usdcAccounting: pda.getPdaUsdcAccountingAddress(),
-      ultraAccounting: pda.getPdaUltraAccountingAddress(),
-      userWhitelist: pda.getPdaStakerUserStatusAddress(user),
+      vaultConfig: Pda.getPdaVaultConfigAddress(),
+      usdcAccounting: Pda.getPdaUsdcAccountingAddress(),
+      ultraAccounting: Pda.getPdaUltraAccountingAddress(),
+      userWhitelist: Pda.getPdaStakerUserStatusAddress(user),
       vaultAuthority,
       userVaultTokenAccount: deriveATAAddress(trubillMint, user, TOKEN_2022_PROGRAM_ID),
       userUsdcAta: deriveATAAddress(usdcMint, user),
@@ -42,12 +42,12 @@ export async function instantRedeemIx(params: {
       treasury,
       usdcMint,
       trubillMint,
-      epochSnapshot: pda.getPdaEpochSnapshotAddress(epoch),
+      epochSnapshot: Pda.getPdaEpochSnapshotAddress(epoch),
       tokenProgram: TOKEN_PROGRAM_ID,
       tokenProgram2022: TOKEN_2022_PROGRAM_ID,
       associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
       systemProgram: SystemProgram.programId,
-      eventAuthority: pda.getPdaEventAuthorityAddress(),
+      eventAuthority: Pda.getPdaEventAuthorityAddress(),
       program: program.programId,
     })
     .instruction();
@@ -64,7 +64,7 @@ async function main() {
   const provider = getProvider(user);
   const program = getTrubillVaultProgram(provider);
   const epoch = epochStr ? new BN(epochStr) : await getLatestCompletedEpoch(provider);
-  const config = await program.account.vaultConfig.fetch(pda.getPdaVaultConfigAddress());
+  const config = await program.account.vaultConfig.fetch(Pda.getPdaVaultConfigAddress());
 
   const redeemAmount = toBN(usdc(amountStr));
   const ix = await instantRedeemIx({ program, user: user.publicKey, epoch, redeemAmount, treasury: config.treasury });

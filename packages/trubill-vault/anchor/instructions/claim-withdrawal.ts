@@ -5,7 +5,7 @@ import { PublicKey, SystemProgram } from "@solana/web3.js";
 import { USDC_MINT } from "../../common/addresses";
 import { type TrubillVault } from "../../common/idls/trubill_vault";
 import { getWalletKeypair } from "../../common/web3/env";
-import * as pda from "../../common/web3/pda";
+import * as Pda from "../../common/web3/pda";
 import { deriveATAAddress } from "../../common/web3/token";
 import { buildSignAndProcessTxV0 } from "../../common/web3/tx";
 import { getProvider, getTrubillVaultProgram } from "../program";
@@ -17,25 +17,25 @@ export async function claimWithdrawalIx(params: {
   redeemRequestId: BN;
 }) {
   const { program, user, redeemRequestId } = params;
-  const vaultAuthority = pda.getPdaVaultAuthorityAddress();
+  const vaultAuthority = Pda.getPdaVaultAuthorityAddress();
   const usdcMint = new PublicKey(USDC_MINT);
 
   return program.methods
     .claimWithdrawal(redeemRequestId)
     .accountsStrict({
       user,
-      userWhitelist: pda.getPdaStakerUserStatusAddress(user),
-      vaultConfig: pda.getPdaVaultConfigAddress(),
-      usdcAccounting: pda.getPdaUsdcAccountingAddress(),
+      userWhitelist: Pda.getPdaStakerUserStatusAddress(user),
+      vaultConfig: Pda.getPdaVaultConfigAddress(),
+      usdcAccounting: Pda.getPdaUsdcAccountingAddress(),
       vaultAuthority,
       usdcMint,
       vaultUsdcAta: deriveATAAddress(usdcMint, vaultAuthority),
       userUsdcAta: deriveATAAddress(usdcMint, user),
-      redeemRequest: pda.getPdaRedeemRequestAddress(user, redeemRequestId),
+      redeemRequest: Pda.getPdaRedeemRequestAddress(user, redeemRequestId),
       tokenProgram: TOKEN_PROGRAM_ID,
       associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
       systemProgram: SystemProgram.programId,
-      eventAuthority: pda.getPdaEventAuthorityAddress(),
+      eventAuthority: Pda.getPdaEventAuthorityAddress(),
       program: program.programId,
     })
     .instruction();
