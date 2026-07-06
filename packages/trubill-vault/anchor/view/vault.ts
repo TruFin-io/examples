@@ -1,0 +1,51 @@
+import { formatUnits } from "../../common/amounts";
+import { calcSharePrice } from "../../common/web3/helpers";
+import * as pda from "../../common/web3/pda";
+import { getReadOnlyProvider, getTrubillVaultProgram } from "../program";
+
+/** Print the vault's config, USDC/ULTRA accounting, roles and current share price. */
+async function main() {
+  const program = getTrubillVaultProgram(getReadOnlyProvider());
+  const config = await program.account.vaultConfig.fetch(pda.getPdaVaultConfig());
+  const usdc = await program.account.usdcAccounting.fetch(pda.getPdaUsdcAccounting());
+  const ultra = await program.account.ultraAccounting.fetch(pda.getPdaUltraAccounting());
+  const access = await program.account.vaultAccess.fetch(pda.getPdaVaultAccess());
+
+  console.log("Config:");
+  console.log("  paused:", config.isPaused);
+  console.log("  reserveRatioBps:", config.reserveRatioBps);
+  console.log("  feeBps:", config.feeBps);
+  console.log("  instantRedeemFeeBps:", config.instantRedeemFee);
+  console.log("  minDeposit:", formatUnits(BigInt(config.minDepositAmount.toString())), "USDC");
+  console.log("  treasury:", config.treasury.toBase58());
+  console.log("  lastSnapshotEpoch:", config.lastSnapshotEpoch.toString());
+
+  console.log("USDC accounting:");
+  console.log("  reserve:", formatUnits(BigInt(usdc.reserve.toString())));
+  console.log("  pendingDeposits:", formatUnits(BigInt(usdc.pendingDeposits.toString())));
+  console.log("  sentForMinting:", formatUnits(BigInt(usdc.sentForMinting.toString())));
+  console.log("  owedToUsers:", formatUnits(BigInt(usdc.owedToUsers.toString())));
+
+  console.log("ULTRA accounting:");
+  console.log("  totalSettled:", formatUnits(BigInt(ultra.totalSettled.toString())));
+  console.log("  pendingRedemptions:", formatUnits(BigInt(ultra.pendingRedemptions.toString())));
+
+  console.log("Roles:");
+  console.log("  owner:", access.owner.toBase58());
+  console.log("  operator:", access.operator.toBase58());
+
+  try {
+    const snapshot = await program.account.epochSnapshot.fetch(
+      pda.getPdaEpochSnapshot(BigInt(config.lastSnapshotEpoch.toString())),
+    );
+    const price = calcSharePrice(BigInt(snapshot.totalAssets.toString()), BigInt(snapshot.totalShares.toString()));
+    console.log("Share price:", formatUnits(price), "USDC per TruBILL");
+  } catch {
+    console.log("Share price: no epoch snapshot yet");
+  }
+}
+
+main().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});

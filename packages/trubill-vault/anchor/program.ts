@@ -1,5 +1,5 @@
 import { AnchorProvider, Program, setProvider, Wallet } from "@coral-xyz/anchor";
-import { type Keypair } from "@solana/web3.js";
+import { Keypair } from "@solana/web3.js";
 import { type DeltaManager } from "../common/idls/delta_manager";
 import dmIdl from "../common/idls/delta_manager.json";
 import { type TrubillVault } from "../common/idls/trubill_vault";
@@ -11,6 +11,11 @@ export function getProvider(wallet: Keypair): AnchorProvider {
   const provider = new AnchorProvider(getConnection(), new Wallet(wallet), { commitment: "confirmed" });
   setProvider(provider);
   return provider;
+}
+
+/** Provider with a throwaway wallet for read-only scripts (needs only RPC_URL). */
+export function getReadOnlyProvider(): AnchorProvider {
+  return new AnchorProvider(getConnection(), new Wallet(Keypair.generate()), { commitment: "confirmed" });
 }
 
 /** TruBILL vault program from the committed IDL (address already mainnet). */
