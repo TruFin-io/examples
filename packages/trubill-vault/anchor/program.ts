@@ -6,16 +6,12 @@ import { type TrubillVault } from "../common/idls/trubill_vault";
 import trubillIdl from "../common/idls/trubill_vault.json";
 import { getConnection } from "../common/web3/env";
 
-/** Build an Anchor provider from a wallet keypair. */
-export function getProvider(wallet: Keypair): AnchorProvider {
-  const provider = new AnchorProvider(getConnection(), new Wallet(wallet), { commitment: "confirmed" });
+/** Build an Anchor provider. Pass readOnly for view scripts (throwaway wallet, needs only RPC_URL). */
+export function getProvider(wallet?: Keypair, readOnly = false): AnchorProvider {
+  const signer = readOnly || !wallet ? Keypair.generate() : wallet;
+  const provider = new AnchorProvider(getConnection(), new Wallet(signer), { commitment: "confirmed" });
   setProvider(provider);
   return provider;
-}
-
-/** Provider with a throwaway wallet for read-only scripts (needs only RPC_URL). */
-export function getReadOnlyProvider(): AnchorProvider {
-  return new AnchorProvider(getConnection(), new Wallet(Keypair.generate()), { commitment: "confirmed" });
 }
 
 /** TruBILL vault program from the committed IDL (address already mainnet). */

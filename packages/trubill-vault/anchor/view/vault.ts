@@ -1,11 +1,11 @@
 import { Decimals, formatUnits } from "../../common/amounts";
 import { calcSharePrice } from "../../common/web3/helpers";
 import * as pda from "../../common/web3/pda";
-import { getReadOnlyProvider, getTrubillVaultProgram } from "../program";
+import { getProvider, getTrubillVaultProgram } from "../program";
 
 /** Print the vault's config, USDC/ULTRA accounting, roles and current share price. */
 async function main() {
-  const program = getTrubillVaultProgram(getReadOnlyProvider());
+  const program = getTrubillVaultProgram(getProvider(undefined, true));
   const config = await program.account.vaultConfig.fetch(pda.getPdaVaultConfigAddress());
   const usdc = await program.account.usdcAccounting.fetch(pda.getPdaUsdcAccountingAddress());
   const ultra = await program.account.ultraAccounting.fetch(pda.getPdaUltraAccountingAddress());
