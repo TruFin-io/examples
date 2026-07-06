@@ -7,15 +7,15 @@ import {
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
 import { PublicKey, SystemProgram } from "@solana/web3.js";
-import { USDC_MINT } from "../common/addresses";
-import { usdc } from "../common/amounts";
-import { type TrubillVault } from "../common/idls/trubill_vault";
-import { getWalletKeypair } from "../common/web3/env";
-import * as pda from "../common/web3/pda";
-import { deriveATAAddress } from "../common/web3/token";
-import { buildSignAndProcessTxV0 } from "../common/web3/tx";
-import { getLatestCompletedEpoch } from "./epoch";
-import { getProvider, getTrubillVaultProgram } from "./program";
+import { USDC_MINT } from "../../common/addresses";
+import { usdc } from "../../common/amounts";
+import { type TrubillVault } from "../../common/idls/trubill_vault";
+import { getWalletKeypair } from "../../common/web3/env";
+import * as pda from "../../common/web3/pda";
+import { deriveATAAddress } from "../../common/web3/token";
+import { buildSignAndProcessTxV0 } from "../../common/web3/tx";
+import { getLatestCompletedEpoch } from "../epoch";
+import { getProvider, getTrubillVaultProgram } from "../program";
 
 /** Build an instant-redeem instruction: burn shares and pay USDC immediately from the reserve. */
 export async function instantRedeemIx(params: {

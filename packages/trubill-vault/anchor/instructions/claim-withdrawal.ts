@@ -2,13 +2,13 @@ import { fileURLToPath } from "node:url";
 import { BN, type Program } from "@coral-xyz/anchor";
 import { ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import { PublicKey, SystemProgram } from "@solana/web3.js";
-import { USDC_MINT } from "../common/addresses";
-import { type TrubillVault } from "../common/idls/trubill_vault";
-import { getWalletKeypair } from "../common/web3/env";
-import * as pda from "../common/web3/pda";
-import { deriveATAAddress } from "../common/web3/token";
-import { buildSignAndProcessTxV0 } from "../common/web3/tx";
-import { getProvider, getTrubillVaultProgram } from "./program";
+import { USDC_MINT } from "../../common/addresses";
+import { type TrubillVault } from "../../common/idls/trubill_vault";
+import { getWalletKeypair } from "../../common/web3/env";
+import * as pda from "../../common/web3/pda";
+import { deriveATAAddress } from "../../common/web3/token";
+import { buildSignAndProcessTxV0 } from "../../common/web3/tx";
+import { getProvider, getTrubillVaultProgram } from "../program";
 
 /** Build a claim-withdrawal instruction: pay out a settled redeem request's USDC and close it. */
 export async function claimWithdrawalIx(params: {
