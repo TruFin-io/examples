@@ -22,8 +22,8 @@ async function main() {
 
   console.log("Owner:", owner.toBase58());
   console.log("SOL:", formatUnits(BigInt(sol), Decimals.SOL));
-  console.log("USDC:", formatUnits(usdcBalance));
-  console.log("TruBILL:", formatUnits(trubillBalance));
+  console.log("USDC:", formatUnits(usdcBalance, Decimals.USDC));
+  console.log("TruBILL:", formatUnits(trubillBalance, Decimals.TRUBILL));
 }
 
 main().catch((error) => {
