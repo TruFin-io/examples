@@ -7,6 +7,7 @@ export const ULTRA_ACCOUNTING = "ultra_accounting";
 export const VAULT_ACCESS = "vault_access";
 export const VAULT_AUTHORITY = "vault_authority";
 export const TRUBILL_MINT = "trubill_mint";
+export const SHARE_PRICE = "share_price";
 export const EPOCH_SNAPSHOT = "epoch_snapshot";
 export const USER_REDEEM_STATE = "user_redeem_state";
 export const REDEEM_REQUEST = "redeem_request";
