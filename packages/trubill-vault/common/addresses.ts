@@ -12,6 +12,9 @@ export const STAKER = "6EZAJVrNQdnBJU6ULxXSDaEoK6fN7C3iXTCkZKRWDdGM";
 /** USDC deposit asset (SPL Token) */
 export const USDC_MINT = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
 
+/** Fee treasury receiving instant-redeem USDC fees (vault_config.treasury) */
+export const TREASURY = "D7iF7ZwxU8U9hMbiNdg1vYwvgekJ3U3QcV6T3AkTALVe";
+
 /** Token programs: SPL Token, Token-2022, and the ATA program */
 export const TOKEN_PROGRAM = "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA";
 export const TOKEN_2022_PROGRAM = "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb";

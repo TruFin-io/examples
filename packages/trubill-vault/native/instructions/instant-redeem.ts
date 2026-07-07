@@ -2,7 +2,7 @@ import { fileURLToPath } from "node:url";
 import { BN } from "@coral-xyz/anchor";
 import { ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_2022_PROGRAM_ID, TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import { PublicKey, SystemProgram, TransactionInstruction } from "@solana/web3.js";
-import { TRUBILL_VAULT_PROGRAM_ID, USDC_MINT } from "../../common/addresses";
+import { TREASURY, TRUBILL_VAULT_PROGRAM_ID, USDC_MINT } from "../../common/addresses";
 import { toBN, usdc } from "../../common/amounts";
 import { getConnection, getWalletKeypair } from "../../common/web3/env";
 import * as Pda from "../../common/web3/pda";
@@ -66,12 +66,11 @@ export function buildInstantRedeemIx(params: {
 }
 
 async function main() {
-  const [amountStr, epochStr, treasuryStr, keypairPath] = process.argv.slice(2);
-  if (!amountStr || !epochStr || !treasuryStr) {
-    console.error("Usage: bun run native/instructions/instant-redeem.ts <amount> <epoch> <treasury> [keypairPath]");
+  const [amountStr, epochStr, keypairPath] = process.argv.slice(2);
+  if (!amountStr || !epochStr) {
+    console.error("Usage: bun run native/instructions/instant-redeem.ts <amount> <epoch> [keypairPath]");
     console.error("  <amount>       USDC to receive, as a decimal (e.g. 10.5)");
     console.error("  <epoch>        pricing epoch (find with: bun run native/view/latest-epoch.ts)");
-    console.error("  <treasury>     fee treasury address (find with: bun run anchor/view/vault.ts)");
     console.error("  [keypairPath]  wallet keypair JSON; defaults to WALLET_KEYPAIR");
     console.error("  SIMULATE=true  dry-run only: build and simulate, never send");
     process.exit(1);
@@ -83,7 +82,7 @@ async function main() {
     user: user.publicKey,
     epoch: new BN(epochStr),
     redeemAmount,
-    treasury: new PublicKey(treasuryStr),
+    treasury: new PublicKey(TREASURY),
   });
   const signature = await buildSignAndProcessTxV0(getConnection(), [ix], user);
   console.log(`Instant-redeem tx: ${signature}`);
