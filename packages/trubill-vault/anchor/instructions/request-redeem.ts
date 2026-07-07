@@ -47,7 +47,10 @@ export async function requestRedeemIx(params: {
 async function main() {
   const [amountStr, keypairPath] = process.argv.slice(2);
   if (!amountStr) {
-    console.error("Usage: bun run anchor/request-redeem.ts <trubillAmount> [keypairPath]");
+    console.error("Usage: bun run anchor/instructions/request-redeem.ts <trubillAmount> [keypairPath]");
+    console.error("  <trubillAmount>  TruBILL shares to redeem, as a decimal (e.g. 5.0)");
+    console.error("  [keypairPath]    wallet keypair JSON; defaults to WALLET_KEYPAIR");
+    console.error("  SIMULATE=true    dry-run only: build and simulate, never send");
     process.exit(1);
   }
 

@@ -12,6 +12,10 @@ async function main() {
   const [amountStr, epochStr, keypairPath] = process.argv.slice(2);
   if (!amountStr) {
     console.error("Usage: bun run kit/instructions/deposit.ts <amount> [epoch] [keypairPath]");
+    console.error("  <amount>       USDC to deposit, as a decimal (e.g. 10.5)");
+    console.error("  [epoch]        pricing epoch; defaults to the latest completed epoch");
+    console.error("  [keypairPath]  wallet keypair JSON; defaults to WALLET_KEYPAIR");
+    console.error("  SIMULATE=true  dry-run only: build and simulate, never send");
     process.exit(1);
   }
 

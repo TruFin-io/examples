@@ -59,7 +59,10 @@ async function main() {
   const [amountStr, epochStr, keypairPath] = process.argv.slice(2);
   if (!amountStr || !epochStr) {
     console.error("Usage: bun run native/instructions/request-redeem.ts <trubillAmount> <epoch> [keypairPath]");
-    console.error("  find the epoch with: bun run native/view/latest-epoch.ts");
+    console.error("  <trubillAmount>  TruBILL shares to redeem, as a decimal (e.g. 5.0)");
+    console.error("  <epoch>          pricing epoch (find with: bun run native/view/latest-epoch.ts)");
+    console.error("  [keypairPath]    wallet keypair JSON; defaults to WALLET_KEYPAIR");
+    console.error("  SIMULATE=true    dry-run only: build and simulate, never send");
     process.exit(1);
   }
 

@@ -69,8 +69,11 @@ async function main() {
   const [amountStr, epochStr, treasuryStr, keypairPath] = process.argv.slice(2);
   if (!amountStr || !epochStr || !treasuryStr) {
     console.error("Usage: bun run native/instructions/instant-redeem.ts <amount> <epoch> <treasury> [keypairPath]");
-    console.error("  find the epoch with: bun run native/view/latest-epoch.ts");
-    console.error("  find the treasury with: bun run anchor/view/vault.ts");
+    console.error("  <amount>       USDC to receive, as a decimal (e.g. 10.5)");
+    console.error("  <epoch>        pricing epoch (find with: bun run native/view/latest-epoch.ts)");
+    console.error("  <treasury>     fee treasury address (find with: bun run anchor/view/vault.ts)");
+    console.error("  [keypairPath]  wallet keypair JSON; defaults to WALLET_KEYPAIR");
+    console.error("  SIMULATE=true  dry-run only: build and simulate, never send");
     process.exit(1);
   }
 

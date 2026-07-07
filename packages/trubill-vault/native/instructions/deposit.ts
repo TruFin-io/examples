@@ -60,7 +60,10 @@ async function main() {
   const [amountStr, epochStr, keypairPath] = process.argv.slice(2);
   if (!amountStr || !epochStr) {
     console.error("Usage: bun run native/instructions/deposit.ts <amount> <epoch> [keypairPath]");
-    console.error("  find the epoch with: bun run native/view/latest-epoch.ts");
+    console.error("  <amount>       USDC to deposit, as a decimal (e.g. 10.5)");
+    console.error("  <epoch>        pricing epoch (find with: bun run native/view/latest-epoch.ts)");
+    console.error("  [keypairPath]  wallet keypair JSON; defaults to WALLET_KEYPAIR");
+    console.error("  SIMULATE=true  dry-run only: build and simulate, never send");
     process.exit(1);
   }
 

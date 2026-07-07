@@ -44,7 +44,10 @@ export async function claimWithdrawalIx(params: {
 async function main() {
   const [idStr, keypairPath] = process.argv.slice(2);
   if (!idStr) {
-    console.error("Usage: bun run anchor/claim-withdrawal.ts <redeemRequestId> [keypairPath]");
+    console.error("Usage: bun run anchor/instructions/claim-withdrawal.ts <redeemRequestId> [keypairPath]");
+    console.error("  <redeemRequestId>  id printed by your request-redeem run");
+    console.error("  [keypairPath]      wallet keypair JSON; defaults to WALLET_KEYPAIR");
+    console.error("  SIMULATE=true      dry-run only: build and simulate, never send");
     process.exit(1);
   }
 
