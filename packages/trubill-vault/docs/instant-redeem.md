@@ -50,7 +50,11 @@ return program.methods
     ultraAccounting: Pda.getPdaUltraAccountingAddress(),
     userWhitelist: Pda.getPdaStakerUserStatusAddress(user),
     vaultAuthority,
-    userVaultTokenAccount: deriveATAAddress(trubillMint, user, TOKEN_2022_PROGRAM_ID),
+    userVaultTokenAccount: deriveATAAddress(
+      trubillMint,
+      user,
+      TOKEN_2022_PROGRAM_ID,
+    ),
     userUsdcAta: deriveATAAddress(usdcMint, user),
     vaultCollateralAta: deriveATAAddress(usdcMint, vaultAuthority),
     treasuryUsdcAta: deriveATAAddress(usdcMint, treasury),
@@ -81,7 +85,9 @@ USDC ATA). The full ordered list with role comments is in
 
 ```typescript
 // Anchor discriminator for `instant_redeem`, taken from the IDL.
-const INSTANT_REDEEM_DISCRIMINATOR = Buffer.from([187, 107, 208, 125, 224, 237, 40, 93]);
+const INSTANT_REDEEM_DISCRIMINATOR = Buffer.from([
+  187, 107, 208, 125, 224, 237, 40, 93,
+]);
 
 function encodeInstantRedeemData(epoch: BN, redeemAmount: BN): Buffer {
   return Buffer.concat([

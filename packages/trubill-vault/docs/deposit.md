@@ -51,7 +51,11 @@ return program.methods
     usdcAccounting: Pda.getPdaUsdcAccountingAddress(),
     userWhitelist: Pda.getPdaStakerUserStatusAddress(user),
     vaultAuthority,
-    userVaultTokenAccount: deriveATAAddress(trubillMint, user, TOKEN_2022_PROGRAM_ID),
+    userVaultTokenAccount: deriveATAAddress(
+      trubillMint,
+      user,
+      TOKEN_2022_PROGRAM_ID,
+    ),
     userUsdcAta: deriveATAAddress(usdcMint, user),
     vaultCollateralAta: deriveATAAddress(usdcMint, vaultAuthority),
     usdcMint,
@@ -79,7 +83,9 @@ account metas in the exact order the program expects, each flagged `isSigner` an
 
 ```typescript
 // Anchor discriminator for `deposit`, taken from the IDL.
-const DEPOSIT_DISCRIMINATOR = Buffer.from([242, 35, 198, 137, 82, 225, 242, 182]);
+const DEPOSIT_DISCRIMINATOR = Buffer.from([
+  242, 35, 198, 137, 82, 225, 242, 182,
+]);
 
 function encodeDepositData(epoch: BN, amount: BN): Buffer {
   return Buffer.concat([
@@ -92,21 +98,41 @@ function encodeDepositData(epoch: BN, amount: BN): Buffer {
 // Order is fixed by the program. Each row: isSigner, isWritable, and the account's role.
 const keys = [
   { pubkey: user, isSigner: true, isWritable: true }, // payer: signs and funds, source of the USDC
-  { pubkey: Pda.getPdaVaultConfigAddress(), isSigner: false, isWritable: false }, // vault_config: params and epoch state
-  { pubkey: Pda.getPdaUsdcAccountingAddress(), isSigner: false, isWritable: true }, // usdc_accounting: reserve/pending ledger
-  { pubkey: Pda.getPdaStakerUserStatusAddress(user), isSigner: false, isWritable: false }, // user_whitelist: must be Whitelisted
+  {
+    pubkey: Pda.getPdaVaultConfigAddress(),
+    isSigner: false,
+    isWritable: false,
+  }, // vault_config: params and epoch state
+  {
+    pubkey: Pda.getPdaUsdcAccountingAddress(),
+    isSigner: false,
+    isWritable: true,
+  }, // usdc_accounting: reserve/pending ledger
+  {
+    pubkey: Pda.getPdaStakerUserStatusAddress(user),
+    isSigner: false,
+    isWritable: false,
+  }, // user_whitelist: must be Whitelisted
   { pubkey: vaultAuthority, isSigner: false, isWritable: false }, // vault_authority: mint and CPI signer PDA
   { pubkey: userTrubillAta, isSigner: false, isWritable: true }, // user_vault_token_account: TruBILL shares minted here
   { pubkey: userUsdcAta, isSigner: false, isWritable: true }, // user_usdc_ata: user's USDC source
   { pubkey: vaultCollateralAta, isSigner: false, isWritable: true }, // vault_collateral_ata: vault USDC sink
   { pubkey: usdcMint, isSigner: false, isWritable: false }, // usdc_mint: the deposit asset
   { pubkey: trubillMint, isSigner: false, isWritable: true }, // trubill_mint: share mint (Token-2022)
-  { pubkey: Pda.getPdaEpochSnapshotAddress(epoch), isSigner: false, isWritable: false }, // epoch_snapshot: NAV for pricing
+  {
+    pubkey: Pda.getPdaEpochSnapshotAddress(epoch),
+    isSigner: false,
+    isWritable: false,
+  }, // epoch_snapshot: NAV for pricing
   { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false }, // token_program: SPL Token, for USDC
   { pubkey: TOKEN_2022_PROGRAM_ID, isSigner: false, isWritable: false }, // token_program_2022: for the share mint
   { pubkey: ASSOCIATED_TOKEN_PROGRAM_ID, isSigner: false, isWritable: false }, // associated_token_program: ATA creation
   { pubkey: SystemProgram.programId, isSigner: false, isWritable: false }, // system_program
-  { pubkey: Pda.getPdaEventAuthorityAddress(), isSigner: false, isWritable: false }, // event_authority: Anchor event CPI
+  {
+    pubkey: Pda.getPdaEventAuthorityAddress(),
+    isSigner: false,
+    isWritable: false,
+  }, // event_authority: Anchor event CPI
   { pubkey: programId, isSigner: false, isWritable: false }, // program: self, for the event CPI
 ];
 ```

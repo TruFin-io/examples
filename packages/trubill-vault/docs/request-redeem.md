@@ -78,7 +78,9 @@ per-account role comments is in
 
 ```typescript
 // Anchor discriminator for `request_redeem`, taken from the IDL.
-const REQUEST_REDEEM_DISCRIMINATOR = Buffer.from([105, 49, 44, 38, 207, 241, 33, 173]);
+const REQUEST_REDEEM_DISCRIMINATOR = Buffer.from([
+  105, 49, 44, 38, 207, 241, 33, 173,
+]);
 
 function encodeRequestRedeemData(epoch: BN, trubillAmount: BN): Buffer {
   return Buffer.concat([
@@ -89,8 +91,12 @@ function encodeRequestRedeemData(epoch: BN, trubillAmount: BN): Buffer {
 }
 
 // user_redeem_state is an 8-byte discriminator followed by a little-endian u64 next_redeem_request_id.
-const stateInfo = await connection.getAccountInfo(Pda.getPdaUserRedeemStateAddress(user.publicKey));
-const redeemRequestId = stateInfo ? new BN(stateInfo.data.subarray(8, 16), "le") : new BN(0);
+const stateInfo = await connection.getAccountInfo(
+  Pda.getPdaUserRedeemStateAddress(user.publicKey),
+);
+const redeemRequestId = stateInfo
+  ? new BN(stateInfo.data.subarray(8, 16), "le")
+  : new BN(0);
 ```
 
 ```sh
@@ -107,7 +113,10 @@ The async builder derives the PDAs; you pass the pre-derived `redeemRequest` fro
 const [userRedeemState] = await findUserRedeemStatePda({ user: user.address });
 const state = await fetchMaybeUserRedeemState(rpc, userRedeemState);
 const redeemRequestId = state.exists ? state.data.nextRedeemRequestId : 0n;
-const [redeemRequest] = await findRedeemRequestPda({ user: user.address, redeemRequestId });
+const [redeemRequest] = await findRedeemRequestPda({
+  user: user.address,
+  redeemRequestId,
+});
 
 const instruction = await getRequestRedeemInstructionAsync({
   user,

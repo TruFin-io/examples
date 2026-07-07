@@ -72,10 +72,15 @@ comments is in [`native/instructions/claim-withdrawal.ts`](../native/instruction
 
 ```typescript
 // Anchor discriminator for `claim_withdrawal`, taken from the IDL.
-const CLAIM_WITHDRAWAL_DISCRIMINATOR = Buffer.from([118, 206, 173, 38, 239, 165, 65, 30]);
+const CLAIM_WITHDRAWAL_DISCRIMINATOR = Buffer.from([
+  118, 206, 173, 38, 239, 165, 65, 30,
+]);
 
 function encodeClaimWithdrawalData(redeemRequestId: BN): Buffer {
-  return Buffer.concat([CLAIM_WITHDRAWAL_DISCRIMINATOR, redeemRequestId.toArrayLike(Buffer, "le", 8)]);
+  return Buffer.concat([
+    CLAIM_WITHDRAWAL_DISCRIMINATOR,
+    redeemRequestId.toArrayLike(Buffer, "le", 8),
+  ]);
 }
 ```
 
