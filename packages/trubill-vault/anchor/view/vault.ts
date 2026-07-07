@@ -1,5 +1,4 @@
 import { Decimals, formatUnits } from "../../common/amounts";
-import { calcSharePrice } from "../../common/web3/helpers";
 import * as Pda from "../../common/web3/pda";
 import { getProvider, getTrubillVaultProgram } from "../program";
 
@@ -34,15 +33,10 @@ async function main() {
   console.log("  owner:", access.owner.toBase58());
   console.log("  operator:", access.operator.toBase58());
 
-  try {
-    const snapshot = await program.account.epochSnapshot.fetch(
-      Pda.getPdaEpochSnapshotAddress(config.lastSnapshotEpoch),
-    );
-    const price = calcSharePrice(BigInt(snapshot.totalAssets.toString()), BigInt(snapshot.totalShares.toString()));
-    console.log("Share price:", formatUnits(price, Decimals.USDC), "USDC per TruBILL");
-  } catch {
-    console.log("Share price: no epoch snapshot yet");
-  }
+  const sharePrice = await program.account.sharePrice.fetch(Pda.getPdaSharePriceAddress());
+  console.log("Share price:");
+  console.log("  price:", formatUnits(BigInt(sharePrice.price.toString()), Decimals.USDC), "USDC per TruBILL");
+  console.log("  lastUpdateEpoch:", sharePrice.lastUpdateEpoch.toString());
 }
 
 main().catch((error) => {
