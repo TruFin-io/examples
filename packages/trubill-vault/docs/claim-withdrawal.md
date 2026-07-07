@@ -111,4 +111,4 @@ bun run kit/instructions/claim-withdrawal.ts <redeemRequestId>
 - Native: [`native/instructions/claim-withdrawal.ts`](../native/instructions/claim-withdrawal.ts)
 - Kit: [`kit/instructions/claim-withdrawal.ts`](../kit/instructions/claim-withdrawal.ts)
 
-> Every runner sends to mainnet. Prefix with `SIMULATE=1` to dry-run.
+> Every runner sends to mainnet. Prefix with `SIMULATE=true` to dry-run.

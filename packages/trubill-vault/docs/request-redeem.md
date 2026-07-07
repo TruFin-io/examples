@@ -137,4 +137,4 @@ bun run kit/instructions/request-redeem.ts <trubillAmount>
 - Native: [`native/instructions/request-redeem.ts`](../native/instructions/request-redeem.ts)
 - Kit: [`kit/instructions/request-redeem.ts`](../kit/instructions/request-redeem.ts)
 
-> Every runner sends to mainnet. Prefix with `SIMULATE=1` to dry-run.
+> Every runner sends to mainnet. Prefix with `SIMULATE=true` to dry-run.

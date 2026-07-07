@@ -20,7 +20,7 @@ Step-by-step guides for each flow live in [`docs/`](./docs/README.md): [deposit]
 
 - Every user instruction requires the caller to be whitelisted in the TruFin Staker program. A wallet that is
   not whitelisted will fail. Contact TruFin to be onboarded.
-- Set `SIMULATE=1` to dry-run any instruction (builds and simulates, logs only, never sends).
+- Set `SIMULATE=true` to dry-run any instruction (builds and simulates, logs only, never sends).
 
 ## Setup
 
@@ -33,7 +33,7 @@ cp .env.example .env # then fill in RPC_URL and WALLET_KEYPAIR
 | ---------------- | --------------------------------------------------------------- |
 | `RPC_URL`        | Mainnet RPC endpoint (use your own provider).                   |
 | `WALLET_KEYPAIR` | Path to a Solana CLI keypair JSON (`~`, relative, or absolute). |
-| `SIMULATE`       | Optional. Set to `1` to simulate instead of send.               |
+| `SIMULATE`       | Optional. Set to `true` to simulate instead of send.               |
 
 The `kit/generated/` client is gitignored and regenerated from the committed IDL on `bun install` (or
 `bun run generate`).
@@ -54,7 +54,7 @@ epoch defaults to the latest completed Delta Manager epoch when omitted.
 
 ```sh
 # examples
-SIMULATE=1 bun run anchor/instructions/deposit.ts 10
+SIMULATE=true bun run anchor/instructions/deposit.ts 10
 bun run kit/instructions/request-redeem.ts 5
 bun run native/instructions/claim-withdrawal.ts 0
 ```

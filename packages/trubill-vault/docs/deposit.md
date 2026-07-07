@@ -167,4 +167,4 @@ bun run kit/instructions/deposit.ts <amount> [epoch]
 - Native: [`native/instructions/deposit.ts`](../native/instructions/deposit.ts)
 - Kit: [`kit/instructions/deposit.ts`](../kit/instructions/deposit.ts)
 
-> Every runner sends to mainnet. Prefix with `SIMULATE=1` to dry-run.
+> Every runner sends to mainnet. Prefix with `SIMULATE=true` to dry-run.

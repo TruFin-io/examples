@@ -131,4 +131,4 @@ bun run kit/instructions/instant-redeem.ts <amount> [epoch]
 - Native: [`native/instructions/instant-redeem.ts`](../native/instructions/instant-redeem.ts)
 - Kit: [`kit/instructions/instant-redeem.ts`](../kit/instructions/instant-redeem.ts)
 
-> Every runner sends to mainnet. Prefix with `SIMULATE=1` to dry-run.
+> Every runner sends to mainnet. Prefix with `SIMULATE=true` to dry-run.

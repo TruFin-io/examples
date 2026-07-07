@@ -13,9 +13,9 @@ export function requireEnv(name: string): string {
   return value;
 }
 
-/** Whether SIMULATE requests a dry-run. Only "1" or "true" count as on (so SIMULATE=0 stays off). */
+/** Whether SIMULATE requests a dry-run. Only SIMULATE=true counts as on; unset or false sends. */
 export function isSimulate(): boolean {
-  return process.env.SIMULATE === "1" || process.env.SIMULATE === "true";
+  return process.env.SIMULATE === "true";
 }
 
 /**
