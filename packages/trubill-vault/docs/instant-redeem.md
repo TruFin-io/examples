@@ -18,7 +18,6 @@ wallet must be whitelisted (see [Concepts](./README.md#concepts)).
    - [Anchor](#anchor)
    - [Native](#native)
    - [Kit](#kit)
-   - [Complete implementation](#complete-implementation)
 
 ## Understanding instant redeem
 
@@ -37,40 +36,8 @@ and reserve with `bun run anchor/view/vault.ts`.
 
 ### Anchor
 
-The runner fetches `vault_config.treasury` for you. Full file:
+The typed builder derives every account and the runner reads `vault_config.treasury` for you. See
 [`anchor/instructions/instant-redeem.ts`](../anchor/instructions/instant-redeem.ts).
-
-```typescript
-return program.methods
-  .instantRedeem(epoch, redeemAmount)
-  .accountsStrict({
-    payer: user,
-    vaultConfig: Pda.getPdaVaultConfigAddress(),
-    usdcAccounting: Pda.getPdaUsdcAccountingAddress(),
-    ultraAccounting: Pda.getPdaUltraAccountingAddress(),
-    userWhitelist: Pda.getPdaStakerUserStatusAddress(user),
-    vaultAuthority,
-    userVaultTokenAccount: deriveATAAddress(
-      trubillMint,
-      user,
-      TOKEN_2022_PROGRAM_ID,
-    ),
-    userUsdcAta: deriveATAAddress(usdcMint, user),
-    vaultCollateralAta: deriveATAAddress(usdcMint, vaultAuthority),
-    treasuryUsdcAta: deriveATAAddress(usdcMint, treasury),
-    treasury,
-    usdcMint,
-    trubillMint,
-    epochSnapshot: Pda.getPdaEpochSnapshotAddress(epoch),
-    tokenProgram: TOKEN_PROGRAM_ID,
-    tokenProgram2022: TOKEN_2022_PROGRAM_ID,
-    associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-    systemProgram: SystemProgram.programId,
-    eventAuthority: Pda.getPdaEventAuthorityAddress(),
-    program: program.programId,
-  })
-  .instruction();
-```
 
 ```sh
 bun run anchor/instructions/instant-redeem.ts <amount> [epoch]
@@ -78,25 +45,8 @@ bun run anchor/instructions/instant-redeem.ts <amount> [epoch]
 
 ### Native
 
-Discriminator plus little-endian `u64` args, then the ordered account metas (including the treasury and its
-USDC ATA). The full ordered list with role comments is in
-[`native/instructions/instant-redeem.ts`](../native/instructions/instant-redeem.ts). The
-[deposit guide](./deposit.md#native) shows the meta pattern in full.
-
-```typescript
-// Anchor discriminator for `instant_redeem`, taken from the IDL.
-const INSTANT_REDEEM_DISCRIMINATOR = Buffer.from([
-  187, 107, 208, 125, 224, 237, 40, 93,
-]);
-
-function encodeInstantRedeemData(epoch: BN, redeemAmount: BN): Buffer {
-  return Buffer.concat([
-    INSTANT_REDEEM_DISCRIMINATOR,
-    epoch.toArrayLike(Buffer, "le", 8),
-    redeemAmount.toArrayLike(Buffer, "le", 8),
-  ]);
-}
-```
+An 8-byte discriminator plus little-endian `u64` args, then the ordered account metas (including the treasury
+and its USDC ATA). See [`native/instructions/instant-redeem.ts`](../native/instructions/instant-redeem.ts).
 
 ```sh
 # native takes the epoch and treasury explicitly
@@ -105,30 +55,11 @@ bun run native/instructions/instant-redeem.ts <amount> <epoch> <treasury>
 
 ### Kit
 
-The runner reads the treasury from `vault_config`, then the async builder derives the rest. Full file:
+The runner reads the treasury from `vault_config`, then the async builder derives the rest. See
 [`kit/instructions/instant-redeem.ts`](../kit/instructions/instant-redeem.ts).
-
-```typescript
-const [vaultConfig] = await findVaultConfigPda();
-const { treasury } = (await fetchVaultConfig(rpc, vaultConfig)).data;
-
-const instruction = await getInstantRedeemInstructionAsync({
-  payer,
-  treasury,
-  program: TRUBILL_VAULT_PROGRAM_ADDRESS,
-  epoch,
-  redeemAmount: usdc(amountStr),
-});
-```
 
 ```sh
 bun run kit/instructions/instant-redeem.ts <amount> [epoch]
 ```
-
-### Complete implementation
-
-- Anchor: [`anchor/instructions/instant-redeem.ts`](../anchor/instructions/instant-redeem.ts)
-- Native: [`native/instructions/instant-redeem.ts`](../native/instructions/instant-redeem.ts)
-- Kit: [`kit/instructions/instant-redeem.ts`](../kit/instructions/instant-redeem.ts)
 
 > Every runner sends to mainnet. Prefix with `SIMULATE=true` to dry-run.

@@ -17,7 +17,6 @@ the request must have settled (see [Concepts](./README.md#concepts)).
    - [Anchor](#anchor)
    - [Native](#native)
    - [Kit](#kit)
-   - [Complete implementation](#complete-implementation)
 
 ## Understanding claim withdrawal
 
@@ -36,29 +35,8 @@ the `redeemRequestId` printed by your [request-redeem](./request-redeem.md) run.
 
 ### Anchor
 
-Full file: [`anchor/instructions/claim-withdrawal.ts`](../anchor/instructions/claim-withdrawal.ts).
-
-```typescript
-return program.methods
-  .claimWithdrawal(redeemRequestId)
-  .accountsStrict({
-    user,
-    userWhitelist: Pda.getPdaStakerUserStatusAddress(user),
-    vaultConfig: Pda.getPdaVaultConfigAddress(),
-    usdcAccounting: Pda.getPdaUsdcAccountingAddress(),
-    vaultAuthority,
-    usdcMint,
-    vaultUsdcAta: deriveATAAddress(usdcMint, vaultAuthority),
-    userUsdcAta: deriveATAAddress(usdcMint, user),
-    redeemRequest: Pda.getPdaRedeemRequestAddress(user, redeemRequestId),
-    tokenProgram: TOKEN_PROGRAM_ID,
-    associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-    systemProgram: SystemProgram.programId,
-    eventAuthority: Pda.getPdaEventAuthorityAddress(),
-    program: program.programId,
-  })
-  .instruction();
-```
+The typed builder derives every account; you pass the request id. See
+[`anchor/instructions/claim-withdrawal.ts`](../anchor/instructions/claim-withdrawal.ts).
 
 ```sh
 bun run anchor/instructions/claim-withdrawal.ts <redeemRequestId>
@@ -66,23 +44,8 @@ bun run anchor/instructions/claim-withdrawal.ts <redeemRequestId>
 
 ### Native
 
-Discriminator plus the little-endian `u64` id, then the ordered account metas. The full ordered list with role
-comments is in [`native/instructions/claim-withdrawal.ts`](../native/instructions/claim-withdrawal.ts). The
-[deposit guide](./deposit.md#native) shows the meta pattern in full.
-
-```typescript
-// Anchor discriminator for `claim_withdrawal`, taken from the IDL.
-const CLAIM_WITHDRAWAL_DISCRIMINATOR = Buffer.from([
-  118, 206, 173, 38, 239, 165, 65, 30,
-]);
-
-function encodeClaimWithdrawalData(redeemRequestId: BN): Buffer {
-  return Buffer.concat([
-    CLAIM_WITHDRAWAL_DISCRIMINATOR,
-    redeemRequestId.toArrayLike(Buffer, "le", 8),
-  ]);
-}
-```
+An 8-byte discriminator plus the little-endian `u64` id, then the ordered account metas. See
+[`native/instructions/claim-withdrawal.ts`](../native/instructions/claim-withdrawal.ts).
 
 ```sh
 bun run native/instructions/claim-withdrawal.ts <redeemRequestId>
@@ -90,25 +53,11 @@ bun run native/instructions/claim-withdrawal.ts <redeemRequestId>
 
 ### Kit
 
-The async builder derives the request PDA from the id. Full file:
+The async builder derives the request PDA from the id. See
 [`kit/instructions/claim-withdrawal.ts`](../kit/instructions/claim-withdrawal.ts).
-
-```typescript
-const instruction = await getClaimWithdrawalInstructionAsync({
-  user,
-  program: TRUBILL_VAULT_PROGRAM_ADDRESS,
-  redeemRequestId: BigInt(idStr),
-});
-```
 
 ```sh
 bun run kit/instructions/claim-withdrawal.ts <redeemRequestId>
 ```
-
-### Complete implementation
-
-- Anchor: [`anchor/instructions/claim-withdrawal.ts`](../anchor/instructions/claim-withdrawal.ts)
-- Native: [`native/instructions/claim-withdrawal.ts`](../native/instructions/claim-withdrawal.ts)
-- Kit: [`kit/instructions/claim-withdrawal.ts`](../kit/instructions/claim-withdrawal.ts)
 
 > Every runner sends to mainnet. Prefix with `SIMULATE=true` to dry-run.

@@ -7,10 +7,6 @@ The flows are [deposit](./deposit.md), [request-redeem](./request-redeem.md),
 [instant-redeem](./instant-redeem.md), and [claim-withdrawal](./claim-withdrawal.md). Mainnet addresses are in
 [addresses.md](./addresses.md).
 
-> Mainnet and whitelist. These scripts target mainnet and move real funds. Every user instruction requires the
-> caller to be whitelisted in the TruFin Staker program, so a wallet that is not whitelisted will fail. Set
-> `SIMULATE=true` to dry-run any instruction (build and simulate, never send).
-
 ## Concepts
 
 ### Whitelist gate

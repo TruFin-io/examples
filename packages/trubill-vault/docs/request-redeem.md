@@ -19,7 +19,6 @@ PDA is created, keyed by an incrementing id. Once it settles, finish with
    - [Anchor](#anchor)
    - [Native](#native)
    - [Kit](#kit)
-   - [Complete implementation](#complete-implementation)
 
 ## Understanding request redeem
 
@@ -40,30 +39,8 @@ A whitelisted wallet holding TruBILL, and `.env` configured (see [Setup](../READ
 
 ### Anchor
 
-Full file: [`anchor/instructions/request-redeem.ts`](../anchor/instructions/request-redeem.ts).
-
-```typescript
-return program.methods
-  .requestRedeem(epoch, trubillAmount)
-  .accountsStrict({
-    user,
-    vaultConfig: Pda.getPdaVaultConfigAddress(),
-    usdcAccounting: Pda.getPdaUsdcAccountingAddress(),
-    ultraAccounting: Pda.getPdaUltraAccountingAddress(),
-    userWhitelist: Pda.getPdaStakerUserStatusAddress(user),
-    vaultAuthority: Pda.getPdaVaultAuthorityAddress(),
-    trubillMint,
-    userTrubillAta: deriveATAAddress(trubillMint, user, TOKEN_2022_PROGRAM_ID),
-    userRedeemState: Pda.getPdaUserRedeemStateAddress(user),
-    redeemRequest: Pda.getPdaRedeemRequestAddress(user, redeemRequestId),
-    epochSnapshot: Pda.getPdaEpochSnapshotAddress(epoch),
-    tokenProgram2022: TOKEN_2022_PROGRAM_ID,
-    systemProgram: SystemProgram.programId,
-    eventAuthority: Pda.getPdaEventAuthorityAddress(),
-    program: program.programId,
-  })
-  .instruction();
-```
+The typed builder derives every account; you prefetch the next redeem id and pass the epoch and amount. See
+[`anchor/instructions/request-redeem.ts`](../anchor/instructions/request-redeem.ts).
 
 ```sh
 bun run anchor/instructions/request-redeem.ts <trubillAmount>
@@ -71,33 +48,9 @@ bun run anchor/instructions/request-redeem.ts <trubillAmount>
 
 ### Native
 
-Discriminator plus little-endian `u64` args, then the ordered account metas. The full ordered list with
-per-account role comments is in
-[`native/instructions/request-redeem.ts`](../native/instructions/request-redeem.ts). The
-[deposit guide](./deposit.md#native) shows the meta pattern in full.
-
-```typescript
-// Anchor discriminator for `request_redeem`, taken from the IDL.
-const REQUEST_REDEEM_DISCRIMINATOR = Buffer.from([
-  105, 49, 44, 38, 207, 241, 33, 173,
-]);
-
-function encodeRequestRedeemData(epoch: BN, trubillAmount: BN): Buffer {
-  return Buffer.concat([
-    REQUEST_REDEEM_DISCRIMINATOR,
-    epoch.toArrayLike(Buffer, "le", 8),
-    trubillAmount.toArrayLike(Buffer, "le", 8),
-  ]);
-}
-
-// user_redeem_state is an 8-byte discriminator followed by a little-endian u64 next_redeem_request_id.
-const stateInfo = await connection.getAccountInfo(
-  Pda.getPdaUserRedeemStateAddress(user.publicKey),
-);
-const redeemRequestId = stateInfo
-  ? new BN(stateInfo.data.subarray(8, 16), "le")
-  : new BN(0);
-```
+An 8-byte discriminator plus little-endian `u64` args, then the ordered account metas. The next redeem id is
+read from the raw `user_redeem_state` bytes. See
+[`native/instructions/request-redeem.ts`](../native/instructions/request-redeem.ts).
 
 ```sh
 # native takes the epoch explicitly
@@ -106,35 +59,12 @@ bun run native/instructions/request-redeem.ts <trubillAmount> <epoch>
 
 ### Kit
 
-The async builder derives the PDAs; you pass the pre-derived `redeemRequest` from the fetched id. Full file:
+The async builder derives the PDAs; you fetch the next redeem id from the `user_redeem_state` account and pass
+the derived `redeem_request` address. See
 [`kit/instructions/request-redeem.ts`](../kit/instructions/request-redeem.ts).
-
-```typescript
-const [userRedeemState] = await findUserRedeemStatePda({ user: user.address });
-const state = await fetchMaybeUserRedeemState(rpc, userRedeemState);
-const redeemRequestId = state.exists ? state.data.nextRedeemRequestId : 0n;
-const [redeemRequest] = await findRedeemRequestPda({
-  user: user.address,
-  redeemRequestId,
-});
-
-const instruction = await getRequestRedeemInstructionAsync({
-  user,
-  redeemRequest,
-  program: TRUBILL_VAULT_PROGRAM_ADDRESS,
-  epoch,
-  trubillAmount: trubill(amountStr),
-});
-```
 
 ```sh
 bun run kit/instructions/request-redeem.ts <trubillAmount>
 ```
-
-### Complete implementation
-
-- Anchor: [`anchor/instructions/request-redeem.ts`](../anchor/instructions/request-redeem.ts)
-- Native: [`native/instructions/request-redeem.ts`](../native/instructions/request-redeem.ts)
-- Kit: [`kit/instructions/request-redeem.ts`](../kit/instructions/request-redeem.ts)
 
 > Every runner sends to mainnet. Prefix with `SIMULATE=true` to dry-run.
