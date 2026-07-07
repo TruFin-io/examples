@@ -21,7 +21,6 @@ export const getPdaUltraAccountingAddress = (): PublicKey => pda([Buffer.from(Se
 export const getPdaVaultAccessAddress = (): PublicKey => pda([Buffer.from(Seed.VAULT_ACCESS)]);
 export const getPdaVaultAuthorityAddress = (): PublicKey => pda([Buffer.from(Seed.VAULT_AUTHORITY)]);
 export const getPdaTrubillMintAddress = (): PublicKey => pda([Buffer.from(Seed.TRUBILL_MINT)]);
-export const getPdaSharePriceAddress = (): PublicKey => pda([Buffer.from(Seed.SHARE_PRICE)]);
 export const getPdaEventAuthorityAddress = (): PublicKey => pda([Buffer.from(Seed.EVENT_AUTHORITY)]);
 
 export const getPdaEpochSnapshotAddress = (epoch: BN): PublicKey => pda([Buffer.from(Seed.EPOCH_SNAPSHOT), u64(epoch)]);
