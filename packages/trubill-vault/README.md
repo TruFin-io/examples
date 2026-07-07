@@ -33,7 +33,7 @@ cp .env.example .env # then fill in RPC_URL and WALLET_KEYPAIR
 | ---------------- | --------------------------------------------------------------- |
 | `RPC_URL`        | Mainnet RPC endpoint (use your own provider).                   |
 | `WALLET_KEYPAIR` | Path to a Solana CLI keypair JSON (`~`, relative, or absolute). |
-| `SIMULATE`       | Optional. Set to `true` to simulate instead of send.               |
+| `SIMULATE`       | Optional. Set to `true` to simulate instead of send.            |
 
 The `kit/generated/` client is gitignored and regenerated from the committed IDL on `bun install` (or
 `bun run generate`).
@@ -65,7 +65,7 @@ Every runner takes an optional trailing `[keypairPath]` to override `WALLET_KEYP
 
 | Script                         | anchor | native | kit | Output                                |
 | ------------------------------ | :----: | :----: | :-: | ------------------------------------- |
-| `view/vault.ts`                |   ✓    |        |     | Vault config, accounting, share price |
+| `view/vault.ts`                |   ✓    |        |  ✓  | Vault config, accounting, share price |
 | `view/latest-epoch.ts`         |   ✓    |   ✓    |  ✓  | Latest completed and effective epoch  |
 | `view/user-balances.ts [addr]` |   ✓    |   ✓    |  ✓  | SOL, USDC, and TruBILL balances       |
 
