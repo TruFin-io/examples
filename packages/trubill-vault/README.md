@@ -1,22 +1,26 @@
-# TruBILL Vault Examples
+# TruBILL vault examples
 
-Example integrations for the TruFin **TruBILL** Solana vault, showing the user flows — `deposit`,
-`request_redeem`, `instant_redeem`, `claim_withdrawal` — plus read-only views, across three client paradigms:
+Example integrations for the TruFin TruBILL Solana vault. They cover the user flows (`deposit`,
+`request_redeem`, `instant_redeem`, `claim_withdrawal`) and read-only views across three client paradigms:
 
-| Variant    | Stack                                             | What it teaches                                    |
-| ---------- | ------------------------------------------------- | -------------------------------------------------- |
-| **anchor** | `@coral-xyz/anchor` 0.32.1                         | High-level typed program client                    |
-| **native** | raw `@solana/web3.js`                              | The exact instruction bytes and account metas      |
-| **kit**    | [Codama](https://github.com/codama-idl/codama)-generated client + `@solana/kit` | The modern, tree-shakable client path |
+| Variant | Stack                                             | What it teaches                                    |
+| ------- | ------------------------------------------------- | -------------------------------------------------- |
+| anchor  | `@coral-xyz/anchor` 0.32.1                         | High-level typed program client                    |
+| native  | raw `@solana/web3.js`                              | The exact instruction bytes and account metas      |
+| kit     | [Codama](https://github.com/codama-idl/codama)-generated client + `@solana/kit` | The modern, tree-shakable client path |
 
 `common/` holds what the variants share: the committed IDLs, addresses, seeds, amount math, and (for anchor +
 native) the web3.js helpers.
 
-## ⚠️ Mainnet and whitelist
+Step-by-step guides for each flow live in [`docs/`](./docs/README.md): [deposit](./docs/deposit.md),
+[request-redeem](./docs/request-redeem.md), [instant-redeem](./docs/instant-redeem.md),
+[claim-withdrawal](./docs/claim-withdrawal.md), and [addresses](./docs/addresses.md).
 
-- **These scripts target mainnet and move real funds.** There is no devnet or localnet config.
-- **Every user instruction requires the caller to be whitelisted** in the TruFin Staker program. A wallet that
-  is not whitelisted will fail. Contact TruFin to be onboarded.
+## Mainnet and whitelist
+
+- These scripts target mainnet and move real funds. There is no devnet or localnet config.
+- Every user instruction requires the caller to be whitelisted in the TruFin Staker program. A wallet that is
+  not whitelisted will fail. Contact TruFin to be onboarded.
 - Set `SIMULATE=1` to dry-run any instruction (builds and simulates, logs only, never sends).
 
 ## Setup
