@@ -12,9 +12,7 @@ Example integrations for the TruFin TruBILL Solana vault. They cover the user fl
 `common/` holds what the variants share: the committed IDLs, addresses, seeds, amount math, and (for anchor +
 native) the web3.js helpers.
 
-Step-by-step guides for each flow live in [`docs/`](./docs/README.md): [deposit](./docs/deposit.md),
-[request-redeem](./docs/request-redeem.md), [instant-redeem](./docs/instant-redeem.md),
-[claim-withdrawal](./docs/claim-withdrawal.md), and [addresses](./docs/addresses.md).
+Step-by-step guides for each flow live in [`docs/USAGE.md`](./docs/USAGE.md).
 
 ## Note
 
