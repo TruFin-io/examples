@@ -3,11 +3,11 @@
 Example integrations for the TruFin TruBILL Solana vault. They cover the user flows (`deposit`,
 `request_redeem`, `instant_redeem`, `claim_withdrawal`) and read-only views across three client paradigms:
 
-| Variant | Stack                                             | What it teaches                                    |
-| ------- | ------------------------------------------------- | -------------------------------------------------- |
-| anchor  | `@coral-xyz/anchor` 0.32.1                         | High-level typed program client                    |
-| native  | raw `@solana/web3.js`                              | The exact instruction bytes and account metas      |
-| kit     | [Codama](https://github.com/codama-idl/codama)-generated client + `@solana/kit` | The modern, tree-shakable client path |
+| Variant | Stack
+| ------- | -------------------------------------------------
+| anchor  | `@coral-xyz/anchor` 0.32.1
+| native  | raw `@solana/web3.js`
+| kit     | [codama](https://github.com/codama-idl/codama)-generated client + `@solana/kit`
 
 `common/` holds what the variants share: the committed IDLs, addresses, seeds, amount math, and (for anchor +
 native) the web3.js helpers.
@@ -16,9 +16,8 @@ Step-by-step guides for each flow live in [`docs/`](./docs/README.md): [deposit]
 [request-redeem](./docs/request-redeem.md), [instant-redeem](./docs/instant-redeem.md),
 [claim-withdrawal](./docs/claim-withdrawal.md), and [addresses](./docs/addresses.md).
 
-## Mainnet and whitelist
+## Note
 
-- These scripts target mainnet and move real funds. There is no devnet or localnet config.
 - Every user instruction requires the caller to be whitelisted in the TruFin Staker program. A wallet that is
   not whitelisted will fail. Contact TruFin to be onboarded.
 - Set `SIMULATE=1` to dry-run any instruction (builds and simulates, logs only, never sends).
@@ -30,11 +29,11 @@ bun install          # also runs `bun run generate` (codama) via postinstall
 cp .env.example .env # then fill in RPC_URL and WALLET_KEYPAIR
 ```
 
-| Env var          | Description                                                          |
-| ---------------- | ------------------------------------------------------------------- |
-| `RPC_URL`        | Mainnet RPC endpoint (use your own provider).                       |
-| `WALLET_KEYPAIR` | Path to a Solana CLI keypair JSON (`~`, relative, or absolute).     |
-| `SIMULATE`       | Optional. Set to `1` to simulate instead of send.                   |
+| Env var          | Description
+| ---------------- | -------------------------------------------------------------------
+| `RPC_URL`        | Mainnet RPC endpoint (use your own provider).
+| `WALLET_KEYPAIR` | Path to a Solana CLI keypair JSON (`~`, relative, or absolute).
+| `SIMULATE`       | Optional. Set to `1` to simulate instead of send.
 
 The `kit/generated/` client is gitignored and regenerated from the committed IDL on `bun install` (or
 `bun run generate`).

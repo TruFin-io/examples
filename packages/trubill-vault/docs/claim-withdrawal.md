@@ -31,7 +31,7 @@ created. If the request has not settled yet, the instruction fails, so check fir
 
 ### Prerequisites
 
-A whitelisted wallet with a settled redeem request, and `.env` configured (see [Setup](./README.md#setup)). Use
+A whitelisted wallet with a settled redeem request, and `.env` configured (see [Setup](../README.md#setup)). Use
 the `redeemRequestId` printed by your [request-redeem](./request-redeem.md) run.
 
 ### Anchor

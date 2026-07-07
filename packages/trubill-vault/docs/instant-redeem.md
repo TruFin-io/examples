@@ -32,7 +32,7 @@ what the reserve holds.
 
 ### Prerequisites
 
-A whitelisted wallet holding TruBILL, and `.env` configured (see [Setup](./README.md#setup)). Find the treasury
+A whitelisted wallet holding TruBILL, and `.env` configured (see [Setup](../README.md#setup)). Find the treasury
 and reserve with `bun run anchor/view/vault.ts`.
 
 ### Anchor

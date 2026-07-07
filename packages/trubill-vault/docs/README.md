@@ -1,17 +1,11 @@
 # TruBILL vault integration guide
 
-These guides show how to integrate the TruFin TruBILL Solana vault's user flows across three client paradigms.
+These guides explain the TruBILL vault's user flows and how to call them from anchor, native, and kit. For
+install, environment, run commands, and the read-only views, see the [package README](../README.md).
+
 The flows are [deposit](./deposit.md), [request-redeem](./request-redeem.md),
-[instant-redeem](./instant-redeem.md), and [claim-withdrawal](./claim-withdrawal.md).
-
-| Variant    | Stack                                             | Best for                                      |
-| ---------- | ------------------------------------------------- | --------------------------------------------- |
-| anchor     | `@coral-xyz/anchor` 0.32.1                         | The fastest, typed integration                |
-| native     | raw `@solana/web3.js`                              | Seeing the exact instruction bytes and metas  |
-| kit        | [Codama](https://github.com/codama-idl/codama)-generated client + `@solana/kit` | Modern, tree-shakable clients |
-
-Each flow guide keeps to its flow and links back to the concepts below. The runnable source lives under
-`anchor/`, `native/`, and `kit/`.
+[instant-redeem](./instant-redeem.md), and [claim-withdrawal](./claim-withdrawal.md). Mainnet addresses are in
+[addresses.md](./addresses.md).
 
 > Mainnet and whitelist. These scripts target mainnet and move real funds. Every user instruction requires the
 > caller to be whitelisted in the TruFin Staker program, so a wallet that is not whitelisted will fail. Set
@@ -47,32 +41,3 @@ There are two ways out, both burning TruBILL shares:
   instant-redeem fee. It is bounded by available reserve.
 - [request-redeem](./request-redeem.md) burns shares now and records a `redeem_request`. Once it settles, call
   [claim-withdrawal](./claim-withdrawal.md) to receive the USDC and close the request.
-
-## Setup
-
-```sh
-bun install          # also runs `bun run generate` (codama) via postinstall
-cp .env.example .env # then fill in RPC_URL and WALLET_KEYPAIR
-```
-
-| Env var          | Description                                                      |
-| ---------------- | --------------------------------------------------------------- |
-| `RPC_URL`        | Mainnet RPC endpoint (use your own provider).                   |
-| `WALLET_KEYPAIR` | Path to a Solana CLI keypair JSON (`~`, relative, or absolute). |
-| `SIMULATE`       | Optional. Set to `1` to simulate instead of send.               |
-
-## Addresses
-
-Mainnet program and mint addresses are listed in [addresses.md](./addresses.md). PDAs (vault config,
-accounting, epoch snapshot, redeem request, user whitelist, and so on) are derived, never hardcoded. See
-`common/web3/pda.ts` for the anchor and native derivations, and `kit/generated/**/pdas` for kit.
-
-## Read-only views
-
-Before sending anything, inspect live state:
-
-| Script                          | anchor | native | kit | Output                               |
-| ------------------------------- | :----: | :----: | :-: | ------------------------------------ |
-| `view/vault.ts`                 |   ✓    |        |     | Vault config, accounting, share price |
-| `view/latest-epoch.ts`          |   ✓    |   ✓    |  ✓  | Latest completed and effective epoch |
-| `view/user-balances.ts [addr]`  |   ✓    |   ✓    |  ✓  | SOL, USDC, and TruBILL balances      |

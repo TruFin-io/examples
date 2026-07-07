@@ -34,7 +34,7 @@ and the epoch snapshot) are derived, never hardcoded.
 
 ### Prerequisites
 
-A whitelisted wallet with USDC, and `.env` configured (see [Setup](./README.md#setup)). Find the current epoch
+A whitelisted wallet with USDC, and `.env` configured (see [Setup](../README.md#setup)). Find the current epoch
 with `bun run <variant>/view/latest-epoch.ts`.
 
 ### Anchor

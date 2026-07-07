@@ -35,7 +35,7 @@ The USDC is not paid here. It becomes payable after the vault settles the reques
 
 ### Prerequisites
 
-A whitelisted wallet holding TruBILL, and `.env` configured (see [Setup](./README.md#setup)). The runners fetch
+A whitelisted wallet holding TruBILL, and `.env` configured (see [Setup](../README.md#setup)). The runners fetch
 `next_redeem_request_id` for you; if you build the instruction yourself, read it from `user_redeem_state`.
 
 ### Anchor
