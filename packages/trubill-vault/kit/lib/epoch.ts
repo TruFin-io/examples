@@ -12,6 +12,7 @@ export async function getEffectiveEpoch(): Promise<bigint> {
 
   const slot = await rpc.getSlot({ commitment: "confirmed" }).send();
   const blockTime = await rpc.getBlockTime(slot).send();
+  if (blockTime == null) throw new Error(`Could not fetch block time for slot ${slot}`);
   return calcDMEffectiveEpoch(currentEpoch, epochDuration, currentEpochStartTimestamp, BigInt(blockTime));
 }
 

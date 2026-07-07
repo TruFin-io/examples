@@ -13,6 +13,11 @@ export function requireEnv(name: string): string {
   return value;
 }
 
+/** Whether SIMULATE requests a dry-run. Only "1" or "true" count as on (so SIMULATE=0 stays off). */
+export function isSimulate(): boolean {
+  return process.env.SIMULATE === "1" || process.env.SIMULATE === "true";
+}
+
 /**
  * Read raw secret-key bytes from a JSON keypair file. Supports:
  * - "~/path/to/file.json" - home directory path (~ expanded)

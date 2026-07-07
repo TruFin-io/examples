@@ -3,6 +3,8 @@ import {
   getAccount,
   getAssociatedTokenAddressSync,
   TOKEN_PROGRAM_ID,
+  TokenAccountNotFoundError,
+  TokenInvalidAccountOwnerError,
 } from "@solana/spl-token";
 import { type Connection, type PublicKey } from "@solana/web3.js";
 
@@ -19,7 +21,9 @@ export async function getTokenBalance(
 ): Promise<bigint> {
   try {
     return (await getAccount(connection, ata, "confirmed", tokenProgram)).amount;
-  } catch {
-    return 0n;
+  } catch (error) {
+    // A missing (or not-yet-created) ATA reads as a zero balance; surface everything else.
+    if (error instanceof TokenAccountNotFoundError || error instanceof TokenInvalidAccountOwnerError) return 0n;
+    throw error;
   }
 }

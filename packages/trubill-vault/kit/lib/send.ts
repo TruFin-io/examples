@@ -12,6 +12,7 @@ import {
   type TransactionSigner,
   type TransactionWithBlockhashLifetime,
 } from "@solana/kit";
+import { isSimulate } from "../../common/web3/env";
 import { getRpc } from "./rpc";
 
 /** Build, sign and send a single-instruction v0 transaction. Set SIMULATE=1 to dry-run (logs only). */
@@ -28,7 +29,7 @@ export async function sendInstruction(instruction: Instruction, payer: Transacti
 
   const signedTransaction = await signTransactionMessageWithSigners(message);
 
-  if (process.env.SIMULATE) {
+  if (isSimulate()) {
     const wireTransaction = getBase64EncodedWireTransaction(signedTransaction);
     const simulation = await rpc.simulateTransaction(wireTransaction, { encoding: "base64" }).send();
     console.log("Simulation logs:");

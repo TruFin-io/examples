@@ -6,6 +6,7 @@ import {
   TransactionMessage,
   VersionedTransaction,
 } from "@solana/web3.js";
+import { isSimulate } from "./env";
 
 /**
  * Build, sign and send a v0 transaction, prepending a compute-unit limit.
@@ -28,7 +29,7 @@ export async function buildSignAndProcessTxV0(
   const tx = new VersionedTransaction(message);
   tx.sign([payer, ...signers]);
 
-  if (process.env.SIMULATE) {
+  if (isSimulate()) {
     const { value } = await connection.simulateTransaction(tx);
     console.log(`Simulation logs:\n${(value.logs ?? []).join("\n")}`);
     if (value.err) throw new Error(`Simulation failed: ${JSON.stringify(value.err)}`);
@@ -36,6 +37,8 @@ export async function buildSignAndProcessTxV0(
   }
 
   const signature = await connection.sendTransaction(tx);
-  await connection.confirmTransaction({ signature, blockhash, lastValidBlockHeight }, "confirmed");
+  // confirmTransaction resolves even when the tx failed on-chain; err is only null on success.
+  const { value } = await connection.confirmTransaction({ signature, blockhash, lastValidBlockHeight }, "confirmed");
+  if (value.err) throw new Error(`Transaction ${signature} failed: ${JSON.stringify(value.err)}`);
   return signature;
 }

@@ -69,7 +69,8 @@ async function main() {
   const [amountStr, epochStr, treasuryStr, keypairPath] = process.argv.slice(2);
   if (!amountStr || !epochStr || !treasuryStr) {
     console.error("Usage: bun run native/instructions/instant-redeem.ts <amount> <epoch> <treasury> [keypairPath]");
-    console.error("  find the epoch and treasury with: bun run native/view/vault.ts");
+    console.error("  find the epoch with: bun run native/view/latest-epoch.ts");
+    console.error("  find the treasury with: bun run anchor/view/vault.ts");
     process.exit(1);
   }
 

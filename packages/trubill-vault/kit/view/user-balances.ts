@@ -1,4 +1,4 @@
-import { type Address, address } from "@solana/kit";
+import { type Address, address, isSolanaError, SOLANA_ERROR__JSON_RPC__INVALID_PARAMS } from "@solana/kit";
 import { TOKEN_2022_PROGRAM, USDC_MINT } from "../../common/addresses";
 import { Decimals, formatUnits } from "../../common/amounts";
 import { findTrubillMintPda } from "../generated/trubill_vault/src/generated";
@@ -11,8 +11,10 @@ async function getTokenBalance(rpc: ReturnType<typeof getRpc>["rpc"], ata: Addre
   try {
     const { value } = await rpc.getTokenAccountBalance(ata).send();
     return BigInt(value.amount);
-  } catch {
-    return 0n;
+  } catch (error) {
+    // A missing (or not-yet-created) ATA makes the RPC reject with invalid-params; surface everything else.
+    if (isSolanaError(error, SOLANA_ERROR__JSON_RPC__INVALID_PARAMS)) return 0n;
+    throw error;
   }
 }
 
