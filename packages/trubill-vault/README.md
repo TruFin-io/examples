@@ -47,7 +47,7 @@ epoch defaults to the latest completed Delta Manager epoch when omitted.
 | ---------------- | --------------------------------------------------------- | ----------------------------------------------------------------- |
 | deposit          | `<variant>/instructions/deposit.ts <usdc> [epoch]`        | same                                                              |
 | request_redeem   | `<variant>/instructions/request-redeem.ts <trubill>`      | same                                                              |
-| instant_redeem   | `<variant>/instructions/instant-redeem.ts <usdc> [epoch]` | `native/instructions/instant-redeem.ts <usdc> <epoch> <treasury>` |
+| instant_redeem   | `<variant>/instructions/instant-redeem.ts <usdc> [epoch]` | `native/instructions/instant-redeem.ts <usdc> <epoch>`            |
 | claim_withdrawal | `<variant>/instructions/claim-withdrawal.ts <requestId>`  | same                                                              |
 
 ```sh
