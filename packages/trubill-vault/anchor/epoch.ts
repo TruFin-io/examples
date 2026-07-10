@@ -1,20 +1,14 @@
-import { type AnchorProvider, BN } from "@coral-xyz/anchor";
-import { PublicKey } from "@solana/web3.js";
-import { ASSET_CONTROLLER } from "../common/addresses";
-import { calcDMEffectiveEpoch, getClusterTime } from "../common/web3/helpers";
-import { getDeltaManagerProgram } from "./program";
+import { type Program } from "@coral-xyz/anchor";
+import { type TrubillVault } from "../common/idls/trubill_vault";
+import * as Pda from "../common/web3/pda";
 
-/** Latest completed Delta Manager epoch (effective - 1), which deposit and redeem price against. */
-export async function getLatestCompletedEpoch(provider: AnchorProvider): Promise<BN> {
-  const dm = getDeltaManagerProgram(provider);
-  const ac = await dm.account.assetController.fetch(new PublicKey(ASSET_CONTROLLER));
-  const now = await getClusterTime(provider.connection);
-  const effective = calcDMEffectiveEpoch(
-    BigInt(ac.currentEpoch.toString()),
-    BigInt(ac.epochDuration.toString()),
-    BigInt(ac.currentEpochStartTimestamp.toString()),
-    now,
-  );
-  if (effective <= 0n) throw new Error("No Delta Manager epoch has completed yet");
-  return new BN((effective - 1n).toString());
+/**
+ * Epoch that deposit and redeem must price against: the vault's last snapshotted epoch.
+ * The program enforces `epoch == vault_config.last_snapshot_epoch`, so read it straight from
+ * the config. The Delta Manager epoch can run ahead of this whenever the operator's snapshot
+ * lags, so deriving from cluster time would return an epoch the vault has not snapshotted yet.
+ */
+export async function getSnapshotEpoch(program: Program<TrubillVault>) {
+  const config = await program.account.vaultConfig.fetch(Pda.getPdaVaultConfigAddress());
+  return config.lastSnapshotEpoch;
 }

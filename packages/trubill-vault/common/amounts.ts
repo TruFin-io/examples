@@ -8,7 +8,16 @@ export namespace Decimals {
   export const TRUBILL = 6;
 }
 
+/** 100% = 10,000 basis points */
+export const BPS_PRECISION = 10_000n;
+
 export const toBN = (value: string | number | bigint) => new BN(value.toString());
+
+/** floor(a * b / d) — deposit/redeem rounding. */
+export const mulDiv = (a: bigint, b: bigint, d: bigint) => (a * b) / d;
+
+/** ceil(a * b / d) — instant-redeem fee rounding. */
+export const mulDivCeil = (a: bigint, b: bigint, d: bigint) => (a * b === 0n ? 0n : (a * b + d - 1n) / d);
 
 /**
  * Multiplies a string representation of a number by a given exponent of base 10 (10exponent).

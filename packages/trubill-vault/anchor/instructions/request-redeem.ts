@@ -8,7 +8,7 @@ import { getWalletKeypair } from "../../common/web3/env";
 import * as Pda from "../../common/web3/pda";
 import { deriveATAAddress } from "../../common/web3/token";
 import { buildSignAndProcessTxV0 } from "../../common/web3/tx";
-import { getLatestCompletedEpoch } from "../epoch";
+import { getSnapshotEpoch } from "../epoch";
 import { getProvider, getTrubillVaultProgram } from "../program";
 
 /** Build a request-redeem instruction: burn TruBILL now and record a claim payable after settlement. */
@@ -57,7 +57,7 @@ async function main() {
   const user = getWalletKeypair(keypairPath);
   const provider = getProvider(user);
   const program = getTrubillVaultProgram(provider);
-  const epoch = await getLatestCompletedEpoch(provider);
+  const epoch = await getSnapshotEpoch(program);
 
   // The next redeem-request id comes from the user's counter (defaults to 0 before the first redeem).
   const state = await program.account.userRedeemState.fetchNullable(Pda.getPdaUserRedeemStateAddress(user.publicKey));

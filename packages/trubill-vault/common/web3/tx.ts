@@ -10,7 +10,7 @@ import { isSimulate } from "./env";
 
 /**
  * Build, sign and send a v0 transaction, prepending a compute-unit limit.
- * Set SIMULATE=1 to simulate and print logs instead of sending (returns "SIMULATED").
+ * Set SIMULATE=true to simulate and print logs instead of sending (returns "SIMULATED").
  */
 export async function buildSignAndProcessTxV0(
   connection: Connection,

@@ -9,7 +9,7 @@ import { getWalletKeypair } from "../../common/web3/env";
 import * as Pda from "../../common/web3/pda";
 import { deriveATAAddress } from "../../common/web3/token";
 import { buildSignAndProcessTxV0 } from "../../common/web3/tx";
-import { getLatestCompletedEpoch } from "../epoch";
+import { getSnapshotEpoch } from "../epoch";
 import { getProvider, getTrubillVaultProgram } from "../program";
 
 /** Build a deposit instruction: transfer `amount` USDC and mint TruBILL shares priced at `epoch`'s snapshot. */
@@ -48,7 +48,7 @@ async function main() {
   if (!amountStr) {
     console.error("Usage: bun run anchor/instructions/deposit.ts <amount> [epoch] [keypairPath]");
     console.error("  <amount>       USDC to deposit, as a decimal (e.g. 10.5)");
-    console.error("  [epoch]        pricing epoch; defaults to the latest completed epoch");
+    console.error("  [epoch]        pricing epoch; defaults to the vault's last snapshot epoch");
     console.error("  [keypairPath]  wallet keypair JSON; defaults to WALLET_KEYPAIR");
     console.error("  SIMULATE=true  dry-run only: build and simulate, never send");
     process.exit(1);
@@ -57,7 +57,7 @@ async function main() {
   const user = getWalletKeypair(keypairPath);
   const provider = getProvider(user);
   const program = getTrubillVaultProgram(provider);
-  const epoch = epochStr ? new BN(epochStr) : await getLatestCompletedEpoch(provider);
+  const epoch = epochStr ? new BN(epochStr) : await getSnapshotEpoch(program);
 
   const ix = await depositIx({ program, user: user.publicKey, epoch, amount: toBN(usdc(amountStr)) });
   const signature = await buildSignAndProcessTxV0(provider.connection, [ix], user);
