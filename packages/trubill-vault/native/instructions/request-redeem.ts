@@ -8,6 +8,7 @@ import { getConnection, getWalletKeypair } from "../../common/web3/env";
 import * as Pda from "../../common/web3/pda";
 import { deriveATAAddress } from "../../common/web3/token";
 import { buildSignAndProcessTxV0 } from "../../common/web3/tx";
+import { getVaultConfig } from "../vault-config";
 
 // Anchor discriminator for `request_redeem`, taken from the IDL.
 const REQUEST_REDEEM_DISCRIMINATOR = Buffer.from([105, 49, 44, 38, 207, 241, 33, 173]);
@@ -56,11 +57,10 @@ export function buildRequestRedeemIx(params: {
 }
 
 async function main() {
-  const [amountStr, epochStr, keypairPath] = process.argv.slice(2);
-  if (!amountStr || !epochStr) {
-    console.error("Usage: bun run native/instructions/request-redeem.ts <trubillAmount> <epoch> [keypairPath]");
+  const [amountStr, keypairPath] = process.argv.slice(2);
+  if (!amountStr) {
+    console.error("Usage: bun run native/instructions/request-redeem.ts <trubillAmount> [keypairPath]");
     console.error("  <trubillAmount>  TruBILL shares to redeem, as a decimal (e.g. 5.0)");
-    console.error("  <epoch>          pricing epoch (find with: bun run native/view/latest-epoch.ts)");
     console.error("  [keypairPath]    wallet keypair JSON; defaults to WALLET_KEYPAIR");
     console.error("  SIMULATE=true    dry-run only: build and simulate, never send");
     process.exit(1);
@@ -68,13 +68,14 @@ async function main() {
 
   const user = getWalletKeypair(keypairPath);
   const connection = getConnection();
+  const epoch = (await getVaultConfig(connection)).lastSnapshotEpoch;
 
   // UserRedeemState is an 8-byte discriminator followed by a little-endian u64 next_redeem_request_id.
   const stateInfo = await connection.getAccountInfo(Pda.getPdaUserRedeemStateAddress(user.publicKey));
   const redeemRequestId = stateInfo ? new BN(stateInfo.data.subarray(8, 16), "le") : new BN(0);
 
   const trubillAmount = toBN(trubill(amountStr));
-  const ix = buildRequestRedeemIx({ user: user.publicKey, epoch: new BN(epochStr), redeemRequestId, trubillAmount });
+  const ix = buildRequestRedeemIx({ user: user.publicKey, epoch, redeemRequestId, trubillAmount });
   const signature = await buildSignAndProcessTxV0(connection, [ix], user);
   console.log(`Request-redeem tx: ${signature} (redeem request id ${redeemRequestId.toString()})`);
 }

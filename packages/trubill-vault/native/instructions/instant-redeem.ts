@@ -2,12 +2,13 @@ import { fileURLToPath } from "node:url";
 import { BN } from "@coral-xyz/anchor";
 import { ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_2022_PROGRAM_ID, TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import { PublicKey, SystemProgram, TransactionInstruction } from "@solana/web3.js";
-import { TREASURY, TRUBILL_VAULT_PROGRAM_ID, USDC_MINT } from "../../common/addresses";
-import { toBN, usdc } from "../../common/amounts";
+import { TRUBILL_VAULT_PROGRAM_ID, USDC_MINT } from "../../common/addresses";
+import { toBN, trubill } from "../../common/amounts";
 import { getConnection, getWalletKeypair } from "../../common/web3/env";
 import * as Pda from "../../common/web3/pda";
 import { deriveATAAddress } from "../../common/web3/token";
 import { buildSignAndProcessTxV0 } from "../../common/web3/tx";
+import { getVaultConfig } from "../vault-config";
 
 // Anchor discriminator for `instant_redeem`, taken from the IDL.
 const INSTANT_REDEEM_DISCRIMINATOR = Buffer.from([187, 107, 208, 125, 224, 237, 40, 93]);
@@ -67,24 +68,23 @@ export function buildInstantRedeemIx(params: {
 
 async function main() {
   const [amountStr, epochStr, keypairPath] = process.argv.slice(2);
-  if (!amountStr || !epochStr) {
-    console.error("Usage: bun run native/instructions/instant-redeem.ts <amount> <epoch> [keypairPath]");
-    console.error("  <amount>       USDC to receive, as a decimal (e.g. 10.5)");
-    console.error("  <epoch>        pricing epoch (find with: bun run native/view/latest-epoch.ts)");
+  if (!amountStr) {
+    console.error("Usage: bun run native/instructions/instant-redeem.ts <amount> [epoch] [keypairPath]");
+    console.error("  <amount>       TruBILL shares to redeem, as a decimal (e.g. 5.0)");
+    console.error("  [epoch]        pricing epoch; defaults to the vault's last snapshot epoch");
     console.error("  [keypairPath]  wallet keypair JSON; defaults to WALLET_KEYPAIR");
     console.error("  SIMULATE=true  dry-run only: build and simulate, never send");
     process.exit(1);
   }
 
   const user = getWalletKeypair(keypairPath);
-  const redeemAmount = toBN(usdc(amountStr));
-  const ix = buildInstantRedeemIx({
-    user: user.publicKey,
-    epoch: new BN(epochStr),
-    redeemAmount,
-    treasury: new PublicKey(TREASURY),
-  });
-  const signature = await buildSignAndProcessTxV0(getConnection(), [ix], user);
+  const connection = getConnection();
+  // The program enforces treasury == vault_config.treasury, so read both from the config.
+  const { treasury, lastSnapshotEpoch } = await getVaultConfig(connection);
+  const epoch = epochStr ? new BN(epochStr) : lastSnapshotEpoch;
+  const redeemAmount = toBN(trubill(amountStr));
+  const ix = buildInstantRedeemIx({ user: user.publicKey, epoch, redeemAmount, treasury });
+  const signature = await buildSignAndProcessTxV0(connection, [ix], user);
   console.log(`Instant-redeem tx: ${signature}`);
 }
 

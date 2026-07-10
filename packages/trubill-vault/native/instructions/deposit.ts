@@ -8,6 +8,7 @@ import { getConnection, getWalletKeypair } from "../../common/web3/env";
 import * as Pda from "../../common/web3/pda";
 import { deriveATAAddress } from "../../common/web3/token";
 import { buildSignAndProcessTxV0 } from "../../common/web3/tx";
+import { getVaultConfig } from "../vault-config";
 
 // Anchor discriminator for `deposit`: sha256("global:deposit")[..8], taken from the IDL.
 const DEPOSIT_DISCRIMINATOR = Buffer.from([242, 35, 198, 137, 82, 225, 242, 182]);
@@ -58,19 +59,21 @@ export function buildDepositIx(params: { user: PublicKey; epoch: BN; amount: BN 
 
 async function main() {
   const [amountStr, epochStr, keypairPath] = process.argv.slice(2);
-  if (!amountStr || !epochStr) {
-    console.error("Usage: bun run native/instructions/deposit.ts <amount> <epoch> [keypairPath]");
+  if (!amountStr) {
+    console.error("Usage: bun run native/instructions/deposit.ts <amount> [epoch] [keypairPath]");
     console.error("  <amount>       USDC to deposit, as a decimal (e.g. 10.5)");
-    console.error("  <epoch>        pricing epoch (find with: bun run native/view/latest-epoch.ts)");
+    console.error("  [epoch]        pricing epoch; defaults to the vault's last snapshot epoch");
     console.error("  [keypairPath]  wallet keypair JSON; defaults to WALLET_KEYPAIR");
     console.error("  SIMULATE=true  dry-run only: build and simulate, never send");
     process.exit(1);
   }
 
   const user = getWalletKeypair(keypairPath);
+  const connection = getConnection();
+  const epoch = epochStr ? new BN(epochStr) : (await getVaultConfig(connection)).lastSnapshotEpoch;
   const amount = toBN(usdc(amountStr));
-  const ix = buildDepositIx({ user: user.publicKey, epoch: new BN(epochStr), amount });
-  const signature = await buildSignAndProcessTxV0(getConnection(), [ix], user);
+  const ix = buildDepositIx({ user: user.publicKey, epoch, amount });
+  const signature = await buildSignAndProcessTxV0(connection, [ix], user);
   console.log(`Deposit tx: ${signature}`);
 }
 
