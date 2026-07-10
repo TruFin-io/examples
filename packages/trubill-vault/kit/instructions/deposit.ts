@@ -4,7 +4,7 @@ import { USDC_MINT } from "../../common/addresses";
 import { usdc } from "../../common/amounts";
 import { getDepositInstructionAsync, TRUBILL_VAULT_PROGRAM_ADDRESS } from "../generated/trubill_vault/src/generated";
 import { getWalletSigner } from "../lib/env";
-import { getLatestCompletedEpoch } from "../lib/epoch";
+import { getSnapshotEpoch } from "../lib/epoch";
 import { sendInstruction } from "../lib/send";
 import { deriveAta } from "../lib/token";
 
@@ -13,14 +13,14 @@ async function main() {
   if (!amountStr) {
     console.error("Usage: bun run kit/instructions/deposit.ts <amount> [epoch] [keypairPath]");
     console.error("  <amount>       USDC to deposit, as a decimal (e.g. 10.5)");
-    console.error("  [epoch]        pricing epoch; defaults to the latest completed epoch");
+    console.error("  [epoch]        pricing epoch; defaults to the vault's last snapshot epoch");
     console.error("  [keypairPath]  wallet keypair JSON; defaults to WALLET_KEYPAIR");
     console.error("  SIMULATE=true  dry-run only: build and simulate, never send");
     process.exit(1);
   }
 
   const payer = await getWalletSigner(keypairPath);
-  const epoch = epochStr ? BigInt(epochStr) : await getLatestCompletedEpoch();
+  const epoch = epochStr ? BigInt(epochStr) : await getSnapshotEpoch();
 
   // The async builder auto-derives every PDA and ATA; only the payer's USDC source and program are passed.
   const instruction = await getDepositInstructionAsync({

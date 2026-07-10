@@ -1,24 +1,14 @@
-import { address } from "@solana/kit";
-import { ASSET_CONTROLLER } from "../../common/addresses";
-import { calcDMEffectiveEpoch } from "../../common/web3/helpers";
-import { fetchAssetController } from "../generated/delta_manager/src/generated";
+import { fetchVaultConfig, findVaultConfigPda } from "../generated/trubill_vault/src/generated";
 import { getRpc } from "./rpc";
 
-/** Effective (current) Delta Manager epoch, mirroring the on-chain lazy transition. */
-export async function getEffectiveEpoch(): Promise<bigint> {
+/**
+ * Epoch that deposit and redeem must price against: the vault's last snapshotted epoch.
+ * The program enforces `epoch == vault_config.last_snapshot_epoch`, so read it straight from
+ * the config. The Delta Manager epoch can run ahead of this whenever the operator's snapshot
+ * lags, so deriving from cluster time would return an epoch the vault has not snapshotted yet.
+ */
+export async function getSnapshotEpoch(): Promise<bigint> {
   const { rpc } = getRpc();
-  const controller = await fetchAssetController(rpc, address(ASSET_CONTROLLER));
-  const { currentEpoch, epochDuration, currentEpochStartTimestamp } = controller.data;
-
-  const slot = await rpc.getSlot({ commitment: "confirmed" }).send();
-  const blockTime = await rpc.getBlockTime(slot).send();
-  if (blockTime == null) throw new Error(`Could not fetch block time for slot ${slot}`);
-  return calcDMEffectiveEpoch(currentEpoch, epochDuration, currentEpochStartTimestamp, BigInt(blockTime));
-}
-
-/** Latest completed Delta Manager epoch (effective - 1), which deposit and redeem price against. */
-export async function getLatestCompletedEpoch(): Promise<bigint> {
-  const effective = await getEffectiveEpoch();
-  if (effective <= 0n) throw new Error("No Delta Manager epoch has completed yet");
-  return effective - 1n;
+  const [vaultConfig] = await findVaultConfigPda();
+  return (await fetchVaultConfig(rpc, vaultConfig)).data.lastSnapshotEpoch;
 }

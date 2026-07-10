@@ -15,7 +15,7 @@ import {
 import { isSimulate } from "../../common/web3/env";
 import { getRpc } from "./rpc";
 
-/** Build, sign and send a single-instruction v0 transaction. Set SIMULATE=1 to dry-run (logs only). */
+/** Build, sign and send a single-instruction v0 transaction. Set SIMULATE=true to dry-run (logs only). */
 export async function sendInstruction(instruction: Instruction, payer: TransactionSigner): Promise<string> {
   const { rpc, rpcSubscriptions } = getRpc();
   const { value: latestBlockhash } = await rpc.getLatestBlockhash().send();

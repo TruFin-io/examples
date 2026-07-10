@@ -8,7 +8,7 @@ import {
   TRUBILL_VAULT_PROGRAM_ADDRESS,
 } from "../generated/trubill_vault/src/generated";
 import { getWalletSigner } from "../lib/env";
-import { getLatestCompletedEpoch } from "../lib/epoch";
+import { getSnapshotEpoch } from "../lib/epoch";
 import { getRpc } from "../lib/rpc";
 import { sendInstruction } from "../lib/send";
 
@@ -24,7 +24,7 @@ async function main() {
 
   const { rpc } = getRpc();
   const user = await getWalletSigner(keypairPath);
-  const epoch = await getLatestCompletedEpoch();
+  const epoch = await getSnapshotEpoch();
 
   // The next redeem-request id comes from the user's redeem state (0 for a first-time redeemer).
   const [userRedeemState] = await findUserRedeemStatePda({ user: user.address });
