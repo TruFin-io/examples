@@ -38,17 +38,20 @@ The `kit/generated/` client is gitignored and regenerated from the committed IDL
 
 ## Running
 
-Scripts run directly with `bun run <path>`. Amounts are decimal token units (e.g. `10.5` USDC). The redeem
-epoch defaults to the latest completed Delta Manager epoch when omitted.
+Scripts run directly with `bun run <path>`. Amounts are decimal token units (e.g. `10.5` USDC, `5.0` TruBILL).
+The `[epoch]` argument is optional in every variant and defaults to the vault's last snapshot epoch when omitted.
 
 ### Instructions
 
-| Flow             | anchor / kit                                              | native (explicit args)                                            |
-| ---------------- | --------------------------------------------------------- | ----------------------------------------------------------------- |
-| deposit          | `<variant>/instructions/deposit.ts <usdc> [epoch]`        | same                                                              |
-| request_redeem   | `<variant>/instructions/request-redeem.ts <trubill>`      | same                                                              |
-| instant_redeem   | `<variant>/instructions/instant-redeem.ts <usdc> [epoch]` | `native/instructions/instant-redeem.ts <usdc> <epoch>`            |
-| claim_withdrawal | `<variant>/instructions/claim-withdrawal.ts <requestId>`  | same                                                              |
+| Flow             | Command (any variant)                                        |
+| ---------------- | -----------------------------------------------------------  |
+| deposit          | `<variant>/instructions/deposit.ts <usdc> [epoch]`           |
+| request_redeem   | `<variant>/instructions/request-redeem.ts <trubill>`         |
+| instant_redeem   | `<variant>/instructions/instant-redeem.ts <trubill> [epoch]` |
+| claim_withdrawal | `<variant>/instructions/claim-withdrawal.ts <requestId>`     |
+
+Both redeem flows take a TruBILL **share** amount: the program burns the shares and derives the USDC from the
+epoch's NAV. Use `view/quote.ts` to preview the conversion.
 
 ```sh
 # examples
@@ -61,11 +64,11 @@ Every runner takes an optional trailing `[keypairPath]` to override `WALLET_KEYP
 
 ### Views (read-only)
 
-| Script                         | anchor | native | kit | Output                                |
-| ------------------------------ | :----: | :----: | :-: | ------------------------------------- |
-| `view/vault.ts`                |   ✓    |        |  ✓  | Vault config, accounting, share price |
-| `view/latest-epoch.ts`         |   ✓    |   ✓    |  ✓  | Latest completed and effective epoch  |
-| `view/user-balances.ts [addr]` |   ✓    |   ✓    |  ✓  | SOL, USDC, and TruBILL balances       |
+| Script                                     | anchor | native | kit | Output                                    |
+| -----------------------------------        | :----: | :----: | :-: | ------------------------------------------|
+| `view/vault.ts`                            |   ✓    |        |  ✓  | Vault public config and share price       |
+| `view/quote.ts <deposit\|redeem> <amount>` |   ✓    |        |  ✓  | Preview TruBILL⇄USDC for a deposit/redeem |
+| `view/user-balances.ts [addr]`             |   ✓    |   ✓    |  ✓  | SOL, USDC, and TruBILL balances           |
 
 ## Linting
 
