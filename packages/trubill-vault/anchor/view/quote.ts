@@ -37,12 +37,23 @@ async function main() {
   const fee = mulDivCeil(usdcGross, BigInt(config.instantRedeemFee), BPS_PRECISION);
   const usdcInstant = usdcGross - fee;
 
+  // Instant redeem pays from the USDC reserve; the program requires the gross USDC to fit within it.
+  const usdcAccounting = await program.account.usdcAccounting.fetch(Pda.getPdaUsdcAccountingAddress());
+  const reserve = BigInt(usdcAccounting.reserve.toString());
+
   console.log(`Redeem ${amountStr} TruBILL:`);
   console.log(`  request-redeem -> ${formatUnits(usdcGross, Decimals.USDC)} USDC (no fee, paid after settlement)`);
-  console.log(
-    `  instant-redeem -> ${formatUnits(usdcInstant, Decimals.USDC)} USDC ` +
-      `(after ${formatUnits(fee, Decimals.USDC)} USDC fee)`,
-  );
+  if (usdcGross <= reserve) {
+    console.log(
+      `  instant-redeem -> ${formatUnits(usdcInstant, Decimals.USDC)} USDC ` +
+        `(after ${formatUnits(fee, Decimals.USDC)} USDC fee)`,
+    );
+  } else {
+    console.log(
+      `  instant-redeem -> not available: needs ${formatUnits(usdcGross, Decimals.USDC)} USDC but the reserve ` +
+        `holds ${formatUnits(reserve, Decimals.USDC)} USDC. Use request-redeem.`,
+    );
+  }
 }
 
 main().catch((error) => {
