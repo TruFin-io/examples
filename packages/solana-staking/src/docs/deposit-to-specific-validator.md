@@ -199,12 +199,21 @@ const [transientStakeAccount] = PublicKey.findProgramAddressSync(
 
 #### Step 3: Derive the Validator Stake Account PDA
 
-Derive the validator stake account PDA:
+Derive the validator stake account PDA. The stake pool stores a seed for each validator in its validator list
+(`validator_seed_suffix`, see [decodeValidatorListAccount.ts](../utils/decodeValidatorListAccount.ts) for how to read
+it). The seed is a u32: a seed of `0` adds no seed bytes, and any other value is appended as 4 little-endian bytes.
 
 ```typescript
+// The validator's validator_seed_suffix from the stake pool's validator list
+const validatorSeed = ...
+
 // Derive the validator stake account PDA
+const seeds = [validatorVoteAccount.toBuffer(), new PublicKey("EyKyx9LKz7Qbp6PSbBRoMdt8iNYp8PvFVupQTQRMY9AM").toBuffer()];
+if (validatorSeed !== 0) {
+  seeds.push(new BN(validatorSeed).toArrayLike(Buffer, "le", 4));
+}
 const [validatorStakeAccount] = PublicKey.findProgramAddressSync(
-  [validatorVoteAccount.toBuffer(), new PublicKey("EyKyx9LKz7Qbp6PSbBRoMdt8iNYp8PvFVupQTQRMY9AM").toBuffer()],
+  seeds,
   new PublicKey("SPoo1Ku8WFXoNDMHPsrGSTSG1Y47rzgn41SLUNakuHy")
 );
 ```
@@ -290,12 +299,21 @@ const [transientStakeAccount] = PublicKey.findProgramAddressSync(
 
 #### Step 3: Derive the Validator Stake Account PDA
 
-Derive the validator stake account PDA:
+Derive the validator stake account PDA. The stake pool stores a seed for each validator in its validator list
+(`validator_seed_suffix`, see [decodeValidatorListAccount.ts](../utils/decodeValidatorListAccount.ts) for how to read
+it). The seed is a u32: a seed of `0` adds no seed bytes, and any other value is appended as 4 little-endian bytes.
 
 ```typescript
+// The validator's validator_seed_suffix from the stake pool's validator list
+const validatorSeed = ...
+
 // Derive the validator stake account PDA
+const seeds = [validatorVoteAccount.toBuffer(), new PublicKey("EyKyx9LKz7Qbp6PSbBRoMdt8iNYp8PvFVupQTQRMY9AM").toBuffer()];
+if (validatorSeed !== 0) {
+  seeds.push(new BN(validatorSeed).toArrayLike(Buffer, "le", 4));
+}
 const [validatorStakeAccount] = PublicKey.findProgramAddressSync(
-  [validatorVoteAccount.toBuffer(), new PublicKey("EyKyx9LKz7Qbp6PSbBRoMdt8iNYp8PvFVupQTQRMY9AM").toBuffer()],
+  seeds,
   new PublicKey("SPoo1Ku8WFXoNDMHPsrGSTSG1Y47rzgn41SLUNakuHy")
 );
 ```
