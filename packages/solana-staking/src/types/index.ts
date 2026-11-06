@@ -47,16 +47,20 @@ export class DepositInstruction {
 
 /**
  * Usage:
- * const depositToSpecificValidatorIxn = new DepositToSpecificValidatorInstruction(10n, 0, 0);
+ * const depositToSpecificValidatorIxn = new DepositToSpecificValidatorInstruction(10n, transientSeed, ephemeralSeed);
  * const depositToSpecificValidatorIxBuffer = depositToSpecificValidatorIxn.toBuffer();
  */
 export class DepositToSpecificValidatorInstruction {
-  constructor(private amount: bigint) {}
+  constructor(private amount: bigint, private transientSeed: BN, private ephemeralSeed: BN) {}
 
   toBuffer(): Buffer {
     const discriminator = getIxName("deposit_to_specific_validator");
-    const data = new DepositArgs({ amount: this.amount }).toBuffer();
-    return Buffer.concat([discriminator, data]);
+    return Buffer.concat([
+      discriminator,
+      new DepositArgs({ amount: this.amount }).toBuffer(), // Amount of SOL to deposit in lamports (u64)
+      toU64(this.transientSeed), // Transient stake account seed (u64)
+      toU64(this.ephemeralSeed), // Ephemeral stake account seed (u64)
+    ]);
   }
 }
 

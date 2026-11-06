@@ -20,7 +20,6 @@ This document lists the Solana addresses used in the TruFin staking system.
 | Pool Mint                 | [6umRHtiuBd1PC6HQhfH9ioNsqY4ihZncZXNPiGu3d3rN](https://solscan.io/account/6umRHtiuBd1PC6HQhfH9ioNsqY4ihZncZXNPiGu3d3rN) | Token mint for pool tokens representing stake ownership |
 | Pool Reserve              | [EDKjf7YhYZyZriHrepRZEXNjwAen9aJwqToiWWqKf9yU](https://solscan.io/account/EDKjf7YhYZyZriHrepRZEXNjwAen9aJwqToiWWqKf9yU) | Reserve account holding SOL before it's delegated       |
 | Stake Pool Validator List | [8M7ZbLikHJdeU6iKzZxWJ8zHy1ozX65Zk2GBVcmFVnXe](https://solscan.io/account/8M7ZbLikHJdeU6iKzZxWJ8zHy1ozX65Zk2GBVcmFVnXe) | List of validators managed by the stake pool            |
-| Ephemeral Stake Account   | [H9chZiuQ5FjhTg1hUJ2V61VQWqTG5jYHfMcCDJrfRurK](https://solscan.io/account/H9chZiuQ5FjhTg1hUJ2V61VQWqTG5jYHfMcCDJrfRurK) | PDA that holds the ephemeral stake account              |
 
 ## Authority Accounts
 

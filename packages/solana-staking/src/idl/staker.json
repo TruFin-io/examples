@@ -113,6 +113,123 @@
       ]
     },
     {
+      "name": "add_third_party_agent",
+      "discriminator": [
+        94,
+        104,
+        254,
+        17,
+        61,
+        52,
+        158,
+        57
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "new_third_party_agent_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  104,
+                  105,
+                  114,
+                  100,
+                  95,
+                  112,
+                  97,
+                  114,
+                  116,
+                  121,
+                  95,
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "agent"
+              }
+            ]
+          }
+        },
+        {
+          "name": "agent_account",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "signer"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "event_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  95,
+                  95,
+                  101,
+                  118,
+                  101,
+                  110,
+                  116,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": [
+        {
+          "name": "agent",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
       "name": "add_user_to_blacklist",
       "discriminator": [
         61,
@@ -470,6 +587,118 @@
       ]
     },
     {
+      "name": "agent_release_third_party_user",
+      "discriminator": [
+        75,
+        170,
+        62,
+        31,
+        47,
+        201,
+        189,
+        70
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "agent_account",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "signer"
+              }
+            ]
+          }
+        },
+        {
+          "name": "third_party_user",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  104,
+                  105,
+                  114,
+                  100,
+                  95,
+                  112,
+                  97,
+                  114,
+                  116,
+                  121,
+                  95,
+                  117,
+                  115,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "event_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  95,
+                  95,
+                  101,
+                  118,
+                  101,
+                  110,
+                  116,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": [
+        {
+          "name": "user",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
       "name": "claim_ownership",
       "discriminator": [
         236,
@@ -505,6 +734,32 @@
               }
             ]
           }
+        },
+        {
+          "name": "owner_agent_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pending_owner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
         },
         {
           "name": "event_authority",
@@ -647,6 +902,14 @@
     },
     {
       "name": "decrease_validator_stake",
+      "docs": [
+        "`transient_seed`: SPL transient stake seed. Must be the validator list's",
+        "`transient_seed_suffix` while transient stake is in flight; otherwise a fresh (e.g. random)",
+        "seed. See `deposit_to_specific_validator`.",
+        "",
+        "`ephemeral_seed`: SPL ephemeral stake seed. Pass a fresh (e.g. random) seed each call so",
+        "the pool-global ephemeral PDA is never fixed and a poisoned address can be routed around."
+      ],
       "discriminator": [
         145,
         203,
@@ -802,6 +1065,14 @@
         {
           "name": "amount",
           "type": "u64"
+        },
+        {
+          "name": "transient_seed",
+          "type": "u64"
+        },
+        {
+          "name": "ephemeral_seed",
+          "type": "u64"
         }
       ]
     },
@@ -893,6 +1164,9 @@
         },
         {
           "name": "referral_fee_token_account",
+          "docs": [
+            "zero and never enabled (see README \"Fees\"), so no tokens are ever routed here."
+          ],
           "writable": true
         },
         {
@@ -949,6 +1223,23 @@
     },
     {
       "name": "deposit_to_specific_validator",
+      "docs": [
+        "`transient_seed`: SPL transient stake seed. The transient stake account is a per-validator",
+        "PDA derived from this seed, and the Stake Pool program only creates it (`Allocate`/`Assign`)",
+        "when the validator has no transient stake in flight. While transient stake is in flight,",
+        "SPL requires the seed recorded in the validator list (`transient_seed_suffix`); once that",
+        "transient has been merged by epoch maintenance, pass a fresh (e.g. random) seed. Never",
+        "reuse a merged seed, and do not pick the next one predictably: anyone can keep an emptied",
+        "transient PDA alive by refilling its rent in the merge transaction, after which SPL can no",
+        "longer `Allocate` that address, and a whitelisted depositor can set the recorded suffix to",
+        "any value while nothing is in flight. Taking the seed from the caller means such an",
+        "address is simply abandoned instead of blocking this instruction for good.",
+        "",
+        "`ephemeral_seed`: SPL ephemeral stake seed. The ephemeral stake account is a pool-global",
+        "PDA derived from this seed, and SPL creates it with `Allocate`/`Assign`, which tolerates a",
+        "pre-funded address. Pass a fresh (e.g. random) seed each call so the address is never",
+        "fixed: a poisoned address is simply abandoned by choosing a different seed."
+      ],
       "discriminator": [
         147,
         165,
@@ -1053,6 +1344,9 @@
         },
         {
           "name": "referral_fee_token_account",
+          "docs": [
+            "zero and never enabled (see README \"Fees\"), so no tokens are ever routed here."
+          ],
           "writable": true
         },
         {
@@ -1140,11 +1434,27 @@
         {
           "name": "amount",
           "type": "u64"
+        },
+        {
+          "name": "transient_seed",
+          "type": "u64"
+        },
+        {
+          "name": "ephemeral_seed",
+          "type": "u64"
         }
       ]
     },
     {
       "name": "increase_validator_stake",
+      "docs": [
+        "`transient_seed`: SPL transient stake seed. Must be the validator list's",
+        "`transient_seed_suffix` while transient stake is in flight; otherwise a fresh (e.g. random)",
+        "seed. See `deposit_to_specific_validator`.",
+        "",
+        "`ephemeral_seed`: SPL ephemeral stake seed. Pass a fresh (e.g. random) seed each call so",
+        "the pool-global ephemeral PDA is never fixed and a poisoned address can be routed around."
+      ],
       "discriminator": [
         5,
         121,
@@ -1300,6 +1610,14 @@
       "args": [
         {
           "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "transient_seed",
+          "type": "u64"
+        },
+        {
+          "name": "ephemeral_seed",
           "type": "u64"
         }
       ]
@@ -1596,6 +1914,119 @@
                   115,
                   115
                 ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "event_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  95,
+                  95,
+                  101,
+                  118,
+                  101,
+                  110,
+                  116,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": [
+        {
+          "name": "agent",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "remove_third_party_agent",
+      "discriminator": [
+        246,
+        183,
+        83,
+        161,
+        72,
+        55,
+        108,
+        227
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "third_party_agent_account_to_remove",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  104,
+                  105,
+                  114,
+                  100,
+                  95,
+                  112,
+                  97,
+                  114,
+                  116,
+                  121,
+                  95,
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "agent"
+              }
+            ]
+          }
+        },
+        {
+          "name": "agent_account",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "signer"
               }
             ]
           }
@@ -1994,6 +2425,444 @@
       "args": []
     },
     {
+      "name": "third_party_add_user_to_blacklist",
+      "discriminator": [
+        227,
+        68,
+        79,
+        2,
+        8,
+        176,
+        116,
+        230
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "third_party_agent_account",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  104,
+                  105,
+                  114,
+                  100,
+                  95,
+                  112,
+                  97,
+                  114,
+                  116,
+                  121,
+                  95,
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "signer"
+              }
+            ]
+          }
+        },
+        {
+          "name": "third_party_user",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  104,
+                  105,
+                  114,
+                  100,
+                  95,
+                  112,
+                  97,
+                  114,
+                  116,
+                  121,
+                  95,
+                  117,
+                  115,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user_whitelist_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "event_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  95,
+                  95,
+                  101,
+                  118,
+                  101,
+                  110,
+                  116,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": [
+        {
+          "name": "user",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "third_party_add_user_to_whitelist",
+      "discriminator": [
+        89,
+        139,
+        130,
+        243,
+        230,
+        16,
+        255,
+        201
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "third_party_agent_account",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  104,
+                  105,
+                  114,
+                  100,
+                  95,
+                  112,
+                  97,
+                  114,
+                  116,
+                  121,
+                  95,
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "signer"
+              }
+            ]
+          }
+        },
+        {
+          "name": "third_party_user",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  104,
+                  105,
+                  114,
+                  100,
+                  95,
+                  112,
+                  97,
+                  114,
+                  116,
+                  121,
+                  95,
+                  117,
+                  115,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user_whitelist_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "event_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  95,
+                  95,
+                  101,
+                  118,
+                  101,
+                  110,
+                  116,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": [
+        {
+          "name": "user",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "third_party_clear_user_status",
+      "discriminator": [
+        58,
+        250,
+        29,
+        178,
+        200,
+        166,
+        85,
+        245
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "third_party_agent_account",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  104,
+                  105,
+                  114,
+                  100,
+                  95,
+                  112,
+                  97,
+                  114,
+                  116,
+                  121,
+                  95,
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "signer"
+              }
+            ]
+          }
+        },
+        {
+          "name": "third_party_user",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  104,
+                  105,
+                  114,
+                  100,
+                  95,
+                  112,
+                  97,
+                  114,
+                  116,
+                  121,
+                  95,
+                  117,
+                  115,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user_whitelist_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "event_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  95,
+                  95,
+                  101,
+                  118,
+                  101,
+                  110,
+                  116,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": [
+        {
+          "name": "user",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
       "name": "unpause",
       "discriminator": [
         169,
@@ -2107,6 +2976,32 @@
         28,
         104,
         211
+      ]
+    },
+    {
+      "name": "ThirdPartyAgent",
+      "discriminator": [
+        78,
+        222,
+        226,
+        49,
+        53,
+        176,
+        149,
+        227
+      ]
+    },
+    {
+      "name": "ThirdPartyUser",
+      "discriminator": [
+        30,
+        33,
+        251,
+        108,
+        98,
+        89,
+        49,
+        121
       ]
     },
     {
@@ -2255,6 +3150,58 @@
       ]
     },
     {
+      "name": "ThirdPartyAgentAdded",
+      "discriminator": [
+        158,
+        147,
+        202,
+        157,
+        150,
+        86,
+        130,
+        124
+      ]
+    },
+    {
+      "name": "ThirdPartyAgentRemoved",
+      "discriminator": [
+        58,
+        181,
+        105,
+        212,
+        230,
+        158,
+        105,
+        148
+      ]
+    },
+    {
+      "name": "ThirdPartyUserReleased",
+      "discriminator": [
+        22,
+        98,
+        50,
+        111,
+        244,
+        21,
+        159,
+        154
+      ]
+    },
+    {
+      "name": "ThirdPartyWhitelistingStatusChanged",
+      "discriminator": [
+        96,
+        231,
+        242,
+        111,
+        90,
+        63,
+        211,
+        124
+      ]
+    },
+    {
       "name": "ValidatorAdded",
       "discriminator": [
         67,
@@ -2370,6 +3317,26 @@
       "code": 6009,
       "name": "UserNotWhitelisted",
       "msg": "User is not whitelisted"
+    },
+    {
+      "code": 6010,
+      "name": "UserNotEligibleForThirdPartyWhitelisting",
+      "msg": "User is not eligible for third-party whitelisting"
+    },
+    {
+      "code": 6011,
+      "name": "NotUserOwner",
+      "msg": "Signer is not the owner of this third-party user"
+    },
+    {
+      "code": 6012,
+      "name": "CannotClearBlacklistedUser",
+      "msg": "A third-party agent cannot clear a blacklisted user"
+    },
+    {
+      "code": 6013,
+      "name": "CannotRemoveSelf",
+      "msg": "An agent cannot remove themselves"
     }
   ],
   "types": [
@@ -2541,6 +3508,97 @@
       "type": {
         "kind": "struct",
         "fields": []
+      }
+    },
+    {
+      "name": "ThirdPartyAgent",
+      "type": {
+        "kind": "struct",
+        "fields": []
+      }
+    },
+    {
+      "name": "ThirdPartyAgentAdded",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ThirdPartyAgentRemoved",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ThirdPartyUser",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ThirdPartyUserReleased",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "user",
+            "type": "pubkey"
+          },
+          {
+            "name": "agent",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ThirdPartyWhitelistingStatusChanged",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "user",
+            "type": "pubkey"
+          },
+          {
+            "name": "agent",
+            "type": "pubkey"
+          },
+          {
+            "name": "old_status",
+            "type": {
+              "defined": {
+                "name": "WhitelistUserStatus"
+              }
+            }
+          },
+          {
+            "name": "new_status",
+            "type": {
+              "defined": {
+                "name": "WhitelistUserStatus"
+              }
+            }
+          }
+        ]
       }
     },
     {

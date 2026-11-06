@@ -5,9 +5,12 @@ import { Keypair, PublicKey, Transaction } from "@solana/web3.js";
 import type { Staker } from "../../idl/staker";
 import * as constants from "../../utils/constants";
 import { decodeValidatorListAccount } from "../../utils/decodeValidatorListAccount";
+import { findEphemeralStakeAccount } from "../../utils/findEphemeralStakeAccount";
+import { findTransientStakeAccount } from "../../utils/findTransientStakeAccount";
 import { findValidatorStakeAccount } from "../../utils/findValidatorStakeAccount";
 import { formatSol } from "../../utils/format";
 import { getConnection } from "../../utils/getConnection";
+import { randomStakeSeed, transientStakeSeedFor } from "../../utils/stakeSeeds";
 import { getOrCreateTruSOLAssociatedTokenAccountInstruction } from "../shared";
 
 /**
@@ -45,18 +48,7 @@ export async function depositToSpecificValidator(
     constants.POOL_MINT
   );
 
-  // Derive the transient stake account PDA
-  const [transientStakeAccount] = PublicKey.findProgramAddressSync(
-    [
-      Buffer.from("transient"),
-      validatorVoteAccount.toBuffer(),
-      constants.STAKE_POOL_ACCOUNT.toBuffer(),
-      new BN(constants.TRANSIENT_STAKE_SEED).toArrayLike(Buffer, "le", 8),
-    ],
-    constants.STAKE_POOL_PROGRAM_ID
-  );
-
-  // Look up the validator in the stake pool's validator list to get its stake account seed
+  // Look up the validator in the stake pool's validator list to get its stake account seeds
   const validatorList = await decodeValidatorListAccount();
   const validator = validatorList.validators.find((v) => v.vote_account_address?.equals(validatorVoteAccount));
   if (!validator) {
@@ -66,15 +58,23 @@ export async function depositToSpecificValidator(
   // Derive the validator stake account PDA
   const validatorStakeAccount = findValidatorStakeAccount(validatorVoteAccount, validator.validator_seed_suffix);
 
+  // Pick the transient stake seed: the recorded one while transient stake is in flight, a random one otherwise
+  const transientSeed = transientStakeSeedFor(validator);
+  const transientStakeAccount = findTransientStakeAccount(validatorVoteAccount, transientSeed);
+
+  // Pick a fresh random ephemeral stake seed for every deposit
+  const ephemeralSeed = randomStakeSeed();
+  const ephemeralStakeAccount = findEphemeralStakeAccount(ephemeralSeed);
+
   const ix = await program.methods
-    .depositToSpecificValidator(amount)
+    .depositToSpecificValidator(amount, transientSeed, ephemeralSeed)
     .accounts({
       // === User Accounts ===
       user: userKeypair.publicKey,
       userPoolTokenAccount: userPoolTokenATA,
 
       // === Stake Accounts ===
-      ephemeralStakeAccount: constants.EPHEMERAL_STAKE_ACCOUNT,
+      ephemeralStakeAccount: ephemeralStakeAccount,
       transientStakeAccount: transientStakeAccount,
       validatorStakeAccount: validatorStakeAccount,
 

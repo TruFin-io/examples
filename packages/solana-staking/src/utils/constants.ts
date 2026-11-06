@@ -6,8 +6,6 @@ export const GLOBAL_NAMESPACE = "global" as const;
 export const RPC_URI_MAINNET = "https://api.mainnet-beta.solana.com";
 export const FEE_PRECISION = 10000;
 export const WITHDRAW_STAKE_INSTRUCTION_INDEX = 10;
-export const TRANSIENT_STAKE_SEED = 0;
-export const EPHEMERAL_STAKE_SEED = 0;
 
 /// Note: All the addresses below are for the mainnet. Also listed in `src/docs/addresses.md` ///
 
@@ -34,8 +32,6 @@ export const POOL_MINT = new PublicKey("6umRHtiuBd1PC6HQhfH9ioNsqY4ihZncZXNPiGu3
 export const POOL_RESERVE = new PublicKey("EDKjf7YhYZyZriHrepRZEXNjwAen9aJwqToiWWqKf9yU");
 // PDA that holds the validator list.
 export const STAKE_POOL_VALIDATOR_LIST = new PublicKey("8M7ZbLikHJdeU6iKzZxWJ8zHy1ozX65Zk2GBVcmFVnXe");
-// PDA that holds the ephemeral stake account.
-export const EPHEMERAL_STAKE_ACCOUNT = new PublicKey("H9chZiuQ5FjhTg1hUJ2V61VQWqTG5jYHfMcCDJrfRurK");
 
 // === Authority Accounts ===
 
