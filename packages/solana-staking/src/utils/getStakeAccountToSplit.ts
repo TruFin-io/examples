@@ -3,6 +3,7 @@ import { PublicKey } from "@solana/web3.js";
 
 import * as constants from "./constants";
 import { decodeValidatorListAccount } from "./decodeValidatorListAccount";
+import { findValidatorStakeAccount } from "./findValidatorStakeAccount";
 import { getConnection } from "./getConnection";
 import { getMinLamportsOnStakeAccount } from "./getMinLamportsOnStakeAccount";
 import { StakePool } from "./stake-pool/types";
@@ -38,11 +39,15 @@ export async function getStakeAccountToSplit(
 
   // ===== DERIVE STAKE ACCOUNTS =====
 
+  // Look up the validator in the stake pool's validator list to get its stake account seed
+  const validators = await decodeValidatorListAccount();
+  const validatorInfo = validators.validators.find((v) => v.vote_account_address?.equals(validatorVoteAccount));
+  if (!validatorInfo) {
+    throw new Error(`Validator ${validatorVoteAccount} is not in the stake pool's validator list`);
+  }
+
   // Derive the validator's active stake account PDA
-  const [validatorStakeAccount] = PublicKey.findProgramAddressSync(
-    [validatorVoteAccount.toBuffer(), constants.STAKE_POOL_ACCOUNT.toBuffer()],
-    constants.STAKE_POOL_PROGRAM_ID
-  );
+  const validatorStakeAccount = findValidatorStakeAccount(validatorVoteAccount, validatorInfo.validator_seed_suffix);
   console.log("Validator stake account:", validatorStakeAccount.toBase58());
 
   // Derive the validator's transient stake account PDA
@@ -91,7 +96,6 @@ export async function getStakeAccountToSplit(
   // ===== CHECK OTHER VALIDATORS' ACTIVE STAKE =====
 
   // Find all validators with active stake above minimum balance
-  const validators = await decodeValidatorListAccount();
   const validatorsWithStake = validators.validators.filter((validator) => {
     return Number(validator.active_stake_lamports) > minLamportsOnStakeAccount;
   });

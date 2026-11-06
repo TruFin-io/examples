@@ -4,6 +4,8 @@ import { Keypair, PublicKey, Transaction } from "@solana/web3.js";
 
 import type { Staker } from "../../idl/staker";
 import * as constants from "../../utils/constants";
+import { decodeValidatorListAccount } from "../../utils/decodeValidatorListAccount";
+import { findValidatorStakeAccount } from "../../utils/findValidatorStakeAccount";
 import { formatSol } from "../../utils/format";
 import { getConnection } from "../../utils/getConnection";
 import { getOrCreateTruSOLAssociatedTokenAccountInstruction } from "../shared";
@@ -54,11 +56,15 @@ export async function depositToSpecificValidator(
     constants.STAKE_POOL_PROGRAM_ID
   );
 
+  // Look up the validator in the stake pool's validator list to get its stake account seed
+  const validatorList = await decodeValidatorListAccount();
+  const validator = validatorList.validators.find((v) => v.vote_account_address?.equals(validatorVoteAccount));
+  if (!validator) {
+    throw new Error(`Validator ${validatorVoteAccount} is not in the stake pool's validator list`);
+  }
+
   // Derive the validator stake account PDA
-  const [validatorStakeAccount] = PublicKey.findProgramAddressSync(
-    [validatorVoteAccount.toBuffer(), constants.STAKE_POOL_ACCOUNT.toBuffer()],
-    constants.STAKE_POOL_PROGRAM_ID
-  );
+  const validatorStakeAccount = findValidatorStakeAccount(validatorVoteAccount, validator.validator_seed_suffix);
 
   const ix = await program.methods
     .depositToSpecificValidator(amount)
