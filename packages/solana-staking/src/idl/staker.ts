@@ -119,6 +119,123 @@ export type Staker = {
       ]
     },
     {
+      "name": "addThirdPartyAgent",
+      "discriminator": [
+        94,
+        104,
+        254,
+        17,
+        61,
+        52,
+        158,
+        57
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "newThirdPartyAgentAccount",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  104,
+                  105,
+                  114,
+                  100,
+                  95,
+                  112,
+                  97,
+                  114,
+                  116,
+                  121,
+                  95,
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "agent"
+              }
+            ]
+          }
+        },
+        {
+          "name": "agentAccount",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "signer"
+              }
+            ]
+          }
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "eventAuthority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  95,
+                  95,
+                  101,
+                  118,
+                  101,
+                  110,
+                  116,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": [
+        {
+          "name": "agent",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
       "name": "addUserToBlacklist",
       "discriminator": [
         61,
@@ -476,6 +593,118 @@ export type Staker = {
       ]
     },
     {
+      "name": "agentReleaseThirdPartyUser",
+      "discriminator": [
+        75,
+        170,
+        62,
+        31,
+        47,
+        201,
+        189,
+        70
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "agentAccount",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "signer"
+              }
+            ]
+          }
+        },
+        {
+          "name": "thirdPartyUser",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  104,
+                  105,
+                  114,
+                  100,
+                  95,
+                  112,
+                  97,
+                  114,
+                  116,
+                  121,
+                  95,
+                  117,
+                  115,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "eventAuthority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  95,
+                  95,
+                  101,
+                  118,
+                  101,
+                  110,
+                  116,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": [
+        {
+          "name": "user",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
       "name": "claimOwnership",
       "discriminator": [
         236,
@@ -511,6 +740,32 @@ export type Staker = {
               }
             ]
           }
+        },
+        {
+          "name": "ownerAgentAccount",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pendingOwner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
         },
         {
           "name": "eventAuthority",
@@ -653,6 +908,14 @@ export type Staker = {
     },
     {
       "name": "decreaseValidatorStake",
+      "docs": [
+        "`transient_seed`: SPL transient stake seed. Must be the validator list's",
+        "`transient_seed_suffix` while transient stake is in flight; otherwise a fresh (e.g. random)",
+        "seed. See `deposit_to_specific_validator`.",
+        "",
+        "`ephemeral_seed`: SPL ephemeral stake seed. Pass a fresh (e.g. random) seed each call so",
+        "the pool-global ephemeral PDA is never fixed and a poisoned address can be routed around."
+      ],
       "discriminator": [
         145,
         203,
@@ -808,6 +1071,14 @@ export type Staker = {
         {
           "name": "amount",
           "type": "u64"
+        },
+        {
+          "name": "transientSeed",
+          "type": "u64"
+        },
+        {
+          "name": "ephemeralSeed",
+          "type": "u64"
         }
       ]
     },
@@ -899,6 +1170,9 @@ export type Staker = {
         },
         {
           "name": "referralFeeTokenAccount",
+          "docs": [
+            "zero and never enabled (see README \"Fees\"), so no tokens are ever routed here."
+          ],
           "writable": true
         },
         {
@@ -955,6 +1229,23 @@ export type Staker = {
     },
     {
       "name": "depositToSpecificValidator",
+      "docs": [
+        "`transient_seed`: SPL transient stake seed. The transient stake account is a per-validator",
+        "PDA derived from this seed, and the Stake Pool program only creates it (`Allocate`/`Assign`)",
+        "when the validator has no transient stake in flight. While transient stake is in flight,",
+        "SPL requires the seed recorded in the validator list (`transient_seed_suffix`); once that",
+        "transient has been merged by epoch maintenance, pass a fresh (e.g. random) seed. Never",
+        "reuse a merged seed, and do not pick the next one predictably: anyone can keep an emptied",
+        "transient PDA alive by refilling its rent in the merge transaction, after which SPL can no",
+        "longer `Allocate` that address, and a whitelisted depositor can set the recorded suffix to",
+        "any value while nothing is in flight. Taking the seed from the caller means such an",
+        "address is simply abandoned instead of blocking this instruction for good.",
+        "",
+        "`ephemeral_seed`: SPL ephemeral stake seed. The ephemeral stake account is a pool-global",
+        "PDA derived from this seed, and SPL creates it with `Allocate`/`Assign`, which tolerates a",
+        "pre-funded address. Pass a fresh (e.g. random) seed each call so the address is never",
+        "fixed: a poisoned address is simply abandoned by choosing a different seed."
+      ],
       "discriminator": [
         147,
         165,
@@ -1059,6 +1350,9 @@ export type Staker = {
         },
         {
           "name": "referralFeeTokenAccount",
+          "docs": [
+            "zero and never enabled (see README \"Fees\"), so no tokens are ever routed here."
+          ],
           "writable": true
         },
         {
@@ -1146,11 +1440,27 @@ export type Staker = {
         {
           "name": "amount",
           "type": "u64"
+        },
+        {
+          "name": "transientSeed",
+          "type": "u64"
+        },
+        {
+          "name": "ephemeralSeed",
+          "type": "u64"
         }
       ]
     },
     {
       "name": "increaseValidatorStake",
+      "docs": [
+        "`transient_seed`: SPL transient stake seed. Must be the validator list's",
+        "`transient_seed_suffix` while transient stake is in flight; otherwise a fresh (e.g. random)",
+        "seed. See `deposit_to_specific_validator`.",
+        "",
+        "`ephemeral_seed`: SPL ephemeral stake seed. Pass a fresh (e.g. random) seed each call so",
+        "the pool-global ephemeral PDA is never fixed and a poisoned address can be routed around."
+      ],
       "discriminator": [
         5,
         121,
@@ -1306,6 +1616,14 @@ export type Staker = {
       "args": [
         {
           "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "transientSeed",
+          "type": "u64"
+        },
+        {
+          "name": "ephemeralSeed",
           "type": "u64"
         }
       ]
@@ -1602,6 +1920,119 @@ export type Staker = {
                   115,
                   115
                 ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "eventAuthority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  95,
+                  95,
+                  101,
+                  118,
+                  101,
+                  110,
+                  116,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": [
+        {
+          "name": "agent",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "removeThirdPartyAgent",
+      "discriminator": [
+        246,
+        183,
+        83,
+        161,
+        72,
+        55,
+        108,
+        227
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "thirdPartyAgentAccountToRemove",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  104,
+                  105,
+                  114,
+                  100,
+                  95,
+                  112,
+                  97,
+                  114,
+                  116,
+                  121,
+                  95,
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "agent"
+              }
+            ]
+          }
+        },
+        {
+          "name": "agentAccount",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "signer"
               }
             ]
           }
@@ -2000,6 +2431,444 @@ export type Staker = {
       "args": []
     },
     {
+      "name": "thirdPartyAddUserToBlacklist",
+      "discriminator": [
+        227,
+        68,
+        79,
+        2,
+        8,
+        176,
+        116,
+        230
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "thirdPartyAgentAccount",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  104,
+                  105,
+                  114,
+                  100,
+                  95,
+                  112,
+                  97,
+                  114,
+                  116,
+                  121,
+                  95,
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "signer"
+              }
+            ]
+          }
+        },
+        {
+          "name": "thirdPartyUser",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  104,
+                  105,
+                  114,
+                  100,
+                  95,
+                  112,
+                  97,
+                  114,
+                  116,
+                  121,
+                  95,
+                  117,
+                  115,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "userWhitelistAccount",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "eventAuthority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  95,
+                  95,
+                  101,
+                  118,
+                  101,
+                  110,
+                  116,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": [
+        {
+          "name": "user",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "thirdPartyAddUserToWhitelist",
+      "discriminator": [
+        89,
+        139,
+        130,
+        243,
+        230,
+        16,
+        255,
+        201
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "thirdPartyAgentAccount",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  104,
+                  105,
+                  114,
+                  100,
+                  95,
+                  112,
+                  97,
+                  114,
+                  116,
+                  121,
+                  95,
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "signer"
+              }
+            ]
+          }
+        },
+        {
+          "name": "thirdPartyUser",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  104,
+                  105,
+                  114,
+                  100,
+                  95,
+                  112,
+                  97,
+                  114,
+                  116,
+                  121,
+                  95,
+                  117,
+                  115,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "userWhitelistAccount",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "eventAuthority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  95,
+                  95,
+                  101,
+                  118,
+                  101,
+                  110,
+                  116,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": [
+        {
+          "name": "user",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "thirdPartyClearUserStatus",
+      "discriminator": [
+        58,
+        250,
+        29,
+        178,
+        200,
+        166,
+        85,
+        245
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "thirdPartyAgentAccount",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  104,
+                  105,
+                  114,
+                  100,
+                  95,
+                  112,
+                  97,
+                  114,
+                  116,
+                  121,
+                  95,
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "signer"
+              }
+            ]
+          }
+        },
+        {
+          "name": "thirdPartyUser",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  104,
+                  105,
+                  114,
+                  100,
+                  95,
+                  112,
+                  97,
+                  114,
+                  116,
+                  121,
+                  95,
+                  117,
+                  115,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "userWhitelistAccount",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "eventAuthority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  95,
+                  95,
+                  101,
+                  118,
+                  101,
+                  110,
+                  116,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": [
+        {
+          "name": "user",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
       "name": "unpause",
       "discriminator": [
         169,
@@ -2113,6 +2982,32 @@ export type Staker = {
         28,
         104,
         211
+      ]
+    },
+    {
+      "name": "thirdPartyAgent",
+      "discriminator": [
+        78,
+        222,
+        226,
+        49,
+        53,
+        176,
+        149,
+        227
+      ]
+    },
+    {
+      "name": "thirdPartyUser",
+      "discriminator": [
+        30,
+        33,
+        251,
+        108,
+        98,
+        89,
+        49,
+        121
       ]
     },
     {
@@ -2261,6 +3156,58 @@ export type Staker = {
       ]
     },
     {
+      "name": "thirdPartyAgentAdded",
+      "discriminator": [
+        158,
+        147,
+        202,
+        157,
+        150,
+        86,
+        130,
+        124
+      ]
+    },
+    {
+      "name": "thirdPartyAgentRemoved",
+      "discriminator": [
+        58,
+        181,
+        105,
+        212,
+        230,
+        158,
+        105,
+        148
+      ]
+    },
+    {
+      "name": "thirdPartyUserReleased",
+      "discriminator": [
+        22,
+        98,
+        50,
+        111,
+        244,
+        21,
+        159,
+        154
+      ]
+    },
+    {
+      "name": "thirdPartyWhitelistingStatusChanged",
+      "discriminator": [
+        96,
+        231,
+        242,
+        111,
+        90,
+        63,
+        211,
+        124
+      ]
+    },
+    {
       "name": "validatorAdded",
       "discriminator": [
         67,
@@ -2376,6 +3323,26 @@ export type Staker = {
       "code": 6009,
       "name": "userNotWhitelisted",
       "msg": "User is not whitelisted"
+    },
+    {
+      "code": 6010,
+      "name": "userNotEligibleForThirdPartyWhitelisting",
+      "msg": "User is not eligible for third-party whitelisting"
+    },
+    {
+      "code": 6011,
+      "name": "notUserOwner",
+      "msg": "Signer is not the owner of this third-party user"
+    },
+    {
+      "code": 6012,
+      "name": "cannotClearBlacklistedUser",
+      "msg": "A third-party agent cannot clear a blacklisted user"
+    },
+    {
+      "code": 6013,
+      "name": "cannotRemoveSelf",
+      "msg": "An agent cannot remove themselves"
     }
   ],
   "types": [
@@ -2547,6 +3514,97 @@ export type Staker = {
       "type": {
         "kind": "struct",
         "fields": []
+      }
+    },
+    {
+      "name": "thirdPartyAgent",
+      "type": {
+        "kind": "struct",
+        "fields": []
+      }
+    },
+    {
+      "name": "thirdPartyAgentAdded",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "thirdPartyAgentRemoved",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "thirdPartyUser",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "thirdPartyUserReleased",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "user",
+            "type": "pubkey"
+          },
+          {
+            "name": "agent",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "thirdPartyWhitelistingStatusChanged",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "user",
+            "type": "pubkey"
+          },
+          {
+            "name": "agent",
+            "type": "pubkey"
+          },
+          {
+            "name": "oldStatus",
+            "type": {
+              "defined": {
+                "name": "whitelistUserStatus"
+              }
+            }
+          },
+          {
+            "name": "newStatus",
+            "type": {
+              "defined": {
+                "name": "whitelistUserStatus"
+              }
+            }
+          }
+        ]
       }
     },
     {

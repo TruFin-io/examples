@@ -1,12 +1,12 @@
-import { BN } from "@coral-xyz/anchor";
 import { PublicKey } from "@solana/web3.js";
 
-import * as constants from "./constants";
 import { decodeValidatorListAccount } from "./decodeValidatorListAccount";
+import { findTransientStakeAccount } from "./findTransientStakeAccount";
 import { findValidatorStakeAccount } from "./findValidatorStakeAccount";
 import { getConnection } from "./getConnection";
 import { getMinLamportsOnStakeAccount } from "./getMinLamportsOnStakeAccount";
 import { StakePool } from "./stake-pool/types";
+import { recordedTransientStakeSeed } from "./stakeSeeds";
 
 /**
  * Determines the appropriate stake account to split for a withdrawal operation.
@@ -50,15 +50,10 @@ export async function getStakeAccountToSplit(
   const validatorStakeAccount = findValidatorStakeAccount(validatorVoteAccount, validatorInfo.validator_seed_suffix);
   console.log("Validator stake account:", validatorStakeAccount.toBase58());
 
-  // Derive the validator's transient stake account PDA
-  const [transientStakeAccount] = PublicKey.findProgramAddressSync(
-    [
-      Buffer.from("transient"),
-      validatorVoteAccount.toBuffer(),
-      constants.STAKE_POOL_ACCOUNT.toBuffer(),
-      new BN(constants.TRANSIENT_STAKE_SEED).toArrayLike(Buffer, "le", 8),
-    ],
-    constants.STAKE_POOL_PROGRAM_ID
+  // Derive the validator's transient stake account PDA from the seed recorded in the validator list
+  const transientStakeAccount = findTransientStakeAccount(
+    validatorVoteAccount,
+    recordedTransientStakeSeed(validatorInfo)
   );
   console.log("Transient stake account:", transientStakeAccount.toBase58());
 

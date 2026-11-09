@@ -28,6 +28,7 @@ By the end, you'll:
      - [Pool Accounts](#2-pool-accounts)
      - [Authority Accounts](#3-authority-accounts)
      - [Validator Accounts](#4-validator-accounts)
+     - [Transient and Ephemeral Stake Seeds](#5-transient-and-ephemeral-stake-seeds)
 2. [Integration Guide](#integration-guide)
    - [Prerequisites](#prerequisites)
    - [Code Example](#code-example)
@@ -82,8 +83,26 @@ Required accounts for deposits to a specific validator:
 
 - Validator Vote Account (the validator to deposit to)
 - Validator Stake Account (PDA derived from validator vote account)
-- Transient Stake Account (PDA derived from validator vote account)
-- Ephemeral Stake Account (for temporary stake operations)
+- Transient Stake Account (PDA derived from validator vote account and a transient stake seed)
+- Ephemeral Stake Account (for temporary stake operations, PDA derived from an ephemeral stake seed)
+
+#### 5. Transient and Ephemeral Stake Seeds
+
+The deposit moves SOL to the validator through two stake accounts whose addresses include a `u64` seed chosen by the
+caller. The `deposit_to_specific_validator` instruction takes both seeds as arguments, together with the matching
+accounts:
+
+- **Transient seed:** while the validator has transient stake in flight (`transient_stake_lamports` is not `0` in the
+  stake pool's validator list), you must pass the validator list's `transient_seed_suffix`; the stake pool program
+  rejects any other seed with `InvalidSeeds`. Otherwise, pass a fresh random seed.
+- **Ephemeral seed:** pass a fresh random seed on every deposit.
+
+Do not use a fixed or predictable seed (such as `0`, or the recorded seed plus one): anyone can fund a predictable
+address ahead of time so that the stake pool program can no longer create its stake account there, which blocks the
+deposit. Both seeds are 64-bit values, so keep them as `BN` (or `bigint`), never as a JS `number`.
+
+If a transient stake account is created or merged between reading the validator list and the transaction landing, the
+deposit fails with `InvalidSeeds`; read the validator list again and rebuild the transaction.
 
 ## Integration Guide
 
@@ -180,18 +199,45 @@ const createAccountIx = createAssociatedTokenAccountInstruction(
 );
 ```
 
-#### Step 2: Derive the Transient Stake Account PDA
+#### Step 2: Pick the Stake Seeds and Derive the Transient and Ephemeral Stake Account PDAs
 
-Derive the transient stake account PDA:
+Pick the transient and ephemeral stake seeds (see
+[Transient and Ephemeral Stake Seeds](#5-transient-and-ephemeral-stake-seeds)) and derive the matching stake account
+PDAs. Each seed is appended as 8 little-endian bytes. The example scripts do this with the helpers in
+[stakeSeeds.ts](../utils/stakeSeeds.ts), [findTransientStakeAccount.ts](../utils/findTransientStakeAccount.ts) and
+[findEphemeralStakeAccount.ts](../utils/findEphemeralStakeAccount.ts).
 
 ```typescript
+import { randomBytes } from "node:crypto";
+
+// The validator's entry in the stake pool's validator list
+const validator = ...
+
+// Transient seed: the recorded seed while transient stake is in flight, a fresh random seed otherwise
+const transientSeed = new BN(validator.transient_stake_lamports.toString()).isZero()
+  ? new BN(randomBytes(8))
+  : new BN(validator.transient_seed_suffix.toString());
+
+// Ephemeral seed: a fresh random seed on every deposit
+const ephemeralSeed = new BN(randomBytes(8));
+
 // Derive the transient stake account PDA
 const [transientStakeAccount] = PublicKey.findProgramAddressSync(
   [
     Buffer.from("transient"),
     validatorVoteAccount.toBuffer(),
     new PublicKey("EyKyx9LKz7Qbp6PSbBRoMdt8iNYp8PvFVupQTQRMY9AM").toBuffer(),
-    new BN(0).toArrayLike(Buffer, "le", 8),
+    transientSeed.toArrayLike(Buffer, "le", 8),
+  ],
+  new PublicKey("SPoo1Ku8WFXoNDMHPsrGSTSG1Y47rzgn41SLUNakuHy")
+);
+
+// Derive the ephemeral stake account PDA
+const [ephemeralStakeAccount] = PublicKey.findProgramAddressSync(
+  [
+    Buffer.from("ephemeral"),
+    new PublicKey("EyKyx9LKz7Qbp6PSbBRoMdt8iNYp8PvFVupQTQRMY9AM").toBuffer(),
+    ephemeralSeed.toArrayLike(Buffer, "le", 8),
   ],
   new PublicKey("SPoo1Ku8WFXoNDMHPsrGSTSG1Y47rzgn41SLUNakuHy")
 );
@@ -205,10 +251,13 @@ it). The seed is a u32: a seed of `0` adds no seed bytes, and any other value is
 
 ```typescript
 // The validator's validator_seed_suffix from the stake pool's validator list
-const validatorSeed = ...
+const validatorSeed = validator.validator_seed_suffix;
 
 // Derive the validator stake account PDA
-const seeds = [validatorVoteAccount.toBuffer(), new PublicKey("EyKyx9LKz7Qbp6PSbBRoMdt8iNYp8PvFVupQTQRMY9AM").toBuffer()];
+const seeds = [
+  validatorVoteAccount.toBuffer(),
+  new PublicKey("EyKyx9LKz7Qbp6PSbBRoMdt8iNYp8PvFVupQTQRMY9AM").toBuffer(),
+];
 if (validatorSeed !== 0) {
   seeds.push(new BN(validatorSeed).toArrayLike(Buffer, "le", 4));
 }
@@ -220,18 +269,19 @@ const [validatorStakeAccount] = PublicKey.findProgramAddressSync(
 
 #### Step 4: Build Anchor Deposit to Specific Validator Instruction
 
-The `deposit_to_specific_validator` instruction requires these accounts:
+The `deposit_to_specific_validator` instruction takes the amount and the two seeds from Step 2, and requires these
+accounts:
 
 ```typescript
 const depositIx = await program.methods
-  .depositToSpecificValidator(amount)
+  .depositToSpecificValidator(amount, transientSeed, ephemeralSeed)
   .accounts({
     // === User Accounts ===
     user: userKeypair.publicKey,
     userPoolTokenAccount: userPoolTokenATA,
 
     // === Stake Accounts ===
-    ephemeralStakeAccount: new PublicKey("H9chZiuQ5FjhTg1hUJ2V61VQWqTG5jYHfMcCDJrfRurK"),
+    ephemeralStakeAccount: ephemeralStakeAccount,
     transientStakeAccount: transientStakeAccount,
     validatorStakeAccount: validatorStakeAccount,
 
@@ -280,18 +330,45 @@ const [userWhitelistPDA] = PublicKey.findProgramAddressSync(
 );
 ```
 
-#### Step 2: Derive the Transient Stake Account PDA
+#### Step 2: Pick the Stake Seeds and Derive the Transient and Ephemeral Stake Account PDAs
 
-Derive the transient stake account PDA:
+Pick the transient and ephemeral stake seeds (see
+[Transient and Ephemeral Stake Seeds](#5-transient-and-ephemeral-stake-seeds)) and derive the matching stake account
+PDAs. Each seed is appended as 8 little-endian bytes. The example scripts do this with the helpers in
+[stakeSeeds.ts](../utils/stakeSeeds.ts), [findTransientStakeAccount.ts](../utils/findTransientStakeAccount.ts) and
+[findEphemeralStakeAccount.ts](../utils/findEphemeralStakeAccount.ts).
 
 ```typescript
+import { randomBytes } from "node:crypto";
+
+// The validator's entry in the stake pool's validator list
+const validator = ...
+
+// Transient seed: the recorded seed while transient stake is in flight, a fresh random seed otherwise
+const transientSeed = new BN(validator.transient_stake_lamports.toString()).isZero()
+  ? new BN(randomBytes(8))
+  : new BN(validator.transient_seed_suffix.toString());
+
+// Ephemeral seed: a fresh random seed on every deposit
+const ephemeralSeed = new BN(randomBytes(8));
+
 // Derive the transient stake account PDA
 const [transientStakeAccount] = PublicKey.findProgramAddressSync(
   [
     Buffer.from("transient"),
     validatorVoteAccount.toBuffer(),
     new PublicKey("EyKyx9LKz7Qbp6PSbBRoMdt8iNYp8PvFVupQTQRMY9AM").toBuffer(),
-    new BN(0).toArrayLike(Buffer, "le", 8),
+    transientSeed.toArrayLike(Buffer, "le", 8),
+  ],
+  new PublicKey("SPoo1Ku8WFXoNDMHPsrGSTSG1Y47rzgn41SLUNakuHy")
+);
+
+// Derive the ephemeral stake account PDA
+const [ephemeralStakeAccount] = PublicKey.findProgramAddressSync(
+  [
+    Buffer.from("ephemeral"),
+    new PublicKey("EyKyx9LKz7Qbp6PSbBRoMdt8iNYp8PvFVupQTQRMY9AM").toBuffer(),
+    ephemeralSeed.toArrayLike(Buffer, "le", 8),
   ],
   new PublicKey("SPoo1Ku8WFXoNDMHPsrGSTSG1Y47rzgn41SLUNakuHy")
 );
@@ -305,10 +382,13 @@ it). The seed is a u32: a seed of `0` adds no seed bytes, and any other value is
 
 ```typescript
 // The validator's validator_seed_suffix from the stake pool's validator list
-const validatorSeed = ...
+const validatorSeed = validator.validator_seed_suffix;
 
 // Derive the validator stake account PDA
-const seeds = [validatorVoteAccount.toBuffer(), new PublicKey("EyKyx9LKz7Qbp6PSbBRoMdt8iNYp8PvFVupQTQRMY9AM").toBuffer()];
+const seeds = [
+  validatorVoteAccount.toBuffer(),
+  new PublicKey("EyKyx9LKz7Qbp6PSbBRoMdt8iNYp8PvFVupQTQRMY9AM").toBuffer(),
+];
 if (validatorSeed !== 0) {
   seeds.push(new BN(validatorSeed).toArrayLike(Buffer, "le", 4));
 }
@@ -340,7 +420,9 @@ const createAccountIx = createAssociatedTokenAccountInstruction(
 
 #### Step 5: Build Native Deposit to Specific Validator Instruction
 
-The native implementation requires more explicit account definitions:
+The native implementation requires more explicit account definitions. The instruction data is the 8-byte instruction
+discriminator followed by `amount`, `transient_seed` and `ephemeral_seed`, each a `u64` in little-endian (32 bytes in
+total, see [DepositToSpecificValidatorInstruction](../types/index.ts)):
 
 ```typescript
 const depositIx = new TransactionInstruction({
@@ -416,12 +498,12 @@ const depositIx = new TransactionInstruction({
       isSigner: false,
     },
     {
-      pubkey: new PublicKey("H9chZiuQ5FjhTg1hUJ2V61VQWqTG5jYHfMcCDJrfRurK"), // EPHEMERAL_STAKE_ACCOUNT
+      pubkey: ephemeralStakeAccount, // Derived from the ephemeral seed
       isWritable: true,
       isSigner: false,
     },
     {
-      pubkey: transientStakeAccount, // Generated per validator vote account
+      pubkey: transientStakeAccount, // Derived from the validator vote account and the transient seed
       isWritable: true,
       isSigner: false,
     },
@@ -477,7 +559,7 @@ const depositIx = new TransactionInstruction({
     },
   ],
   programId: new PublicKey("6EZAJVrNQdnBJU6ULxXSDaEoK6fN7C3iXTCkZKRWDdGM"), // STAKER_PROGRAM_ID
-  data: new DepositToSpecificValidatorInstruction(amount).toBuffer(),
+  data: new DepositToSpecificValidatorInstruction(amount, transientSeed, ephemeralSeed).toBuffer(),
 });
 ```
 
