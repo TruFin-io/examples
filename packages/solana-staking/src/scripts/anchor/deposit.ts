@@ -48,6 +48,7 @@ export async function deposit(userKeypair: Keypair, amount: BN): Promise<string>
       stakePool: constants.STAKE_POOL_ACCOUNT,
       poolReserve: constants.POOL_RESERVE,
       poolMint: constants.POOL_MINT,
+      validatorList: constants.STAKE_POOL_VALIDATOR_LIST,
 
       // === Authority Accounts ===
       depositAuthority: constants.DEPOSIT_AUTHORITY,

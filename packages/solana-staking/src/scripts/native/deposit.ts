@@ -97,6 +97,11 @@ export async function deposit(userKeypair: Keypair, amount: bigint): Promise<str
         isWritable: false,
       },
       {
+        pubkey: constants.STAKE_POOL_VALIDATOR_LIST,
+        isSigner: false,
+        isWritable: true,
+      },
+      {
         pubkey: constants.STAKE_POOL_PROGRAM_ID,
         isSigner: false,
         isWritable: false,
