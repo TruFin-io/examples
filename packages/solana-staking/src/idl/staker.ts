@@ -1180,6 +1180,13 @@ export type Staker = {
           "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         },
         {
+          "name": "validatorList",
+          "docs": [
+            "the stake pool's validator list"
+          ],
+          "writable": true
+        },
+        {
           "name": "stakePoolProgram",
           "address": "SPoo1Ku8WFXoNDMHPsrGSTSG1Y47rzgn41SLUNakuHy"
         },
