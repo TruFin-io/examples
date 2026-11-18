@@ -3344,6 +3344,11 @@
       "code": 6013,
       "name": "CannotRemoveSelf",
       "msg": "An agent cannot remove themselves"
+    },
+    {
+      "code": 6014,
+      "name": "ValidatorStakeNotActive",
+      "msg": "Validator stake is deactivating or inactive"
     }
   ],
   "types": [

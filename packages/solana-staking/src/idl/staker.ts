@@ -3350,6 +3350,11 @@ export type Staker = {
       "code": 6013,
       "name": "cannotRemoveSelf",
       "msg": "An agent cannot remove themselves"
+    },
+    {
+      "code": 6014,
+      "name": "validatorStakeNotActive",
+      "msg": "Validator stake is deactivating or inactive"
     }
   ],
   "types": [
