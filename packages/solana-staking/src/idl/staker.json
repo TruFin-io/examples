@@ -1174,6 +1174,13 @@
           "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         },
         {
+          "name": "validator_list",
+          "docs": [
+            "the stake pool's validator list"
+          ],
+          "writable": true
+        },
+        {
           "name": "stake_pool_program",
           "address": "SPoo1Ku8WFXoNDMHPsrGSTSG1Y47rzgn41SLUNakuHy"
         },
@@ -3337,6 +3344,11 @@
       "code": 6013,
       "name": "CannotRemoveSelf",
       "msg": "An agent cannot remove themselves"
+    },
+    {
+      "code": 6014,
+      "name": "ValidatorStakeNotActive",
+      "msg": "Validator stake is missing, deactivating or inactive"
     }
   ],
   "types": [

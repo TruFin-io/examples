@@ -70,6 +70,8 @@ Required accounts for deposits:
 - Stake Pool (main contract)
 - Pool Reserve (holds staked SOL)
 - Pool Mint (TruSOL token mint)
+- Validator List (the stake pool's validators; the deposit first folds any SOL sent straight to the reserve into the
+  pool's total, so it prices from the current balance)
 
 #### 3. Authority Accounts
 
@@ -178,6 +180,7 @@ const depositIx = await program.methods
     stakePool: new PublicKey("EyKyx9LKz7Qbp6PSbBRoMdt8iNYp8PvFVupQTQRMY9AM"),
     poolReserve: new PublicKey("EDKjf7YhYZyZriHrepRZEXNjwAen9aJwqToiWWqKf9yU"),
     poolMint: new PublicKey("6umRHtiuBd1PC6HQhfH9ioNsqY4ihZncZXNPiGu3d3rN"),
+    validatorList: new PublicKey("8M7ZbLikHJdeU6iKzZxWJ8zHy1ozX65Zk2GBVcmFVnXe"),
 
     // === Authority Accounts ===
     depositAuthority: new PublicKey("BLTSuAqaoaUUjLRVdanFXGBi2fef5pwhKN23kCMVgX2T"),
@@ -301,6 +304,11 @@ const depositIx = new TransactionInstruction({
       pubkey: new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"), // TOKEN_PROGRAM_ID
       isSigner: false,
       isWritable: false,
+    },
+    {
+      pubkey: new PublicKey("8M7ZbLikHJdeU6iKzZxWJ8zHy1ozX65Zk2GBVcmFVnXe"), // STAKE_POOL_VALIDATOR_LIST
+      isSigner: false,
+      isWritable: true,
     },
     {
       pubkey: new PublicKey("SPoo1Ku8WFXoNDMHPsrGSTSG1Y47rzgn41SLUNakuHy"), // STAKE_POOL_PROGRAM_ID

@@ -1180,6 +1180,13 @@ export type Staker = {
           "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         },
         {
+          "name": "validatorList",
+          "docs": [
+            "the stake pool's validator list"
+          ],
+          "writable": true
+        },
+        {
           "name": "stakePoolProgram",
           "address": "SPoo1Ku8WFXoNDMHPsrGSTSG1Y47rzgn41SLUNakuHy"
         },
@@ -3343,6 +3350,11 @@ export type Staker = {
       "code": 6013,
       "name": "cannotRemoveSelf",
       "msg": "An agent cannot remove themselves"
+    },
+    {
+      "code": 6014,
+      "name": "validatorStakeNotActive",
+      "msg": "Validator stake is missing, deactivating or inactive"
     }
   ],
   "types": [
