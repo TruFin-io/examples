@@ -3348,7 +3348,7 @@
     {
       "code": 6014,
       "name": "ValidatorStakeNotActive",
-      "msg": "Validator stake is deactivating or inactive"
+      "msg": "Validator stake is missing, deactivating or inactive"
     }
   ],
   "types": [

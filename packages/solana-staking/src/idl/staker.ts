@@ -3354,7 +3354,7 @@ export type Staker = {
     {
       "code": 6014,
       "name": "validatorStakeNotActive",
-      "msg": "Validator stake is deactivating or inactive"
+      "msg": "Validator stake is missing, deactivating or inactive"
     }
   ],
   "types": [
