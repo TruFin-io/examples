@@ -104,6 +104,14 @@ deposit. Both seeds are 64-bit values, so keep them as `BN` (or `bigint`), never
 If a transient stake account is created or merged between reading the validator list and the transaction landing, the
 deposit fails with `InvalidSeeds`; read the validator list again and rebuild the transaction.
 
+A leftover transient stake account needs one more step. Anyone can run the stake pool's `UpdateValidatorListBalance`
+with `no_merge` on a validator whose transient stake was activated (or, after a decrease, deactivated) in an earlier
+epoch. The transient stake account then stays unmerged, and the stake pool program refuses to add to it, so deposits to
+that validator fail for the rest of the epoch. In that case, send `UpdateValidatorListBalance` with `no_merge` off for
+just that validator (it is permissionless) before the deposit, in the same transaction, and pass a fresh random
+transient seed, as a merged seed must never be reused. The example scripts do this with
+[mergeLeftoverTransientInstruction.ts](../utils/mergeLeftoverTransientInstruction.ts).
+
 ## Integration Guide
 
 This section explains how to integrate the deposit-to-specific-validator functionality into your application using
