@@ -1251,7 +1251,10 @@ export type Staker = {
         "`ephemeral_seed`: SPL ephemeral stake seed. The ephemeral stake account is a pool-global",
         "PDA derived from this seed, and SPL creates it with `Allocate`/`Assign`, which tolerates a",
         "pre-funded address. Pass a fresh (e.g. random) seed each call so the address is never",
-        "fixed: a poisoned address is simply abandoned by choosing a different seed."
+        "fixed: a poisoned address is simply abandoned by choosing a different seed.",
+        "",
+        "Rejects a validator whose pool stake is deactivating or inactive",
+        "(`ValidatorStakeNotActive`)."
       ],
       "discriminator": [
         147,
@@ -1466,7 +1469,10 @@ export type Staker = {
         "seed. See `deposit_to_specific_validator`.",
         "",
         "`ephemeral_seed`: SPL ephemeral stake seed. Pass a fresh (e.g. random) seed each call so",
-        "the pool-global ephemeral PDA is never fixed and a poisoned address can be routed around."
+        "the pool-global ephemeral PDA is never fixed and a poisoned address can be routed around.",
+        "",
+        "Rejects a validator whose pool stake is deactivating or inactive",
+        "(`ValidatorStakeNotActive`)."
       ],
       "discriminator": [
         5,
