@@ -112,6 +112,9 @@ just that validator (it is permissionless) before the deposit, in the same trans
 transient seed, as a merged seed must never be reused. The example scripts do this with
 [mergeLeftoverTransientInstruction.ts](../utils/mergeLeftoverTransientInstruction.ts).
 
+A validator whose own stake account is deactivating or inactive cannot take a deposit: the Staker rejects it with
+`ValidatorStakeNotActive` (error 6014). Skip the merge for such a validator, as the stake program would refuse it.
+
 ## Integration Guide
 
 This section explains how to integrate the deposit-to-specific-validator functionality into your application using
@@ -221,7 +224,8 @@ import { randomBytes } from "node:crypto";
 // The validator's entry in the stake pool's validator list
 const validator = ...
 
-// Transient seed: the recorded seed while transient stake is in flight, a fresh random seed otherwise
+// Transient seed: the recorded seed while transient stake is in flight, a fresh random seed otherwise.
+// A leftover transient stake account also needs a merge instruction first and a fresh random seed (see section 5).
 const transientSeed = new BN(validator.transient_stake_lamports.toString()).isZero()
   ? new BN(randomBytes(8))
   : new BN(validator.transient_seed_suffix.toString());
@@ -352,7 +356,8 @@ import { randomBytes } from "node:crypto";
 // The validator's entry in the stake pool's validator list
 const validator = ...
 
-// Transient seed: the recorded seed while transient stake is in flight, a fresh random seed otherwise
+// Transient seed: the recorded seed while transient stake is in flight, a fresh random seed otherwise.
+// A leftover transient stake account also needs a merge instruction first and a fresh random seed (see section 5).
 const transientSeed = new BN(validator.transient_stake_lamports.toString()).isZero()
   ? new BN(randomBytes(8))
   : new BN(validator.transient_seed_suffix.toString());
