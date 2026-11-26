@@ -39,6 +39,9 @@ export function recordedTransientStakeSeed(validator: ValidatorStakeInfo): BN {
  *   only accepts the seed recorded in the validator list, so that seed is returned.
  * - Otherwise a fresh random seed is returned (see `randomStakeSeed` for why it must not be predictable).
  *
+ * A transient stake account left unmerged from an earlier epoch is not covered: merge it first and use a fresh random
+ * seed instead (see `mergeLeftoverTransientInstruction`).
+ *
  * The validator list must be current: if a transient stake account is created or merged before the transaction lands,
  * the stake pool program rejects it with `InvalidSeeds`, and the transaction should be rebuilt from a fresh list.
  *

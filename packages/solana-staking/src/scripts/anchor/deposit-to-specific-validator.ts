@@ -10,6 +10,7 @@ import { findTransientStakeAccount } from "../../utils/findTransientStakeAccount
 import { findValidatorStakeAccount } from "../../utils/findValidatorStakeAccount";
 import { formatSol } from "../../utils/format";
 import { getConnection } from "../../utils/getConnection";
+import { mergeLeftoverTransientInstruction } from "../../utils/mergeLeftoverTransientInstruction";
 import { randomStakeSeed, transientStakeSeedFor } from "../../utils/stakeSeeds";
 import { getOrCreateTruSOLAssociatedTokenAccountInstruction } from "../shared";
 
@@ -58,8 +59,11 @@ export async function depositToSpecificValidator(
   // Derive the validator stake account PDA
   const validatorStakeAccount = findValidatorStakeAccount(validatorVoteAccount, validator.validator_seed_suffix);
 
-  // Pick the transient stake seed: the recorded one while transient stake is in flight, a random one otherwise
-  const transientSeed = transientStakeSeedFor(validator);
+  // If a `no_merge` pool update left the validator's transient stake unmerged, the deposit cannot add to it: merge it
+  // first, in the same transaction, and use a fresh seed, as a merged seed must never be reused.
+  // Otherwise pick the transient stake seed: the recorded one while transient stake is in flight, a random one otherwise
+  const mergeIx = await mergeLeftoverTransientInstruction(validatorList, validator);
+  const transientSeed = mergeIx ? randomStakeSeed() : transientStakeSeedFor(validator);
   const transientStakeAccount = findTransientStakeAccount(validatorVoteAccount, transientSeed);
 
   // Pick a fresh random ephemeral stake seed for every deposit
@@ -106,6 +110,12 @@ export async function depositToSpecificValidator(
   if (!tokenAccount && createAccountIx) {
     console.log("Adding instruction to create the associated token account");
     transaction.add(createAccountIx);
+  }
+
+  // Merge the leftover transient stake account before the deposit if needed
+  if (mergeIx) {
+    console.log("Adding instruction to merge the validator's leftover transient stake account");
+    transaction.add(mergeIx);
   }
 
   transaction.add(ix);
